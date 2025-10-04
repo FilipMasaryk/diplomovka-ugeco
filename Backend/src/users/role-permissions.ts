@@ -1,0 +1,48 @@
+import { UserRole } from './schemas/userSchema';
+
+export const RolePermissions = {
+  [UserRole.ADMIN]: {
+    dashboard: true,
+    profile: true,
+    users: true,
+    brands: true,
+    offers: true,
+    statistics: true,
+    billing: true,
+    settings: true,
+    translations: true,
+  },
+  [UserRole.SUBADMIN]: {
+    dashboard: true,
+    profile: true,
+    users: true,
+    brands: true,
+    offers: true,
+    statistics: true,
+    billing: false,
+    settings: true,
+    translations: false,
+  },
+  [UserRole.COMPANY_MANAGER]: {
+    dashboard: true,
+    profile: false,
+    users: true,
+    brands: true,
+    offers: true,
+    statistics: false,
+    billing: false,
+    settings: true,
+    translations: false,
+  },
+  [UserRole.CREATOR]: {
+    dashboard: false,
+    profile: true,
+    users: false,
+    brands: false,
+    offers: true,
+    statistics: false,
+    billing: false,
+    settings: true,
+    translations: false,
+  },
+};
