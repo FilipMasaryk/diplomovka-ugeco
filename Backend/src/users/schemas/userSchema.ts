@@ -20,8 +20,8 @@ export class User {
   @Prop({ required: true, unique: true, lowercase: true, trim: true })
   email: string;
 
-  @Prop({ required: true })
-  password: string;
+  @Prop()
+  password?: string;
 
   @Prop({
     type: String,
@@ -30,6 +30,18 @@ export class User {
     default: UserRole.CREATOR,
   })
   role: UserRole;
+
+  @Prop()
+  resetPasswordToken?: string;
+
+  @Prop()
+  resetPasswordExpires?: Date;
+
+  @Prop()
+  initToken?: string;
+
+  @Prop()
+  initTokenExpires?: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
