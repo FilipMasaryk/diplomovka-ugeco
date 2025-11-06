@@ -13,6 +13,10 @@ import {
 import { AuthService } from './auth.service';
 import { signInDto } from 'src/auth/schemas/signInDto';
 import type { SignInUserDto } from 'src/auth/schemas/signInDto';
+import {
+  resetAndInitializeDto,
+  type ResetAndInitializeDto,
+} from 'src/auth/schemas/resetAndInitializeDto';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import { AuthGuard } from './auth.guard';
 import { Public } from 'src/common/decorators/public.decorator';
@@ -48,19 +52,20 @@ export class AuthController {
   @Post('reset-password/:token')
   async resetPassword(
     @Param('token') token: string,
-    @Body() body: { newPassword: string; newPasswordConfirm: string },
+    @Body(new ZodValidationPipe(resetAndInitializeDto))
+    body: ResetAndInitializeDto,
   ) {
-    const { newPassword, newPasswordConfirm } = body;
-    if (!newPassword || !newPasswordConfirm) {
+    const { password, passwordConfirm } = body;
+    if (!password || !passwordConfirm) {
       throw new BadRequestException(
-        'newPassword and newPasswordConfirm are required',
+        'password and passwordConfirm are required',
       );
     }
 
-    if (newPassword !== newPasswordConfirm) {
+    if (password !== passwordConfirm) {
       throw new BadRequestException('Passwords do not match');
     }
-    await this.usersService.resetPassword(token, newPassword);
+    await this.usersService.resetPassword(token, password);
     return { message: 'Password has been successfully reset' };
   }
 
@@ -68,7 +73,8 @@ export class AuthController {
   @Post('initialize-password/:token')
   async initializePassword(
     @Param('token') token: string,
-    @Body() body: { password: string; passwordConfirm: string },
+    @Body(new ZodValidationPipe(resetAndInitializeDto))
+    body: ResetAndInitializeDto,
   ) {
     const { password, passwordConfirm } = body;
 

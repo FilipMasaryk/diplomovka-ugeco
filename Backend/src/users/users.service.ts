@@ -14,6 +14,7 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import * as nodemailer from 'nodemailer';
 import { EmailService } from './email.service';
+import { UpdateUserDto } from './schemas/updateUserSchema';
 
 @Injectable()
 export class UsersService {
@@ -107,17 +108,56 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+    return this.userModel.find().select('-password').exec();
   }
 
-  async findOne(id: string): Promise<User | null> {
-    return this.userModel.findById(id).exec();
+  async findOne(id: string): Promise<User> {
+    const user = await this.userModel.findById(id).select('-password').exec();
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    return user;
   }
   async findOneByEmail(email: string): Promise<User | null> {
     return this.userModel.findOne({ email }).exec();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.userModel.findById(id);
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    if (updateUserDto.email) {
+      const emailExists = await this.userModel.findOne({
+        email: updateUserDto.email,
+        _id: { $ne: id },
+      });
+      if (emailExists) {
+        throw new BadRequestException('Email already in use');
+      }
+    }
+
+    Object.assign(user, updateUserDto);
+
+    await user.save();
+
+    const { password, ...userWithoutPassword } = user.toObject();
+    return userWithoutPassword as User;
+  }
+
+  async remove(id: string): Promise<{ message: string }> {
+    const deletedUser = await this.userModel.findByIdAndDelete(id).exec();
+
+    if (!deletedUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    return {
+      message: `User ${deletedUser.email} has been deleted successfully.`,
+    };
   }
 }

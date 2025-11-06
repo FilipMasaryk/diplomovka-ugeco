@@ -15,6 +15,10 @@ import {
   createUserSchema,
   type CreateUserDto,
 } from './schemas/createUserSchema';
+import {
+  updateUserSchema,
+  type UpdateUserDto,
+} from './schemas/updateUserSchema';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { UserRole } from './schemas/userSchema';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -28,8 +32,9 @@ export class UsersController {
   @UseGuards(AuthGuard, RolesGuard)
   @Post()
   @Roles(UserRole.ADMIN)
-  @UsePipes(new ZodValidationPipe(createUserSchema))
-  create(@Body() createUserDto: CreateUserDto) {
+  create(
+    @Body(new ZodValidationPipe(createUserSchema)) createUserDto: CreateUserDto,
+  ) {
     return this.usersService.create(createUserDto);
   }
 
@@ -48,9 +53,19 @@ export class UsersController {
   }
 
   @UseGuards(AuthGuard, RolesGuard)
+  @Patch(':id')
+  @Roles(UserRole.ADMIN)
+  async update(
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(updateUserSchema)) updateUserDto: UpdateUserDto,
+  ) {
+    return this.usersService.update(id, updateUserDto);
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id')
   @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return this.usersService.remove(id);
   }
 }
