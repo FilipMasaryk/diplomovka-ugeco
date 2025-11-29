@@ -107,12 +107,20 @@ export class UsersService {
     await user.save();
   }
 
+  //vrati len nearchivovanych pouzivatelov
   async findAll(): Promise<User[]> {
-    return this.userModel.find().select('-password').exec();
+    return this.userModel
+      .find({ isArchived: false })
+      .select('-password')
+      .exec();
   }
 
+  //vrati len nearchivovanych pouzivatelov
   async findOne(id: string): Promise<User> {
-    const user = await this.userModel.findById(id).select('-password').exec();
+    const user = await this.userModel
+      .findById({ _id: id, isArchived: false })
+      .select('-password')
+      .exec();
 
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
@@ -122,6 +130,10 @@ export class UsersService {
   }
   async findOneByEmail(email: string): Promise<User | null> {
     return this.userModel.findOne({ email }).exec();
+  }
+
+  async findArchived() {
+    return this.userModel.find({ isArchived: true }).select('-password').exec();
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
@@ -149,15 +161,41 @@ export class UsersService {
     return userWithoutPassword as User;
   }
 
+  //nevymazava pouzivatela, len archivuje
   async remove(id: string): Promise<{ message: string }> {
-    const deletedUser = await this.userModel.findByIdAndDelete(id).exec();
+    const user = await this.userModel.findById(id);
 
-    if (!deletedUser) {
+    if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
-    return {
-      message: `User ${deletedUser.email} has been deleted successfully.`,
-    };
+    if (user.isArchived) {
+      throw new BadRequestException('User is already archived');
+    }
+
+    user.isArchived = true;
+    user.archivedAt = new Date();
+    await user.save();
+
+    return { message: `User ${user.email} was archived.` };
+  }
+
+  //obnova archivovaneho pouzivatela
+  async restore(id: string): Promise<{ message: string }> {
+    const user = await this.userModel.findById(id);
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    if (!user.isArchived) {
+      throw new BadRequestException('User is not archived');
+    }
+
+    user.isArchived = false;
+    user.archivedAt = undefined;
+    await user.save();
+
+    return { message: `User ${user.email} has been restored.` };
   }
 }

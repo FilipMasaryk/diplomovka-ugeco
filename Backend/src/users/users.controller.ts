@@ -29,6 +29,7 @@ import { Public } from 'src/common/decorators/public.decorator';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  //vytvorenie pouzivatela
   @UseGuards(AuthGuard, RolesGuard)
   @Post()
   @Roles(UserRole.ADMIN)
@@ -38,6 +39,7 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  //vrati vsetkych nearchivovanych uzivatelov
   @UseGuards(AuthGuard, RolesGuard)
   @Get()
   @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
@@ -45,6 +47,15 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  //vrati vsetkych archivovanych pouzivatelov
+  @UseGuards(AuthGuard, RolesGuard)
+  @Get('archived')
+  @Roles(UserRole.ADMIN)
+  getArchivedUsers() {
+    return this.usersService.findArchived();
+  }
+
+  //vrati pouzivatela podla ID, ak nie je archivovany
   @UseGuards(AuthGuard, RolesGuard)
   @Get(':id')
   @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
@@ -52,6 +63,7 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
+  //update pouzivatela
   @UseGuards(AuthGuard, RolesGuard)
   @Patch(':id')
   @Roles(UserRole.ADMIN)
@@ -62,10 +74,19 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
+  //archivovanie pouzivatela
   @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id')
   @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
   async remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+
+  //obnova archivovaneho pouzivatela
+  @UseGuards(AuthGuard, RolesGuard)
+  @Post('restore/:id')
+  @Roles(UserRole.ADMIN)
+  restore(@Param('id') id: string) {
+    return this.usersService.restore(id);
   }
 }

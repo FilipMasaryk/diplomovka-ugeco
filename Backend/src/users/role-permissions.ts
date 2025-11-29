@@ -23,7 +23,7 @@ export const RolePermissions = {
     settings: true,
     translations: false,
   },
-  [UserRole.COMPANY_MANAGER]: {
+  [UserRole.BRAND_MANAGER]: {
     dashboard: true,
     profile: false,
     users: true,

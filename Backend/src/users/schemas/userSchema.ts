@@ -6,7 +6,7 @@ export type UserDocument = HydratedDocument<User>;
 export enum UserRole {
   ADMIN = 'admin',
   SUBADMIN = 'subadmin',
-  COMPANY_MANAGER = 'company_manager',
+  BRAND_MANAGER = 'brand_manager',
   CREATOR = 'creator',
 }
 
@@ -45,6 +45,32 @@ export class User {
 
   @Prop()
   initTokenExpires?: Date;
+
+  @Prop({ default: false })
+  isArchived: boolean;
+
+  @Prop()
+  archivedAt?: Date;
+
+  //pre Creatora
+  @Prop()
+  package?: string;
+
+  //pre Creatora
+  @Prop()
+  ico?: string;
+
+  //Pre Creatora
+  @Prop()
+  purchasedAt?: Date;
+
+  //Pre Brand Managera, bude to array Id znaciek neskor
+  @Prop({ type: [String] })
+  brands?: string[];
+
+  //pre SubAdmina, array krajin neskor
+  @Prop({ type: [String] })
+  countries?: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

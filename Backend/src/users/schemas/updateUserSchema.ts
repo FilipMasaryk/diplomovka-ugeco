@@ -6,6 +6,15 @@ export const updateUserSchema = z.object({
   surName: z.string().min(1, 'Surname is required').optional(),
   email: z.email('Invalid email').optional(),
   role: z.enum(Object.values(UserRole) as [string, ...string[]]).optional(),
+
+  package: z.string().optional(),
+  ico: z.string().optional(),
+  purchasedAt: z.preprocess(
+    (arg) => (arg ? new Date(arg as string) : undefined),
+    z.date().optional(),
+  ),
+  brands: z.array(z.string()).optional(),
+  countries: z.array(z.string()).optional(),
 });
 
 export type UpdateUserDto = z.infer<typeof updateUserSchema>;
