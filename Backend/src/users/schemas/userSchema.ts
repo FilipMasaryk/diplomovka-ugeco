@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-
+import { Country } from './countryEnum';
 export type UserDocument = HydratedDocument<User>;
 
 export enum UserRole {
@@ -53,8 +53,8 @@ export class User {
   archivedAt?: Date;
 
   //pre Creatora
-  @Prop()
-  package?: string;
+  @Prop({ type: Types.ObjectId, ref: 'Package' })
+  package?: Types.ObjectId;
 
   //pre Creatora
   @Prop()
@@ -68,9 +68,11 @@ export class User {
   @Prop({ type: [String] })
   brands?: string[];
 
-  //pre SubAdmina, array krajin neskor
-  @Prop({ type: [String] })
-  countries?: string[];
+  @Prop({
+    type: [String],
+    enum: Country,
+  })
+  countries?: Country[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

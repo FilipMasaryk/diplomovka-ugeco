@@ -1,9 +1,10 @@
 ﻿import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { User } from './schemas/userSchema';
+import { User, UserRole } from './schemas/userSchema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
@@ -15,19 +16,48 @@ import * as crypto from 'crypto';
 import * as nodemailer from 'nodemailer';
 import { EmailService } from './email.service';
 import { UpdateUserDto } from './schemas/updateUserSchema';
+import { Package } from 'src/packages/schemas/packageSchema';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(Package.name) private readonly packageModel: Model<Package>,
     private emailService: EmailService,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto, currentUser: User): Promise<User> {
     const existingUser = await this.userModel.findOne({
       email: createUserDto.email,
     });
     if (existingUser) throw new BadRequestException('Email already in use');
+
+    //console.log('Current:', currentUser.countries);
+    //console.log('Assign:', createUserDto.countries);
+    //kontrola ci subadmin priraduje len take krajiny, ktorymi je sucastou aj on
+    if (currentUser.role === UserRole.SUBADMIN && createUserDto.countries) {
+      const allowedCountries = currentUser.countries ?? [];
+
+      const invalidCountries = createUserDto.countries.filter(
+        (country) => !allowedCountries.includes(country),
+      );
+
+      if (invalidCountries.length > 0) {
+        throw new ForbiddenException(
+          `You cannot assign countries: ${invalidCountries.join(', ')}`,
+        );
+      }
+    }
+
+    const packageObj = createUserDto.package
+      ? await this.packageModel.findById(createUserDto.package)
+      : undefined;
+
+    if (createUserDto.package && !packageObj) {
+      throw new NotFoundException(
+        `Package with ID ${createUserDto.package} not found`,
+      );
+    }
 
     const initToken = crypto.randomBytes(32).toString('hex');
     const hashedInitToken = crypto
@@ -37,6 +67,7 @@ export class UsersService {
 
     const createdUser = new this.userModel({
       ...createUserDto,
+      package: packageObj,
       password: '',
       initToken: hashedInitToken,
       initTokenExpires: new Date(Date.now() + 1000 * 60 * 60), // platnost 1 hodina
@@ -112,14 +143,16 @@ export class UsersService {
     return this.userModel
       .find({ isArchived: false })
       .select('-password')
+      .populate('package')
       .exec();
   }
 
-  //vrati len nearchivovanych pouzivatelov
+  //vrati len nearchivovaneho pouzivatela podla id
   async findOne(id: string): Promise<User> {
     const user = await this.userModel
       .findById({ _id: id, isArchived: false })
       .select('-password')
+      .populate('package')
       .exec();
 
     if (!user) {
@@ -136,7 +169,11 @@ export class UsersService {
     return this.userModel.find({ isArchived: true }).select('-password').exec();
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+    currentUser: User,
+  ): Promise<User> {
     const user = await this.userModel.findById(id);
 
     if (!user) {
@@ -153,7 +190,29 @@ export class UsersService {
       }
     }
 
-    Object.assign(user, updateUserDto);
+    if (currentUser.role === UserRole.SUBADMIN && updateUserDto.countries) {
+      const allowedCountries = currentUser.countries ?? [];
+      const invalidCountries = updateUserDto.countries.filter(
+        (country) => !allowedCountries.includes(country),
+      );
+      if (invalidCountries.length > 0) {
+        throw new ForbiddenException(
+          `You cannot assign countries: ${invalidCountries.join(', ')}`,
+        );
+      }
+    }
+
+    const packageObj = updateUserDto.package
+      ? await this.packageModel.findById(updateUserDto.package)
+      : undefined;
+
+    if (updateUserDto.package && !packageObj) {
+      throw new NotFoundException(
+        `Package with ID ${updateUserDto.package} not found`,
+      );
+    }
+
+    Object.assign(user, { ...updateUserDto, package: packageObj });
 
     await user.save();
 

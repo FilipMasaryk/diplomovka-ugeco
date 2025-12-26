@@ -8,6 +8,7 @@
   Delete,
   UsePipes,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
@@ -32,11 +33,12 @@ export class UsersController {
   //vytvorenie pouzivatela
   @UseGuards(AuthGuard, RolesGuard)
   @Post()
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
   create(
+    @Req() req,
     @Body(new ZodValidationPipe(createUserSchema)) createUserDto: CreateUserDto,
   ) {
-    return this.usersService.create(createUserDto);
+    return this.usersService.create(createUserDto, req.user);
   }
 
   //vrati vsetkych nearchivovanych uzivatelov
@@ -66,12 +68,13 @@ export class UsersController {
   //update pouzivatela
   @UseGuards(AuthGuard, RolesGuard)
   @Patch(':id')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
   async update(
     @Param('id') id: string,
+    @Req() req,
     @Body(new ZodValidationPipe(updateUserSchema)) updateUserDto: UpdateUserDto,
   ) {
-    return this.usersService.update(id, updateUserDto);
+    return this.usersService.update(id, updateUserDto, req.user);
   }
 
   //archivovanie pouzivatela
