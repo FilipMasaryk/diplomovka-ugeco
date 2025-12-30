@@ -1,4 +1,4 @@
-import { UserRole } from './schemas/userSchema';
+import { UserRole } from '../common/enums/userRoleEnum';
 
 export const RolePermissions = {
   [UserRole.ADMIN]: {

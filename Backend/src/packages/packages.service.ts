@@ -9,6 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Package } from './schemas/packageSchema';
 import { Model } from 'mongoose';
 import { User } from 'src/users/schemas/userSchema';
+import { Brand } from 'src/brands/schemas/brandSchema';
 
 @Injectable()
 export class PackagesService {
@@ -16,6 +17,8 @@ export class PackagesService {
     @InjectModel(Package.name)
     private readonly packageModel: Model<Package>,
     @InjectModel(User.name) private readonly userModel: Model<User>,
+    @InjectModel(Brand.name)
+    private readonly brandModel: Model<Brand>,
   ) {}
 
   async create(createPackageDto: CreatePackageDto) {
@@ -53,16 +56,23 @@ export class PackagesService {
   }
 
   async remove(id: string) {
-    const deletedPackage = await this.packageModel.findByIdAndDelete(id);
-    if (!deletedPackage) {
+    const pkg = await this.packageModel.findById(id);
+    if (!pkg) {
       throw new NotFoundException('Package not found');
     }
+
+    await this.packageModel.findByIdAndDelete(id);
 
     await this.userModel.updateMany(
       { package: id },
       { $unset: { package: '' } },
     );
 
-    return { message: 'Package deleted and removed from users' };
+    await this.brandModel.updateMany(
+      { package: id },
+      { $unset: { package: '' } },
+    );
+
+    return { message: 'Package deleted and removed from users and brands' };
   }
 }

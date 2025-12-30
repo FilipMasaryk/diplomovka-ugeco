@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { UserRole } from './userSchema';
-import { Country } from './countryEnum';
+import { UserRole } from '../../common/enums/userRoleEnum';
+import { Country } from '../../common/enums/countryEnum';
 
 export const createUserSchema = z
   .object({

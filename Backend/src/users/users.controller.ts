@@ -21,7 +21,7 @@ import {
   type UpdateUserDto,
 } from './schemas/updateUserSchema';
 import { Roles } from 'src/common/decorators/roles.decorator';
-import { UserRole } from './schemas/userSchema';
+import { UserRole } from '../common/enums/userRoleEnum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Public } from 'src/common/decorators/public.decorator';
@@ -30,7 +30,6 @@ import { Public } from 'src/common/decorators/public.decorator';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  //vytvorenie pouzivatela
   @UseGuards(AuthGuard, RolesGuard)
   @Post()
   @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
@@ -41,7 +40,6 @@ export class UsersController {
     return this.usersService.create(createUserDto, req.user);
   }
 
-  //vrati vsetkych nearchivovanych uzivatelov
   @UseGuards(AuthGuard, RolesGuard)
   @Get()
   @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
@@ -49,7 +47,6 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  //vrati vsetkych archivovanych pouzivatelov
   @UseGuards(AuthGuard, RolesGuard)
   @Get('archived')
   @Roles(UserRole.ADMIN)
@@ -57,7 +54,6 @@ export class UsersController {
     return this.usersService.findArchived();
   }
 
-  //vrati pouzivatela podla ID, ak nie je archivovany
   @UseGuards(AuthGuard, RolesGuard)
   @Get(':id')
   @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
@@ -65,7 +61,6 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  //update pouzivatela
   @UseGuards(AuthGuard, RolesGuard)
   @Patch(':id')
   @Roles(UserRole.ADMIN, UserRole.SUBADMIN)

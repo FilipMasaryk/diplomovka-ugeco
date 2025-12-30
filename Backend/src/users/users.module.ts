@@ -6,11 +6,13 @@ import { User, UserSchema } from './schemas/userSchema';
 import { AuthModule } from 'src/auth/auth.module';
 import { EmailService } from './email.service';
 import { Package, PackageSchema } from 'src/packages/schemas/packageSchema';
+import { Brand, BrandSchema } from 'src/brands/schemas/brandSchema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     MongooseModule.forFeature([{ name: Package.name, schema: PackageSchema }]),
+    MongooseModule.forFeature([{ name: Brand.name, schema: BrandSchema }]),
     forwardRef(() => AuthModule),
   ],
   controllers: [UsersController],

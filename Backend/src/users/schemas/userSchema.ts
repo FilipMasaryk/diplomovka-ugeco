@@ -1,14 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import { Country } from './countryEnum';
+import { Country } from '../../common/enums/countryEnum';
+import { UserRole } from '../../common/enums/userRoleEnum';
 export type UserDocument = HydratedDocument<User>;
-
-export enum UserRole {
-  ADMIN = 'admin',
-  SUBADMIN = 'subadmin',
-  BRAND_MANAGER = 'brand_manager',
-  CREATOR = 'creator',
-}
 
 @Schema()
 export class User {
@@ -64,9 +58,13 @@ export class User {
   @Prop()
   purchasedAt?: Date;
 
-  //Pre Brand Managera, bude to array Id znaciek neskor
-  @Prop({ type: [String] })
-  brands?: string[];
+  //Pre Brand Managera
+  @Prop({
+    type: [Types.ObjectId],
+    ref: 'Brand',
+    default: [],
+  })
+  brands: Types.ObjectId[];
 
   @Prop({
     type: [String],

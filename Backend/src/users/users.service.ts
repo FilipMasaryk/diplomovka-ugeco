@@ -4,9 +4,10 @@
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { User, UserRole } from './schemas/userSchema';
+import { User } from './schemas/userSchema';
+import { UserRole } from '../common/enums/userRoleEnum';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import {
   createUserSchema,
   CreateUserDto,
@@ -17,12 +18,14 @@ import * as nodemailer from 'nodemailer';
 import { EmailService } from './email.service';
 import { UpdateUserDto } from './schemas/updateUserSchema';
 import { Package } from 'src/packages/schemas/packageSchema';
+import { Brand, BrandDocument } from 'src/brands/schemas/brandSchema';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(Package.name) private readonly packageModel: Model<Package>,
+    @InjectModel(Brand.name) private readonly brandModel: Model<Brand>,
     private emailService: EmailService,
   ) {}
 
@@ -32,8 +35,26 @@ export class UsersService {
     });
     if (existingUser) throw new BadRequestException('Email already in use');
 
+    if (
+      createUserDto.package &&
+      !mongoose.Types.ObjectId.isValid(createUserDto.package)
+    ) {
+      throw new BadRequestException('Package ID is not a valid ObjectId');
+    }
+
+    if (createUserDto.brands) {
+      const invalidBrandIds = createUserDto.brands.filter(
+        (id) => !mongoose.Types.ObjectId.isValid(id),
+      );
+      if (invalidBrandIds.length > 0) {
+        throw new BadRequestException(
+          `Invalid brand IDs: ${invalidBrandIds.join(', ')}`,
+        );
+      }
+    }
     //console.log('Current:', currentUser.countries);
     //console.log('Assign:', createUserDto.countries);
+
     //kontrola ci subadmin priraduje len take krajiny, ktorymi je sucastou aj on
     if (currentUser.role === UserRole.SUBADMIN && createUserDto.countries) {
       const allowedCountries = currentUser.countries ?? [];
@@ -59,15 +80,61 @@ export class UsersService {
       );
     }
 
+    //Kontroluje ci vsetky poslane IDcka su validne
+    if (
+      (createUserDto.role === UserRole.BRAND_MANAGER ||
+        createUserDto.role === UserRole.SUBADMIN) &&
+      createUserDto.brands &&
+      createUserDto.brands.length > 0
+    ) {
+      const existingBrands = await this.brandModel.find({
+        _id: { $in: createUserDto.brands },
+        isArchived: false,
+      });
+      const existingBrandIds = existingBrands.map((b) => b._id.toString());
+      const invalidBrands = createUserDto.brands.filter(
+        (brandId) => !existingBrandIds.includes(brandId),
+      );
+      if (invalidBrands.length > 0) {
+        throw new NotFoundException(
+          `Brand(s) not found: ${invalidBrands.join(', ')}`,
+        );
+      }
+    }
+
+    //Kontroluje ci subadmin priraduje len take znacky, ku ktorym ma on pristup
+    if (
+      currentUser.role === UserRole.SUBADMIN &&
+      createUserDto.brands &&
+      createUserDto.brands.length > 0
+    ) {
+      const allowedBrandIds =
+        currentUser.brands?.map((b) => b.toString()) ?? [];
+
+      const forbiddenBrands = createUserDto.brands.filter(
+        (brandId) => !allowedBrandIds.includes(brandId),
+      );
+
+      if (forbiddenBrands.length > 0) {
+        throw new ForbiddenException(
+          `You cannot assign brands: ${forbiddenBrands.join(', ')}`,
+        );
+      }
+    }
+
     const initToken = crypto.randomBytes(32).toString('hex');
     const hashedInitToken = crypto
       .createHash('sha256')
       .update(initToken)
       .digest('hex');
 
+    const brandIds =
+      createUserDto.brands?.map((id) => new mongoose.Types.ObjectId(id)) || [];
+
     const createdUser = new this.userModel({
       ...createUserDto,
       package: packageObj,
+      brands: brandIds,
       password: '',
       initToken: hashedInitToken,
       initTokenExpires: new Date(Date.now() + 1000 * 60 * 60), // platnost 1 hodina
@@ -144,6 +211,7 @@ export class UsersService {
       .find({ isArchived: false })
       .select('-password')
       .populate('package')
+      .populate('brands')
       .exec();
   }
 
@@ -153,6 +221,7 @@ export class UsersService {
       .findById({ _id: id, isArchived: false })
       .select('-password')
       .populate('package')
+      .populate('brands')
       .exec();
 
     if (!user) {
@@ -190,6 +259,24 @@ export class UsersService {
       }
     }
 
+    if (
+      updateUserDto.package &&
+      !mongoose.Types.ObjectId.isValid(updateUserDto.package)
+    ) {
+      throw new BadRequestException('Package ID is not a valid ObjectId');
+    }
+
+    if (updateUserDto.brands) {
+      const invalidBrandIds = updateUserDto.brands.filter(
+        (id) => !mongoose.Types.ObjectId.isValid(id),
+      );
+      if (invalidBrandIds.length > 0) {
+        throw new BadRequestException(
+          `Invalid brand IDs: ${invalidBrandIds.join(', ')}`,
+        );
+      }
+    }
+
     if (currentUser.role === UserRole.SUBADMIN && updateUserDto.countries) {
       const allowedCountries = currentUser.countries ?? [];
       const invalidCountries = updateUserDto.countries.filter(
@@ -212,7 +299,56 @@ export class UsersService {
       );
     }
 
-    Object.assign(user, { ...updateUserDto, package: packageObj });
+    //Kontroluje ci vsetky poslane IDcka su validne
+    if (
+      (updateUserDto.role === UserRole.BRAND_MANAGER ||
+        updateUserDto.role === UserRole.SUBADMIN) &&
+      updateUserDto.brands &&
+      updateUserDto.brands.length > 0
+    ) {
+      const existingBrands = await this.brandModel.find({
+        _id: { $in: updateUserDto.brands },
+        isArchived: false,
+      });
+      const existingBrandIds = existingBrands.map((b) => b._id.toString());
+      const invalidBrands = updateUserDto.brands.filter(
+        (brandId) => !existingBrandIds.includes(brandId),
+      );
+      if (invalidBrands.length > 0) {
+        throw new NotFoundException(
+          `Brand(s) not found: ${invalidBrands.join(', ')}`,
+        );
+      }
+    }
+
+    //Kontroluje ci subadmin priraduje len take znacky, ku ktorym ma on pristup
+    if (
+      currentUser.role === UserRole.SUBADMIN &&
+      updateUserDto.brands &&
+      updateUserDto.brands.length > 0
+    ) {
+      const allowedBrandIds =
+        currentUser.brands?.map((b) => b.toString()) ?? [];
+
+      const forbiddenBrands = updateUserDto.brands.filter(
+        (brandId) => !allowedBrandIds.includes(brandId),
+      );
+
+      if (forbiddenBrands.length > 0) {
+        throw new ForbiddenException(
+          `You cannot assign brands: ${forbiddenBrands.join(', ')}`,
+        );
+      }
+    }
+
+    const brandIds =
+      updateUserDto.brands?.map((id) => new mongoose.Types.ObjectId(id)) || [];
+
+    Object.assign(user, {
+      ...updateUserDto,
+      package: packageObj,
+      brands: brandIds,
+    });
 
     await user.save();
 
