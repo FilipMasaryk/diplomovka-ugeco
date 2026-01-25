@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { Country } from '../../common/enums/countryEnum';
-import { BrandCategory } from 'src/common/enums/brandCategories';
+import { BrandCategory } from 'src/common/enums/brandCategoriesEnum';
 export type BrandDocument = HydratedDocument<Brand>;
 
 @Schema({ timestamps: true })

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { Country } from '../../common/enums/countryEnum';
-import { BrandCategory } from '../../common/enums/brandCategories';
+import { BrandCategory } from '../../common/enums/brandCategoriesEnum';
 
 export const updateBrandSchema = z.object({
   name: z.string().min(1, 'Brand name is required').optional(),

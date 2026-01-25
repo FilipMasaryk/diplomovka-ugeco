@@ -3,8 +3,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreatePackageDto } from './schemas/create-package.dto';
-import { UpdatePackageDto } from './schemas/update-package.dto';
+import { CreatePackageDto } from './schemas/createPackageDto';
+import { UpdatePackageDto } from './schemas/updatePackageDto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Package } from './schemas/packageSchema';
 import { Model } from 'mongoose';
@@ -61,18 +61,25 @@ export class PackagesService {
       throw new NotFoundException('Package not found');
     }
 
+    // Skontroluje, či je balíček priradený k nejakým používateľom
+    const usersWithPackage = await this.userModel
+      .find({ package: id })
+      .select('email');
+    if (usersWithPackage.length > 0) {
+      const emails = usersWithPackage.map((u) => u.email).join(', ');
+      throw new BadRequestException(
+        `Package is assigned to users: ${emails}. Remove package from users before deletion.`,
+      );
+    }
+
     await this.packageModel.findByIdAndDelete(id);
 
-    await this.userModel.updateMany(
-      { package: id },
-      { $unset: { package: '' } },
-    );
-
+    // Odstráni balíček zo všetkých značiek, ktoré ho mali priradený
     await this.brandModel.updateMany(
       { package: id },
       { $unset: { package: '' } },
     );
 
-    return { message: 'Package deleted and removed from users and brands' };
+    return { message: 'Package deleted and removed from brands' };
   }
 }

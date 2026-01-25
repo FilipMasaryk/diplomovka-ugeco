@@ -19,6 +19,7 @@ import { EmailService } from './email.service';
 import { UpdateUserDto } from './schemas/updateUserSchema';
 import { Package } from 'src/packages/schemas/packageSchema';
 import { Brand, BrandDocument } from 'src/brands/schemas/brandSchema';
+import { UpdateCreatorDto } from './schemas/updateCreatorSchema';
 
 @Injectable()
 export class UsersService {
@@ -49,6 +50,19 @@ export class UsersService {
       if (invalidBrandIds.length > 0) {
         throw new BadRequestException(
           `Invalid brand IDs: ${invalidBrandIds.join(', ')}`,
+        );
+      }
+    }
+
+    if (currentUser.role === UserRole.SUBADMIN && createUserDto.role) {
+      const allowedRoles = [
+        UserRole.CREATOR,
+        UserRole.BRAND_MANAGER,
+        UserRole.SUBADMIN,
+      ];
+      if (!allowedRoles.includes(createUserDto.role)) {
+        throw new ForbiddenException(
+          `Subadmin cannot assign role: ${createUserDto.role}`,
         );
       }
     }
@@ -102,22 +116,25 @@ export class UsersService {
       }
     }
 
-    //Kontroluje ci subadmin priraduje len take znacky, ku ktorym ma on pristup
-    if (
-      currentUser.role === UserRole.SUBADMIN &&
-      createUserDto.brands &&
-      createUserDto.brands.length > 0
-    ) {
-      const allowedBrandIds =
-        currentUser.brands?.map((b) => b.toString()) ?? [];
+    if (currentUser.role === UserRole.SUBADMIN && createUserDto.brands) {
+      const brands = await this.brandModel.find({
+        _id: { $in: createUserDto.brands },
+        isArchived: false,
+      });
 
-      const forbiddenBrands = createUserDto.brands.filter(
-        (brandId) => !allowedBrandIds.includes(brandId),
-      );
+      // overenie, že brandy majú krajiny zhodné s krajinami používateľa
+      const invalidBrandsByCountry = brands
+        .filter(
+          (brand) =>
+            !brand.country || !currentUser.countries!.includes(brand.country),
+        )
+        .map((b) => b._id.toString());
 
-      if (forbiddenBrands.length > 0) {
+      if (invalidBrandsByCountry.length > 0) {
         throw new ForbiddenException(
-          `You cannot assign brands: ${forbiddenBrands.join(', ')}`,
+          `Cannot assign brands that do not share a country with the subadmin: ${invalidBrandsByCountry.join(
+            ', ',
+          )}`,
         );
       }
     }
@@ -217,6 +234,9 @@ export class UsersService {
 
   //vrati len nearchivovaneho pouzivatela podla id
   async findOne(id: string): Promise<User> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('User ID is not a valid ObjectId');
+    }
     const user = await this.userModel
       .findById({ _id: id, isArchived: false })
       .select('-password')
@@ -276,6 +296,18 @@ export class UsersService {
         );
       }
     }
+    if (currentUser.role === UserRole.SUBADMIN && updateUserDto.role) {
+      const allowedRoles = [
+        UserRole.CREATOR,
+        UserRole.BRAND_MANAGER,
+        UserRole.SUBADMIN,
+      ];
+      if (!allowedRoles.includes(updateUserDto.role)) {
+        throw new ForbiddenException(
+          `Subadmin cannot update user to role: ${updateUserDto.role}`,
+        );
+      }
+    }
 
     if (currentUser.role === UserRole.SUBADMIN && updateUserDto.countries) {
       const allowedCountries = currentUser.countries ?? [];
@@ -286,6 +318,28 @@ export class UsersService {
         throw new ForbiddenException(
           `You cannot assign countries: ${invalidCountries.join(', ')}`,
         );
+      }
+    }
+
+    // Subadmin kontrola či priraduje len take znacky ktore su sucastou krajiny ktoru priraduje
+    if (currentUser.role === UserRole.SUBADMIN && updateUserDto.brands) {
+      if (user.countries && user.countries.length > 0) {
+        const brands = await this.brandModel.find({
+          _id: { $in: updateUserDto.brands },
+          isArchived: false,
+        });
+
+        const invalidBrandsByCountry = brands
+          .filter((brand) => !user.countries!.includes(brand.country))
+          .map((b) => b._id.toString());
+
+        if (invalidBrandsByCountry.length > 0) {
+          throw new ForbiddenException(
+            `Cannot assign brands that do not share a country with the user: ${invalidBrandsByCountry.join(
+              ', ',
+            )}`,
+          );
+        }
       }
     }
 
@@ -321,26 +375,6 @@ export class UsersService {
       }
     }
 
-    //Kontroluje ci subadmin priraduje len take znacky, ku ktorym ma on pristup
-    if (
-      currentUser.role === UserRole.SUBADMIN &&
-      updateUserDto.brands &&
-      updateUserDto.brands.length > 0
-    ) {
-      const allowedBrandIds =
-        currentUser.brands?.map((b) => b.toString()) ?? [];
-
-      const forbiddenBrands = updateUserDto.brands.filter(
-        (brandId) => !allowedBrandIds.includes(brandId),
-      );
-
-      if (forbiddenBrands.length > 0) {
-        throw new ForbiddenException(
-          `You cannot assign brands: ${forbiddenBrands.join(', ')}`,
-        );
-      }
-    }
-
     const brandIds =
       updateUserDto.brands?.map((id) => new mongoose.Types.ObjectId(id)) || [];
 
@@ -357,7 +391,7 @@ export class UsersService {
   }
 
   //nevymazava pouzivatela, len archivuje
-  async remove(id: string): Promise<{ message: string }> {
+  async archive(id: string): Promise<{ message: string }> {
     const user = await this.userModel.findById(id);
 
     if (!user) {
@@ -392,5 +426,40 @@ export class UsersService {
     await user.save();
 
     return { message: `User ${user.email} has been restored.` };
+  }
+
+  async updateCreator(
+    userId: number,
+    updateData: UpdateCreatorDto,
+  ): Promise<User> {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException('User not found');
+
+    if (user.role !== UserRole.CREATOR)
+      throw new ForbiddenException('Only creators can update this info');
+
+    Object.assign(user, updateData);
+
+    await user.save();
+
+    const { password, ...userWithoutPassword } = user.toObject();
+    return userWithoutPassword as User;
+  }
+  async getLoggedInUser(id: number): Promise<User> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('User ID is not a valid ObjectId');
+    }
+    const user = await this.userModel
+      .findById({ _id: id, isArchived: false })
+      .select('-password')
+      .populate('package')
+      .populate('brands')
+      .exec();
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    return user;
   }
 }

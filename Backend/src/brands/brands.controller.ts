@@ -62,7 +62,7 @@ export class BrandsController {
   }
 
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER)
   @Patch(':id')
   update(
     @Param('id') id: string,

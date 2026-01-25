@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PackagesModule } from './packages/packages.module';
 import { BrandsModule } from './brands/brands.module';
+import { OffersModule } from './offers/offers.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -17,6 +18,7 @@ import { BrandsModule } from './brands/brands.module';
     AuthModule,
     PackagesModule,
     BrandsModule,
+    OffersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

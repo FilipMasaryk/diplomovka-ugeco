@@ -25,10 +25,26 @@ import { UserRole } from '../common/enums/userRoleEnum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Public } from 'src/common/decorators/public.decorator';
+import {
+  type UpdateCreatorDto,
+  updateCreatorSchema,
+} from './schemas/updateCreatorSchema';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Patch('me')
+  @Roles(UserRole.CREATOR)
+  async updateMe(
+    @Req() req,
+    @Body(new ZodValidationPipe(updateCreatorSchema))
+    updateData: UpdateCreatorDto,
+  ) {
+    // posielame celý objekt req.user do service
+    return this.usersService.updateCreator(req.user.id, updateData);
+  }
 
   @UseGuards(AuthGuard, RolesGuard)
   @Post()
@@ -75,9 +91,9 @@ export class UsersController {
   //archivovanie pouzivatela
   @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id')
-  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
-  async remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  @Roles(UserRole.ADMIN)
+  async archive(@Param('id') id: string) {
+    return this.usersService.archive(id);
   }
 
   //obnova archivovaneho pouzivatela

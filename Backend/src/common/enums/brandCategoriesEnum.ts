@@ -1,7 +1,7 @@
 export enum BrandCategory {
   APPS_AND_TECH = 'apps_and_technology',
   AUTO_MOTO = 'auto_moto',
-  TRAVEL = 'travel',
+  TRAVELLING = 'travelling',
   HOME_AND_GARDEN = 'home_and_garden',
   ELECTRONICS = 'electronics',
   GAMES = 'games',

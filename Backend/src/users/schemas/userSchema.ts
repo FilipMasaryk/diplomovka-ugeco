@@ -2,6 +2,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { Country } from '../../common/enums/countryEnum';
 import { UserRole } from '../../common/enums/userRoleEnum';
+import { BrandCategory } from 'src/common/enums/brandCategoriesEnum';
+import { OfferTarget } from 'src/common/enums/offerTargetEnum';
 export type UserDocument = HydratedDocument<User>;
 
 @Schema()
@@ -71,6 +73,42 @@ export class User {
     enum: Country,
   })
   countries?: Country[];
+
+  @Prop({
+    type: [String],
+    enum: BrandCategory,
+  })
+  categories?: BrandCategory[];
+
+  @Prop({
+    type: [String],
+    enum: OfferTarget,
+  })
+  creatingWith?: OfferTarget[];
+
+  @Prop()
+  portfolio?: string;
+
+  @Prop()
+  instagram?: string;
+
+  @Prop()
+  pinterest?: string;
+
+  @Prop()
+  facebook?: string;
+
+  @Prop()
+  tiktok?: string;
+
+  @Prop()
+  youtube?: string;
+
+  @Prop()
+  image?: string;
+
+  @Prop()
+  about?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

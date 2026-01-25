@@ -10,13 +10,13 @@ import {
 } from '@nestjs/common';
 
 import { PackagesService } from './packages.service';
-import { CreatePackageDto } from './schemas/create-package.dto';
+import { CreatePackageDto } from './schemas/createPackageDto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { UserRole } from '../common/enums/userRoleEnum';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
-import { UpdatePackageDto } from './schemas/update-package.dto';
+import { UpdatePackageDto } from './schemas/updatePackageDto';
 //import { UpdatePackageDto } from './schemas/update-package.dto';
 
 @Controller('packages')

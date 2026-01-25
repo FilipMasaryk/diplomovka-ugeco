@@ -11,6 +11,8 @@ import { User, UserDocument } from 'src/users/schemas/userSchema';
 import mongoose, { Model } from 'mongoose';
 import { CreateBrandDto } from './schemas/createBrandSchema';
 import { UpdateBrandDto } from './schemas/updateBrandSchema';
+import { Country } from 'src/common/enums/countryEnum';
+import { UserRole } from 'src/common/enums/userRoleEnum';
 
 @Injectable()
 export class BrandsService {
@@ -26,16 +28,36 @@ export class BrandsService {
   ) {}
 
   async create(createBrandDto: CreateBrandDto, user: User): Promise<Brand> {
-    if (!mongoose.Types.ObjectId.isValid(createBrandDto.package)) {
+    const { package: packageId, mainContact, country } = createBrandDto;
+
+    if (!mongoose.Types.ObjectId.isValid(packageId)) {
       throw new BadRequestException('Package ID is not a valid ObjectId');
     }
 
-    const packageObj = await this.packageModel.findById(createBrandDto.package);
-
+    const packageObj = await this.packageModel.findById(packageId);
     if (!packageObj) {
-      throw new NotFoundException(
-        `Package with ID ${createBrandDto.package} not found`,
-      );
+      throw new NotFoundException(`Package with ID ${packageId} not found`);
+    }
+
+    if (mainContact) {
+      if (!mongoose.Types.ObjectId.isValid(mainContact)) {
+        throw new BadRequestException('Main contact ID is not valid');
+      }
+
+      const mainContactUser = await this.userModel.findById(mainContact);
+
+      if (!mainContactUser) {
+        throw new NotFoundException('Main contact user not found');
+      }
+
+      if (
+        !mainContactUser.countries ||
+        !mainContactUser.countries.includes(country)
+      ) {
+        throw new BadRequestException(
+          'Main contact must have the brand country assigned',
+        );
+      }
     }
 
     const brand = new this.brandModel({
@@ -85,6 +107,9 @@ export class BrandsService {
       throw new BadRequestException('Brand ID is not a valid ObjectId');
     }
 
+    const brand = await this.brandModel.findById(id);
+    if (!brand) throw new NotFoundException('Brand not found');
+
     if (updateBrandDto.package) {
       if (!mongoose.Types.ObjectId.isValid(updateBrandDto.package)) {
         throw new BadRequestException('Package ID is not a valid ObjectId');
@@ -101,15 +126,17 @@ export class BrandsService {
       }
     }
 
-    const brand = await this.brandModel.findByIdAndUpdate(id, updateBrandDto, {
-      new: true,
-    });
+    const effectiveCountry = updateBrandDto.country ?? brand.country;
 
-    if (!brand) {
-      throw new NotFoundException('Brand not found');
+    if (updateBrandDto.mainContact) {
+      await this.validateMainContact(
+        updateBrandDto.mainContact,
+        effectiveCountry,
+      );
     }
 
-    return brand;
+    Object.assign(brand, updateBrandDto);
+    return brand.save();
   }
 
   async updateForUser(
@@ -123,9 +150,26 @@ export class BrandsService {
     });
     if (!brand) throw new NotFoundException('Brand not found');
 
-    if (!user.brands.includes(brand._id)) {
-      throw new ForbiddenException(
-        'You do not have access to update this brand',
+    if (user.role === UserRole.SUBADMIN) {
+      if (!user.countries?.includes(brand.country)) {
+        throw new ForbiddenException(
+          'You do not have access to this brand (country mismatch)',
+        );
+      }
+    }
+
+    if (user.role === UserRole.BRAND_MANAGER) {
+      if (!user.brands.includes(brand._id)) {
+        throw new ForbiddenException('You do not have access to this brand');
+      }
+    }
+
+    const effectiveCountry = updateBrandDto.country ?? brand.country;
+
+    if (updateBrandDto.mainContact) {
+      await this.validateMainContact(
+        updateBrandDto.mainContact,
+        effectiveCountry,
       );
     }
 
@@ -172,5 +216,26 @@ export class BrandsService {
   async remove(id: string): Promise<void> {
     const brand = await this.brandModel.findByIdAndDelete(id);
     if (!brand) throw new NotFoundException('Brand not found');
+  }
+
+  private async validateMainContact(
+    mainContactId: string,
+    brandCountry: Country,
+  ) {
+    if (!mongoose.Types.ObjectId.isValid(mainContactId)) {
+      throw new BadRequestException('Main contact ID is not valid');
+    }
+
+    const user = await this.userModel.findById(mainContactId);
+
+    if (!user) {
+      throw new NotFoundException('Main contact user not found');
+    }
+
+    if (!user.countries?.includes(brandCountry)) {
+      throw new BadRequestException(
+        'Main contact must have the brand country assigned',
+      );
+    }
   }
 }
