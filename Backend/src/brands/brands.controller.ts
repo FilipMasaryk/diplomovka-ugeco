@@ -104,18 +104,31 @@ export class BrandsController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRole.BRAND_MANAGER)
   @UseInterceptors(FileInterceptor('logo', { storage: logoStorage }))
-  async updateLogoByBrandManager(
+  async updateBrandForBrandManager(
     @Param('id') id: string,
     @Req() req,
     @Body(new ZodValidationPipe(updateBrandSchema))
     updateBrandDto: UpdateBrandDto,
     @UploadedFile() file?: Multer.File,
   ) {
-    if (!file) {
+    const brand = await this.brandsService.findOneForUser(id, req.user);
+    if (!brand.logo && !file) {
       throw new BadRequestException('Brand Manager must provide a logo');
     }
 
-    updateBrandDto.logo = `/uploads/brandLogos/${file.filename}`;
+    if (file) {
+      updateBrandDto.logo = `/uploads/brandLogos/${file.filename}`;
+      if (brand.logo) {
+        const oldPath = path.join(
+          process.cwd(),
+          brand.logo.replace('/uploads/', 'src/uploads/'),
+        );
+        if (fs.existsSync(oldPath)) {
+          fs.unlinkSync(oldPath);
+        }
+      }
+    }
+
     return this.brandsService.updateForUser(id, updateBrandDto, req.user);
   }
 

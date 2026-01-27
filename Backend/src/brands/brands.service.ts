@@ -265,11 +265,6 @@ export class BrandsService {
       throw new ForbiddenException('You do not have access to this brand');
     }
 
-    // BRAND_MANAGER musí mať logo
-    if (user.role === UserRole.BRAND_MANAGER && !updateBrandDto.logo) {
-      throw new BadRequestException('Brand Manager must provide a logo');
-    }
-
     if (updateBrandDto.country) {
       throw new ForbiddenException(
         'You are not allowed to change brand country',
@@ -285,11 +280,9 @@ export class BrandsService {
     if (updateBrandDto.mainContact) {
       await this.validateMainContact(updateBrandDto.mainContact, brand.country);
     }
-
-    // --- Mazanie starého loga ---
+    //mazanie stareho loga ak je nove logo
     if (updateBrandDto.logo && brand.logo) {
       try {
-        // transformujeme cestu uloženú v DB na absolútnu cestu
         const oldPath = path.join(
           process.cwd(),
           'src',
