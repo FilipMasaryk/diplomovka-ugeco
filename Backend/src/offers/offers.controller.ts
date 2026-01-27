@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UploadedFile,
   UseGuards,
@@ -45,6 +46,41 @@ const storage = diskStorage({
 export class OffersController {
   constructor(private readonly offersService: OffersService) {}
 
+  @Get('filter')
+  @Roles(UserRole.CREATOR)
+  async getOffers(
+    @Req() req,
+    @Query('category') category?: string,
+    @Query('target') target?: string | string[],
+    @Query('paidCooperation') paidCooperation?: string,
+    @Query('language') language?: string | string[],
+  ) {
+    const targetsArray = Array.isArray(target)
+      ? target
+      : target
+        ? [target]
+        : [];
+
+    const languagesArray = Array.isArray(language)
+      ? language
+      : language
+        ? [language]
+        : [];
+
+    let isPaid: boolean | undefined = undefined;
+    if (paidCooperation === 'true') isPaid = true;
+    if (paidCooperation === 'false') isPaid = false;
+
+    const filters = {
+      category,
+      targets: targetsArray,
+      paidCooperation: isPaid,
+      languages: languagesArray,
+    };
+
+    return this.offersService.findAllForCreator(req.user, filters);
+  }
+
   @Post()
   @Roles(UserRole.ADMIN, UserRole.BRAND_MANAGER, UserRole.SUBADMIN)
   @UseInterceptors(FileInterceptor('image', { storage }))
@@ -82,7 +118,12 @@ export class OffersController {
     return this.offersService.findAllForUser(req.user);
   }
 
-  @Roles(UserRole.ADMIN, UserRole.BRAND_MANAGER, UserRole.SUBADMIN)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.BRAND_MANAGER,
+    UserRole.SUBADMIN,
+    UserRole.CREATOR,
+  )
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req) {
     return this.offersService.findOne(id, req.user);

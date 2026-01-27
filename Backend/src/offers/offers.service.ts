@@ -119,7 +119,7 @@ export class OffersService {
       throw new BadRequestException('Invalid offer ID');
     }
 
-    const offer = await this.offerModel.findById(id);
+    const offer = await this.offerModel.findById(id).populate('brand').exec();
     if (!offer || offer.isArchived) {
       throw new NotFoundException('Offer not found');
     }
@@ -129,7 +129,7 @@ export class OffersService {
       throw new NotFoundException('Brand not found');
     }
 
-    if (user.role === UserRole.SUBADMIN) {
+    if (user.role === UserRole.SUBADMIN || user.role === UserRole.CREATOR) {
       if (!user.countries?.includes(brand.country)) {
         throw new ForbiddenException(
           'You cannot access offers for this brand (country mismatch)',
@@ -164,6 +164,23 @@ export class OffersService {
     if (!brand || brand.isArchived) {
       throw new NotFoundException('Brand not found');
     }
+
+    if (
+      user.role === UserRole.SUBADMIN &&
+      !user.countries?.includes(brand.country)
+    ) {
+      throw new ForbiddenException(
+        'You cannot update offers for this brand (country mismatch)',
+      );
+    }
+
+    if (
+      user.role === UserRole.BRAND_MANAGER &&
+      !user.brands?.includes(brand._id)
+    ) {
+      throw new ForbiddenException('You cannot update offers for this brand');
+    }
+
     if (updateOfferDto.image && offer.image) {
       const oldPath = path.join(
         process.cwd(),
@@ -248,5 +265,44 @@ export class OffersService {
 
     offer.isArchived = false;
     return offer.save();
+  }
+
+  async findAllForCreator(
+    user: User,
+    filters: {
+      category?: string;
+      targets?: string[];
+      paidCooperation?: boolean;
+      languages?: string[];
+    },
+  ): Promise<Offer[]> {
+    const allowedBrands = await this.brandModel
+      .find({ country: { $in: user.countries }, isArchived: false })
+      .select('_id');
+
+    const brandIds = allowedBrands.map((b) => b._id);
+
+    const findQuery: any = {
+      brand: { $in: brandIds },
+      isArchived: false,
+    };
+
+    if (filters.category) {
+      findQuery.categories = { $in: [filters.category] };
+    }
+
+    if (filters.targets && filters.targets.length > 0) {
+      findQuery.targets = { $in: filters.targets };
+    }
+
+    if (filters.paidCooperation !== undefined) {
+      findQuery.paidCooperation = filters.paidCooperation;
+    }
+
+    if (filters.languages && filters.languages.length > 0) {
+      findQuery.languages = { $in: filters.languages };
+    }
+
+    return this.offerModel.find(findQuery).populate('brand').exec();
   }
 }
