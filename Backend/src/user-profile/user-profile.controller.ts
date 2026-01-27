@@ -22,6 +22,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { AuthGuard } from '../auth/auth.guard';
 import type { Multer } from 'multer';
+import { ZodError } from 'zod';
 const storage = diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = path.join(process.cwd(), 'src/uploads/profiles');
@@ -58,7 +59,16 @@ export class UserProfileController {
       const dto: CreateUserProfileDto = createUserProfileSchema.parse(body);
       return await this.profilesService.create(req.user.id, dto);
     } catch (err) {
-      fs.unlinkSync(file.path);
+      if (file && fs.existsSync(file.path)) {
+        fs.unlinkSync(file.path);
+      }
+
+      if (err instanceof ZodError) {
+        const errors = err.issues.map(
+          (e) => `${e.path.join('.')}: ${e.message}`,
+        );
+        throw new BadRequestException(errors);
+      }
       throw err;
     }
   }
@@ -69,10 +79,25 @@ export class UserProfileController {
   async updateProfile(
     @Req() req,
     @Body() body: any,
-    @UploadedFile() file: Multer.File,
+    @UploadedFile() file?: Multer.File,
   ) {
-    const dto = createUserProfileSchema.partial().parse(body);
-    return this.profilesService.updateProfile(req.user.id, dto, file);
+    try {
+      const dto = createUserProfileSchema.partial().parse(body);
+
+      return await this.profilesService.updateProfile(req.user.id, dto, file);
+    } catch (err) {
+      if (file && fs.existsSync(file.path)) {
+        fs.unlinkSync(file.path);
+      }
+
+      if (err instanceof ZodError) {
+        const errors = err.issues.map(
+          (issue) => `${issue.path.join('.')}: ${issue.message}`,
+        );
+        throw new BadRequestException(errors);
+      }
+      throw err;
+    }
   }
   @UseGuards(AuthGuard)
   @Get('me')

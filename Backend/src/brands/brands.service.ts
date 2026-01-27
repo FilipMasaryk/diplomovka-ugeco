@@ -13,6 +13,8 @@ import { CreateBrandDto } from './schemas/createBrandSchema';
 import { UpdateBrandDto } from './schemas/updateBrandSchema';
 import { Country } from 'src/common/enums/countryEnum';
 import { UserRole } from 'src/common/enums/userRoleEnum';
+import path from 'path';
+import fs from 'fs';
 
 @Injectable()
 export class BrandsService {
@@ -257,20 +259,15 @@ export class BrandsService {
     });
     if (!brand) throw new NotFoundException('Brand not found');
 
-    if (user.role === UserRole.SUBADMIN) {
-      if (!user.countries?.includes(brand.country)) {
-        throw new ForbiddenException(
-          'You do not have access to this brand (country mismatch)',
-        );
-      }
+    if (
+      !user.brands?.map((id) => id.toString()).includes(brand._id.toString())
+    ) {
+      throw new ForbiddenException('You do not have access to this brand');
     }
 
-    if (user.role === UserRole.BRAND_MANAGER) {
-      if (
-        !user.brands?.map((id) => id.toString()).includes(brand._id.toString())
-      ) {
-        throw new ForbiddenException('You do not have access to this brand');
-      }
+    // BRAND_MANAGER musí mať logo
+    if (user.role === UserRole.BRAND_MANAGER && !updateBrandDto.logo) {
+      throw new BadRequestException('Brand Manager must provide a logo');
     }
 
     if (updateBrandDto.country) {
@@ -285,13 +282,28 @@ export class BrandsService {
       );
     }
 
-    const effectiveCountry = updateBrandDto.country ?? brand.country;
-
     if (updateBrandDto.mainContact) {
-      await this.validateMainContact(
-        updateBrandDto.mainContact,
-        effectiveCountry,
-      );
+      await this.validateMainContact(updateBrandDto.mainContact, brand.country);
+    }
+
+    // --- Mazanie starého loga ---
+    if (updateBrandDto.logo && brand.logo) {
+      try {
+        // transformujeme cestu uloženú v DB na absolútnu cestu
+        const oldPath = path.join(
+          process.cwd(),
+          'src',
+          updateBrandDto.logo.includes('brandLogos')
+            ? 'uploads/brandLogos'
+            : '',
+          path.basename(brand.logo),
+        );
+        if (fs.existsSync(oldPath)) {
+          fs.unlinkSync(oldPath);
+        }
+      } catch (err) {
+        console.warn('Failed to delete old logo:', err);
+      }
     }
 
     Object.assign(brand, updateBrandDto);

@@ -8,6 +8,9 @@ import {
   Delete,
   Req,
   UseGuards,
+  UseInterceptors,
+  BadRequestException,
+  UploadedFile,
 } from '@nestjs/common';
 import { BrandsService } from './brands.service';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -23,6 +26,26 @@ import {
 } from './schemas/updateBrandSchema';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
+import type { Multer } from 'multer';
+import { FileInterceptor } from '@nestjs/platform-express';
+import path, { extname } from 'path';
+import { diskStorage } from 'multer';
+import fs from 'fs';
+
+const logoStorage = diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(process.cwd(), 'src', 'uploads', 'brandLogos');
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const name = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+    cb(null, name);
+  },
+});
 
 @Controller('brands')
 export class BrandsController {
@@ -65,18 +88,34 @@ export class BrandsController {
   }
 
   // Mozno sa zmeni este podla toho ci brand manager moze updatovat/ktore polia
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER)
   @Patch(':id')
-  update(
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
+  async updateByAdmin(
     @Param('id') id: string,
     @Req() req,
     @Body(new ZodValidationPipe(updateBrandSchema))
     updateBrandDto: UpdateBrandDto,
   ) {
-    if (req.user.role === UserRole.ADMIN) {
-      return this.brandsService.update(id, updateBrandDto, req.user);
+    return this.brandsService.update(id, updateBrandDto, req.user);
+  }
+
+  @Patch('settings/:id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRole.BRAND_MANAGER)
+  @UseInterceptors(FileInterceptor('logo', { storage: logoStorage }))
+  async updateLogoByBrandManager(
+    @Param('id') id: string,
+    @Req() req,
+    @Body(new ZodValidationPipe(updateBrandSchema))
+    updateBrandDto: UpdateBrandDto,
+    @UploadedFile() file?: Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('Brand Manager must provide a logo');
     }
+
+    updateBrandDto.logo = `/uploads/brandLogos/${file.filename}`;
     return this.brandsService.updateForUser(id, updateBrandDto, req.user);
   }
 

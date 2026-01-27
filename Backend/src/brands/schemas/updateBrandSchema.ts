@@ -23,6 +23,14 @@ export const updateBrandSchema = z.object({
   package: z.string().nullable().optional(),
 
   mainContact: z.string().optional(),
+
+  logo: z.string().url('Logo must be a valid URL').optional(),
+  website: z.string().url('Website must be a valid URL').optional(),
+  facebook: z.string().url('Facebook link must be a valid URL').optional(),
+  instagram: z.string().url('Instagram link must be a valid URL').optional(),
+  tiktok: z.string().url('TikTok link must be a valid URL').optional(),
+  pinterest: z.string().url('Pinterest link must be a valid URL').optional(),
+  youtube: z.string().url('YouTube link must be a valid URL').optional(),
 });
 
 export type UpdateBrandDto = z.infer<typeof updateBrandSchema>;

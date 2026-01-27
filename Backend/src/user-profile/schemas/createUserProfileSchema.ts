@@ -31,14 +31,14 @@ export const createUserProfileSchema = z.object({
   ),
 
   about: z.string().min(1, 'About is required'),
-  portfolio: z.string().min(1, 'Portfolio is required'),
+  portfolio: z.string().url('Portfolio must be a valid URL'),
   image: z.string().min(1, 'Image is required'),
 
-  instagram: z.string().optional(),
-  pinterest: z.string().optional(),
-  facebook: z.string().optional(),
-  tiktok: z.string().optional(),
-  youtube: z.string().optional(),
+  facebook: z.string().url('Facebook link must be a valid URL').optional(),
+  instagram: z.string().url('Instagram link must be a valid URL').optional(),
+  tiktok: z.string().url('TikTok link must be a valid URL').optional(),
+  pinterest: z.string().url('Pinterest link must be a valid URL').optional(),
+  youtube: z.string().url('YouTube link must be a valid URL').optional(),
 
   published: z.preprocess((val) => {
     if (val === 'true') return true;
