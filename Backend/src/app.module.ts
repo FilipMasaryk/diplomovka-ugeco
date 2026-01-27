@@ -8,8 +8,15 @@ import { AuthModule } from './auth/auth.module';
 import { PackagesModule } from './packages/packages.module';
 import { BrandsModule } from './brands/brands.module';
 import { OffersModule } from './offers/offers.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'src', 'uploads'),
+      serveRoot: '/uploads',
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),

@@ -74,7 +74,6 @@ export class PackagesService {
 
     await this.packageModel.findByIdAndDelete(id);
 
-    // Odstráni balíček zo všetkých značiek, ktoré ho mali priradený
     await this.brandModel.updateMany(
       { package: id },
       { $unset: { package: '' } },

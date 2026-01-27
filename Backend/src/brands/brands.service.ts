@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Brand } from './schemas/brandSchema';
-import { Package } from 'src/packages/schemas/packageSchema';
+import { Package, PackageType } from 'src/packages/schemas/packageSchema';
 import { User, UserDocument } from 'src/users/schemas/userSchema';
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 import { CreateBrandDto } from './schemas/createBrandSchema';
 import { UpdateBrandDto } from './schemas/updateBrandSchema';
 import { Country } from 'src/common/enums/countryEnum';
@@ -30,15 +30,42 @@ export class BrandsService {
   async create(createBrandDto: CreateBrandDto, user: User): Promise<Brand> {
     const { package: packageId, mainContact, country } = createBrandDto;
 
-    if (!mongoose.Types.ObjectId.isValid(packageId)) {
-      throw new BadRequestException('Package ID is not a valid ObjectId');
+    let packageObjectId: Types.ObjectId | undefined;
+    let purchasedAt: Date | undefined;
+    let offersCount = 0;
+
+    if (packageId) {
+      if (!mongoose.Types.ObjectId.isValid(packageId)) {
+        throw new BadRequestException('Package ID is not a valid ObjectId');
+      }
+
+      const packageObj = await this.packageModel.findById(packageId);
+
+      if (!packageObj) {
+        throw new NotFoundException(`Package with ID ${packageId} not found`);
+      }
+
+      if (packageObj.type !== PackageType.BRAND) {
+        throw new BadRequestException(
+          'You can only assign a package of type "brand" to a brand',
+        );
+      }
+
+      packageObjectId = packageObj._id;
+      purchasedAt = new Date();
+
+      offersCount = packageObj.offersCount;
     }
 
-    const packageObj = await this.packageModel.findById(packageId);
-    if (!packageObj) {
-      throw new NotFoundException(`Package with ID ${packageId} not found`);
-    }
+    if (user.role === UserRole.SUBADMIN) {
+      const allowedCountries = user.countries ?? [];
 
+      if (!allowedCountries.includes(country)) {
+        throw new ForbiddenException(
+          `Subadmin cannot assign country "${country}". Allowed: ${allowedCountries.join(', ')}`,
+        );
+      }
+    }
     if (mainContact) {
       if (!mongoose.Types.ObjectId.isValid(mainContact)) {
         throw new BadRequestException('Main contact ID is not valid');
@@ -59,10 +86,11 @@ export class BrandsService {
         );
       }
     }
-
     const brand = new this.brandModel({
       ...createBrandDto,
-      package: packageObj._id,
+      package: packageObjectId,
+      purchasedAt,
+      offersCount,
     });
 
     return brand.save();
@@ -90,25 +118,69 @@ export class BrandsService {
       .exec();
   }
 
+  async findByCountries(countries: Country[]): Promise<Brand[]> {
+    if (!countries || countries.length === 0) {
+      return [];
+    }
+
+    return this.brandModel
+      .find({
+        country: { $in: countries },
+        isArchived: false,
+      })
+      .exec();
+  }
+
   async findOneForUser(id: string, user: User): Promise<Brand> {
     const brand = await this.brandModel.findOne({
       _id: id,
       isArchived: false,
     });
-    if (!brand) throw new NotFoundException('Brand not found');
-    if (!user.brands.includes(brand._id)) {
-      throw new ForbiddenException('You do not have access to this brand');
+
+    if (!brand) {
+      throw new NotFoundException('Brand not found');
     }
-    return brand;
+
+    if (user.role === UserRole.ADMIN) {
+      return brand;
+    }
+
+    if (user.role === UserRole.SUBADMIN) {
+      const allowedCountries = user.countries ?? [];
+      if (!allowedCountries.includes(brand.country)) {
+        throw new ForbiddenException(
+          'You do not have access to this brand (country restriction)',
+        );
+      }
+      return brand;
+    }
+
+    if (user.role === UserRole.BRAND_MANAGER) {
+      const brandIds = user.brands.map((b) => b.toString());
+      if (!brandIds.includes(brand._id.toString())) {
+        throw new ForbiddenException('You do not have access to this brand');
+      }
+      return brand;
+    }
+
+    throw new ForbiddenException('You do not have access to this brand');
   }
 
-  async update(id: string, updateBrandDto: UpdateBrandDto): Promise<Brand> {
+  async update(
+    id: string,
+    updateBrandDto: UpdateBrandDto,
+    user: User,
+  ): Promise<Brand> {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Brand ID is not a valid ObjectId');
     }
 
     const brand = await this.brandModel.findById(id);
     if (!brand) throw new NotFoundException('Brand not found');
+
+    let packageObjectId: Types.ObjectId | undefined;
+    let purchasedAt: Date | undefined;
+    let offersCount = brand.offersCount;
 
     if (updateBrandDto.package) {
       if (!mongoose.Types.ObjectId.isValid(updateBrandDto.package)) {
@@ -124,9 +196,38 @@ export class BrandsService {
           `Package with ID ${updateBrandDto.package} not found`,
         );
       }
+
+      if (packageObj.type !== PackageType.BRAND) {
+        throw new BadRequestException(
+          'You can only assign a package of type "brand" to a brand',
+        );
+      }
+
+      packageObjectId = packageObj._id;
+      purchasedAt = new Date();
+      offersCount = packageObj.offersCount;
+    } else if (updateBrandDto.package === null) {
+      packageObjectId = undefined;
+      purchasedAt = undefined;
+      offersCount = 0;
+    } else {
+      packageObjectId = brand.package;
+      purchasedAt = brand.purchasedAt;
+      offersCount = brand.offersCount;
     }
 
     const effectiveCountry = updateBrandDto.country ?? brand.country;
+
+    if (user.role === UserRole.SUBADMIN) {
+      const allowedCountries = user.countries ?? [];
+      if (!allowedCountries.includes(effectiveCountry)) {
+        throw new ForbiddenException(
+          `Subadmin cannot set brand country to "${effectiveCountry}". Allowed countries: ${allowedCountries.join(
+            ', ',
+          )}`,
+        );
+      }
+    }
 
     if (updateBrandDto.mainContact) {
       await this.validateMainContact(
@@ -135,7 +236,13 @@ export class BrandsService {
       );
     }
 
-    Object.assign(brand, updateBrandDto);
+    Object.assign(brand, {
+      ...updateBrandDto,
+      package: packageObjectId,
+      purchasedAt,
+      offersCount,
+    });
+
     return brand.save();
   }
 
@@ -159,9 +266,23 @@ export class BrandsService {
     }
 
     if (user.role === UserRole.BRAND_MANAGER) {
-      if (!user.brands.includes(brand._id)) {
+      if (
+        !user.brands?.map((id) => id.toString()).includes(brand._id.toString())
+      ) {
         throw new ForbiddenException('You do not have access to this brand');
       }
+    }
+
+    if (updateBrandDto.country) {
+      throw new ForbiddenException(
+        'You are not allowed to change brand country',
+      );
+    }
+
+    if (updateBrandDto.package) {
+      throw new ForbiddenException(
+        'You are not allowed to change brand package',
+      );
     }
 
     const effectiveCountry = updateBrandDto.country ?? brand.country;

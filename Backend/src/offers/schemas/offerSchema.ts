@@ -10,6 +10,9 @@ export type OfferDocument = Offer & Document;
 @Schema({ timestamps: true })
 export class Offer {
   @Prop({ required: true })
+  paidCooperation: boolean;
+
+  @Prop({ required: true })
   name: string;
 
   @Prop({

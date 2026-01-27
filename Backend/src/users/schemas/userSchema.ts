@@ -74,6 +74,8 @@ export class User {
   })
   countries?: Country[];
 
+  //asi az pre profil
+  /*
   @Prop({
     type: [String],
     enum: BrandCategory,
@@ -108,7 +110,7 @@ export class User {
   image?: string;
 
   @Prop()
-  about?: string;
+  about?: string;*/
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

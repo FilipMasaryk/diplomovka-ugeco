@@ -19,7 +19,7 @@ export const createBrandSchema = z.object({
     .array(z.enum(BrandCategory))
     .min(1, 'At least one category is required'),
 
-  package: z.string().min(1, 'Package is required'),
+  package: z.string().optional(),
 
   mainContact: z.string().optional(),
 });

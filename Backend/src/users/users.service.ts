@@ -17,9 +17,11 @@ import * as crypto from 'crypto';
 import * as nodemailer from 'nodemailer';
 import { EmailService } from './email.service';
 import { UpdateUserDto } from './schemas/updateUserSchema';
-import { Package } from 'src/packages/schemas/packageSchema';
+import { Package, PackageType } from 'src/packages/schemas/packageSchema';
 import { Brand, BrandDocument } from 'src/brands/schemas/brandSchema';
-import { UpdateCreatorDto } from './schemas/updateCreatorSchema';
+import { UpdateSelfDto } from './schemas/updateSelfSchema';
+import { UpdateBrandManagerDto } from './schemas/updateBrandManagerSchema';
+import { CreateBrandManagerDto } from './schemas/createBrandManagerSchema';
 
 @Injectable()
 export class UsersService {
@@ -91,6 +93,12 @@ export class UsersService {
     if (createUserDto.package && !packageObj) {
       throw new NotFoundException(
         `Package with ID ${createUserDto.package} not found`,
+      );
+    }
+
+    if (packageObj && packageObj.type !== PackageType.CREATOR) {
+      throw new BadRequestException(
+        `You can only assign a package of type "creator" to a user`,
       );
     }
 
@@ -353,6 +361,12 @@ export class UsersService {
       );
     }
 
+    if (packageObj?.type !== PackageType.CREATOR) {
+      throw new BadRequestException(
+        'User can only have a package of type "creator"',
+      );
+    }
+
     //Kontroluje ci vsetky poslane IDcka su validne
     if (
       (updateUserDto.role === UserRole.BRAND_MANAGER ||
@@ -428,23 +442,37 @@ export class UsersService {
     return { message: `User ${user.email} has been restored.` };
   }
 
-  async updateCreator(
-    userId: number,
-    updateData: UpdateCreatorDto,
-  ): Promise<User> {
+  async updateSelf(userId: string, dto: UpdateSelfDto): Promise<User> {
     const user = await this.userModel.findById(userId);
-    if (!user) throw new NotFoundException('User not found');
 
-    if (user.role !== UserRole.CREATOR)
-      throw new ForbiddenException('Only creators can update this info');
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+    if (dto.email) {
+      const emailExists = await this.userModel.findOne({
+        email: dto.email,
+        _id: { $ne: userId },
+      });
 
-    Object.assign(user, updateData);
+      if (emailExists) {
+        throw new BadRequestException('Email already in use');
+      }
+    }
+    if (dto.name) user.name = dto.name;
+    if (dto.surName) user.surName = dto.surName;
+    if (dto.ico !== undefined) user.ico = dto.ico;
+    if (dto.email) user.email = dto.email;
+
+    if (dto.password) {
+      user.password = await bcrypt.hash(dto.password, 10);
+    }
 
     await user.save();
 
     const { password, ...userWithoutPassword } = user.toObject();
     return userWithoutPassword as User;
   }
+
   async getLoggedInUser(id: number): Promise<User> {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException('User ID is not a valid ObjectId');
@@ -461,5 +489,208 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async createBrandManager(
+    dto: CreateBrandManagerDto,
+    brandId: string,
+    currentUser: User,
+  ): Promise<User> {
+    const brand = await this.brandModel.findById(brandId);
+    if (!brand || brand.isArchived) {
+      throw new NotFoundException('Brand not found');
+    }
+
+    if (
+      currentUser.role === UserRole.SUBADMIN &&
+      (!currentUser.countries || !currentUser.countries.includes(brand.country))
+    ) {
+      throw new ForbiddenException(
+        'Cannot assign this brand due to country restriction',
+      );
+    }
+
+    if (
+      currentUser.role === UserRole.BRAND_MANAGER &&
+      (!currentUser.brands ||
+        !currentUser.brands.some((b) => b.toString() === brand._id.toString()))
+    ) {
+      throw new ForbiddenException(
+        'You cannot assign managers to a brand you do not manage',
+      );
+    }
+
+    let user = await this.userModel.findOne({ email: dto.email });
+    if (user) {
+      if (user.role === UserRole.CREATOR) {
+        throw new ForbiddenException(
+          'Cannot assign brands or modify a user with role CREATOR',
+        );
+      }
+      if (!user.brands) user.brands = [];
+      if (!user.countries) user.countries = [];
+
+      if (!user.brands.some((b) => b.toString() === brand._id.toString())) {
+        user.brands.push(brand._id);
+      }
+      if (!user.countries.includes(brand.country)) {
+        user.countries.push(brand.country);
+      }
+
+      await user.save();
+      const { password, ...userWithoutPassword } = user.toObject();
+      return userWithoutPassword as User;
+    }
+
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+    user = new this.userModel({
+      name: dto.name,
+      surName: dto.surName,
+      email: dto.email,
+      password: hashedPassword,
+      role: UserRole.BRAND_MANAGER,
+      brands: [brand._id],
+      countries: [brand.country],
+    });
+
+    await user.save();
+
+    const { password, ...userWithoutPassword } = user.toObject();
+    return userWithoutPassword as User;
+  }
+
+  async updateBrandManager(
+    id: string,
+    dto: UpdateBrandManagerDto,
+    currentUser: User,
+  ): Promise<User> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid user ID');
+    }
+
+    const user = await this.userModel.findById(id);
+    if (!user) throw new NotFoundException('User not found');
+
+    if (user.role !== UserRole.BRAND_MANAGER) {
+      throw new BadRequestException('User is not a Brand Manager');
+    }
+
+    if (dto.name) user.name = dto.name;
+    if (dto.surName) user.surName = dto.surName;
+
+    await user.save();
+
+    const { password, ...userWithoutPassword } = user.toObject();
+    return userWithoutPassword as User;
+  }
+
+  async archiveBrandManager(id: string) {
+    if (!mongoose.Types.ObjectId.isValid(id))
+      throw new BadRequestException('Invalid user ID');
+
+    const user = await this.userModel.findById(id);
+    if (!user) throw new NotFoundException('User not found');
+
+    if (user.role !== UserRole.BRAND_MANAGER) {
+      throw new BadRequestException(
+        'Cant archive an user that is not a Brand Manager',
+      );
+    }
+    user.isArchived = true;
+    await user.save();
+    const { password, ...userWithoutPassword } = user.toObject();
+    return userWithoutPassword as User;
+  }
+
+  async removeBrandAccess(
+    userId: string,
+    brandId: string,
+    currentUser: User,
+  ): Promise<User> {
+    if (
+      !mongoose.Types.ObjectId.isValid(userId) ||
+      !mongoose.Types.ObjectId.isValid(brandId)
+    ) {
+      throw new BadRequestException('Invalid user ID or brand ID');
+    }
+
+    const user = await this.userModel.findById(userId).populate('brands');
+    if (!user) throw new NotFoundException('User not found');
+
+    const brandObjectId = new mongoose.Types.ObjectId(brandId);
+
+    const brand = await this.brandModel.findById(brandId);
+    if (!brand) throw new NotFoundException('Brand not found');
+
+    if (currentUser.role === UserRole.SUBADMIN) {
+      if (!currentUser.countries?.includes(brand.country)) {
+        throw new ForbiddenException(
+          'Subadmin cannot remove access for a brand outside their countries',
+        );
+      }
+    } else if (currentUser.role === UserRole.BRAND_MANAGER) {
+      if (!currentUser.brands?.some((b) => b.toString() === brandId)) {
+        throw new ForbiddenException(
+          'You cannot remove access from a brand you do not manage',
+        );
+      }
+    }
+
+    const brandIndex = user.brands.findIndex(
+      (b) => b._id.toString() === brandId,
+    );
+    if (brandIndex === -1) {
+      throw new BadRequestException('User does not have access to this brand');
+    }
+
+    user.brands.splice(brandIndex, 1);
+
+    await user.save();
+
+    const { password, ...userWithoutPassword } = user.toObject();
+    return userWithoutPassword as User;
+  }
+
+  async restoreBrandManager(userId: string): Promise<User> {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new BadRequestException('Invalid user ID');
+    }
+
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException('User not found');
+
+    if (!user.isArchived) {
+      throw new BadRequestException('User is not archived');
+    }
+
+    if (user.role !== UserRole.BRAND_MANAGER) {
+      throw new BadRequestException('User is not a Brand Manager');
+    }
+
+    user.isArchived = false;
+    user.archivedAt = undefined;
+
+    await user.save();
+
+    const { password, ...userWithoutPassword } = user.toObject();
+    return userWithoutPassword as User;
+  }
+
+  async getBrandManagersByBrand(brandId: string): Promise<User[]> {
+    if (!mongoose.Types.ObjectId.isValid(brandId)) {
+      throw new BadRequestException('Invalid brand ID');
+    }
+
+    const brandObjectId = new mongoose.Types.ObjectId(brandId);
+    const managers = await this.userModel
+      .find({
+        role: UserRole.BRAND_MANAGER,
+        isArchived: false,
+        brands: brandObjectId,
+      })
+      .select('-password')
+      .exec();
+
+    return managers;
   }
 }

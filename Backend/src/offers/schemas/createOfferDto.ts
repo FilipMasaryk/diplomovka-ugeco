@@ -5,11 +5,19 @@ import { Country } from 'src/common/enums/countryEnum';
 
 export const createOfferSchema = z
   .object({
+    paidCooperation: z.preprocess((arg) => arg === 'true', z.boolean()),
+
     name: z.string().min(1, 'Offer name is required'),
 
-    categories: z
-      .array(z.enum(BrandCategory))
-      .min(1, 'At least one category is required'),
+    categories: z.preprocess(
+      (val) => {
+        if (!val) return [];
+        return Array.isArray(val) ? val : [val];
+      },
+      z
+        .array(z.enum(BrandCategory))
+        .min(1, 'At least one category is required'),
+    ),
 
     activeFrom: z.preprocess((arg) => new Date(arg as string), z.date()),
 
@@ -17,13 +25,22 @@ export const createOfferSchema = z
 
     image: z.string().min(1, 'Image is required'),
 
-    languages: z
-      .array(z.enum(Country))
-      .min(1, 'At least one language is required'),
+    //pretoze ked cez form-data posielame len jeden jazyk, tak to zod neberie ako pole
+    languages: z.preprocess(
+      (val) => {
+        if (!val) return [];
+        return Array.isArray(val) ? val : [val];
+      },
+      z.array(z.enum(Country)).min(1, 'At least one language is required'),
+    ),
 
-    targets: z
-      .array(z.enum(OfferTarget))
-      .min(1, 'At least one target is required'),
+    targets: z.preprocess(
+      (val) => {
+        if (!val) return [];
+        return Array.isArray(val) ? val : [val];
+      },
+      z.array(z.enum(OfferTarget)).min(1, 'At least one target is required'),
+    ),
 
     description: z.string().min(1, 'Description is required'),
 

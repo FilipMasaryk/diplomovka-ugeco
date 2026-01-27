@@ -26,24 +26,30 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Public } from 'src/common/decorators/public.decorator';
 import {
-  type UpdateCreatorDto,
-  updateCreatorSchema,
-} from './schemas/updateCreatorSchema';
-
+  type UpdateSelfDto,
+  updateSelfSchema,
+} from './schemas/updateSelfSchema';
+import {
+  type CreateBrandManagerDto,
+  createBrandManagerSchema,
+} from './schemas/createBrandManagerSchema';
+import {
+  type UpdateBrandManagerDto,
+  updateBrandManagerSchema,
+} from './schemas/updateBrandManagerSchema';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(AuthGuard, RolesGuard)
-  @Patch('me')
+  @UseGuards(AuthGuard)
   @Roles(UserRole.CREATOR)
+  @Patch('me')
   async updateMe(
     @Req() req,
-    @Body(new ZodValidationPipe(updateCreatorSchema))
-    updateData: UpdateCreatorDto,
+    @Body(new ZodValidationPipe(updateSelfSchema))
+    updateData: UpdateSelfDto,
   ) {
-    // posielame celý objekt req.user do service
-    return this.usersService.updateCreator(req.user.id, updateData);
+    return this.usersService.updateSelf(req.user.id, updateData);
   }
 
   @UseGuards(AuthGuard, RolesGuard)
@@ -102,5 +108,61 @@ export class UsersController {
   @Roles(UserRole.ADMIN)
   restore(@Param('id') id: string) {
     return this.usersService.restore(id);
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Post('manager/:brandId')
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER)
+  async createManager(
+    @Param('brandId') brandId: string,
+    @Req() req,
+    @Body(new ZodValidationPipe(createBrandManagerSchema))
+    dto: CreateBrandManagerDto,
+  ) {
+    return this.usersService.createBrandManager(dto, brandId, req.user);
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Patch('manager/:id')
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER)
+  async updateManager(
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(updateBrandManagerSchema))
+    dto: UpdateBrandManagerDto,
+    @Req() req,
+  ) {
+    return this.usersService.updateBrandManager(id, dto, req.user);
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Delete('manager/:id')
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER)
+  async archivemanager(@Param('id') id: string, @Req() req) {
+    return this.usersService.archiveBrandManager(id);
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Delete('manager/:userId/brands/:brandId')
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER)
+  async removeAccessFromManager(
+    @Param('userId') userId: string,
+    @Param('brandId') brandId: string,
+    @Req() req,
+  ) {
+    return this.usersService.removeBrandAccess(userId, brandId, req.user);
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Post('manager/:id/restore')
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER)
+  async restoreBrandManager(@Param('id') id: string, @Req() req) {
+    return this.usersService.restoreBrandManager(id);
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Get('/manager/brand/:brandId')
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER)
+  async getBrandManagersByBrand(@Param('brandId') brandId: string) {
+    return this.usersService.getBrandManagersByBrand(brandId);
   }
 }

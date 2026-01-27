@@ -29,7 +29,7 @@ export class BrandsController {
   constructor(private readonly brandsService: BrandsService) {}
 
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
   @Post()
   create(
     @Req() req,
@@ -40,27 +40,31 @@ export class BrandsController {
   }
 
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER)
   @Get()
   findAll(@Req() req) {
-    if (req.user.role === UserRole.ADMIN) {
+    const user = req.user;
+
+    if (user.role === UserRole.ADMIN) {
       return this.brandsService.findAll();
     }
 
-    // pre subadmina vrati len tie ku ktorym ma pristup
-    return this.brandsService.findByIds(req.user.brands);
+    if (user.role === UserRole.SUBADMIN) {
+      return this.brandsService.findByCountries(user.countries ?? []);
+    }
+
+    // BRAND_MANAGER
+    return this.brandsService.findByIds(user.brands);
   }
 
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER)
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req) {
-    if (req.user.role === UserRole.ADMIN) {
-      return this.brandsService.findOne(id);
-    }
     return this.brandsService.findOneForUser(id, req.user);
   }
 
+  // Mozno sa zmeni este podla toho ci brand manager moze updatovat/ktore polia
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER)
   @Patch(':id')
@@ -71,7 +75,7 @@ export class BrandsController {
     updateBrandDto: UpdateBrandDto,
   ) {
     if (req.user.role === UserRole.ADMIN) {
-      return this.brandsService.update(id, updateBrandDto);
+      return this.brandsService.update(id, updateBrandDto, req.user);
     }
     return this.brandsService.updateForUser(id, updateBrandDto, req.user);
   }

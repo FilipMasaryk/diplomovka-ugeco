@@ -20,7 +20,7 @@ export const updateBrandSchema = z.object({
     .min(1, 'At least one category is required')
     .optional(),
 
-  package: z.string().optional(),
+  package: z.string().nullable().optional(),
 
   mainContact: z.string().optional(),
 });

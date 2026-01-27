@@ -5,9 +5,21 @@ import { BrandCategory } from 'src/common/enums/brandCategoriesEnum';
 
 export const updateOfferSchema = z
   .object({
-    title: z.string().min(1).optional(),
+    paidCooperation: z
+      .preprocess((arg) => arg === 'true', z.boolean())
+      .optional(),
 
-    categories: z.array(z.enum(BrandCategory)).optional(),
+    name: z.string().min(1).optional(),
+
+    categories: z
+      .preprocess(
+        (val) => {
+          if (val === undefined) return undefined;
+          return Array.isArray(val) ? val : [val];
+        },
+        z.array(z.enum(BrandCategory)).min(1),
+      )
+      .optional(),
 
     activeFrom: z.preprocess(
       (arg) => (arg ? new Date(arg as string) : undefined),
@@ -21,9 +33,25 @@ export const updateOfferSchema = z
 
     image: z.string().optional(),
 
-    languages: z.array(z.enum(Country)).optional(),
+    languages: z
+      .preprocess(
+        (val) => {
+          if (val === undefined) return undefined;
+          return Array.isArray(val) ? val : [val];
+        },
+        z.array(z.enum(Country)).min(1),
+      )
+      .optional(),
 
-    targets: z.array(z.enum(OfferTarget)).optional(),
+    targets: z
+      .preprocess(
+        (val) => {
+          if (val === undefined) return undefined;
+          return Array.isArray(val) ? val : [val];
+        },
+        z.array(z.enum(OfferTarget)).min(1),
+      )
+      .optional(),
 
     description: z.string().optional(),
 

@@ -36,6 +36,15 @@ export class Brand {
 
   @Prop({ default: false })
   isArchived: boolean;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Offer' }] })
+  offers: Types.ObjectId[];
+
+  @Prop()
+  purchasedAt: Date;
+
+  @Prop({ default: 0 })
+  offersCount: number;
 }
 
 export const BrandSchema = SchemaFactory.createForClass(Brand);
