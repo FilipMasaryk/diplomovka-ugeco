@@ -1,0 +1,168 @@
+@import "../../../styles/colors.css";
+@import url("https://fonts.googleapis.com/css2?family=Aclonica&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+.navbar {
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: var(--color-secondary);
+  color: var(--color-text-bold);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-bottom: 10px;
+  gap: 10px;
+  border-bottom: 1px solid var(--color-border-bottom);
+  height: 61px;
+  z-index: 10;
+}
+
+.logo {
+  font-size: 36px;
+  font-weight: 400;
+  letter-spacing: 0px;
+  font-family: "Aclonica";
+  color: var(--color-text-bold);
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 36px;
+}
+
+.icon-btn {
+  width: 20px;
+  height: 20px;
+  opacity: 1;
+}
+
+.role-badge {
+  background-color: var(--color-accent);
+  color: var(--color-text);
+  width: 67px;
+  border-radius: 12px;
+
+  padding: 5px 10px;
+
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0%;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  letter-spacing: 0%;
+  color: var(--color-text-bold);
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.lang {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Medzera medzi vlajkou, textom a šípkou */
+  font-size: 14px;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  opacity: 0.9;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: opacity 0.2s;
+}
+
+.lang:hover {
+  opacity: 1;
+}
+
+.flag {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.arrow-icon {
+  width: 14px;
+  height: 14px;
+  margin-top: 2px;
+}
+
+.flag-icon-svg {
+  width: 30px;
+  height: auto;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.lang-container {
+  position: relative;
+}
+
+.lang-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: var(--color-secondary);
+  border: 1px solid var(--color-border-bottom);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  z-index: 1001;
+  min-width: 100px;
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.lang-option:hover {
+  background: var(--color-accent);
+}
+
+.lang-option span {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+}
+
+/* Animácia šípky */
+.arrow-icon {
+  transition: transform 0.2s ease;
+}
+
+.arrow-icon.rotate {
+  transform: rotate(180deg);
+}
+
+.lang-option .flag-icon-svg {
+  width: 20px;
+}

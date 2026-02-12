@@ -1,0 +1,24 @@
+:root {
+  --color-primary: #ff2941;
+  --color-primary-hover: #d30018;
+  --color-secondary: #1a1a2e;
+  --color-background: #e0e0e0;
+  --color-accent: #ffae87;
+  --color-text: #181818;
+  --color-text-bold: #ffffff;
+  --color-success: #2ecc71;
+  --color-warning: #ffc542;
+  --color-error: #ff4c4c;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden; /* Dôležité: skryje vodorovný scrollbar */
+}
+
+#root {
+  width: 100%;
+}
