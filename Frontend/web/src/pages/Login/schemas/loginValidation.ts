@@ -3,14 +3,17 @@ import { z } from "zod";
 export const loginSchema = z.object({
   email: z
     .string()
-    .nonempty({ message: "Povinné pole" }) // najprv kontrola prázdneho poľa
-    .email({ message: "Neplatný email" }), // potom formát emailu
-  password: z.string().nonempty({ message: "Povinné pole" }),
+    .nonempty({ message: "errors.required" }) // i18n kľúč
+    .email({ message: "errors.invalidEmail" }), // i18n kľúč
+  password: z.string().nonempty({ message: "errors.required" }),
+  rememberMe: z.boolean().optional(),
 });
 
 export const forgotPasswordSchema = z.object({
   email: z
     .string()
-    .nonempty({ message: "Povinné pole" })
-    .email({ message: "Neplatný email" }),
+    .nonempty({ message: "errors.required" })
+    .email({ message: "errors.invalidEmail" }),
 });
+
+export type LoginPayload = z.infer<typeof loginSchema>;

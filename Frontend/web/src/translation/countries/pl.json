@@ -1,0 +1,26 @@
+{
+  "login": {
+    "title": "Logowanie do konta",
+    "forgotTitle": "Zapomniane hasło",
+    "sentTitle": "Wysłaliśmy e-mail na Twój adres",
+    "email": "E-mail",
+    "password": "Hasło",
+    "rememberMe": "Zapamiętaj mnie",
+    "loginBtn": "Zaloguj",
+    "forgotBtn": "Zapomniane hasło",
+    "forgotDescription": "Wprowadź swój adres e-mail.",
+    "resetBtn": "Zresetuj hasło",
+    "backToLogin": "Powrót do logowania",
+    "sentDescription": "E-mail został wysłany. Jeśli nie otrzymasz go w ciągu 5-10 minut, spróbuj ponownie lub skontaktuj się z naszym wsparciem."
+  },
+  "errors": {
+    "required": "Pole wymagane",
+    "invalidEmail": "Nieprawidłowy e-mail"
+  },
+  "roles": {
+    "creator": "TWÓRCA",
+    "brand_manager": "MARKA",
+    "subadmin": "SUBADMIN",
+    "admin": "ADMIN"
+  }
+}

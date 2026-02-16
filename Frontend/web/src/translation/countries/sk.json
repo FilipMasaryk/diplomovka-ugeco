@@ -1,0 +1,26 @@
+{
+  "login": {
+    "title": "Prihlásenie do účtu",
+    "forgotTitle": "Zabudnuté heslo",
+    "sentTitle": "Odoslali sme e-mail do tvojej schránky",
+    "email": "E-mail",
+    "password": "Heslo",
+    "rememberMe": "Zapamätať si",
+    "loginBtn": "Prihlásiť",
+    "forgotBtn": "Zabudnuté heslo",
+    "forgotDescription": "Zadaj svoju e-mailovú adresu.",
+    "resetBtn": "Obnoviť heslo",
+    "backToLogin": "Späť na prihlásenie",
+    "sentDescription": "E-mail bol odoslaný. Ak e-mail neobdržíš do 5-10 minút, skús ho poslať znovu alebo kontaktuj našu podporu."
+  },
+  "errors": {
+    "required": "Povinné pole",
+    "invalidEmail": "Neplatný e-mail"
+  },
+  "roles": {
+    "creator": "TVORCA",
+    "brand_manager": "ZNAČKA",
+    "subadmin": "SUBADMIN",
+    "admin": "ADMIN"
+  }
+}

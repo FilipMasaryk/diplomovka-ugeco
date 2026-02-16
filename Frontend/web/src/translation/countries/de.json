@@ -1,0 +1,26 @@
+{
+  "login": {
+    "title": "Anmeldung zum Konto",
+    "forgotTitle": "Passwort vergessen",
+    "sentTitle": "Wir haben eine E-Mail an Ihr Postfach gesendet",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "rememberMe": "Angemeldet bleiben",
+    "loginBtn": "Anmelden",
+    "forgotBtn": "Passwort vergessen",
+    "forgotDescription": "Gib deine E-Mail-Adresse ein.",
+    "resetBtn": "Passwort zurücksetzen",
+    "backToLogin": "Zurück zur Anmeldung",
+    "sentDescription": "Die E-Mail wurde gesendet. Wenn du sie nicht innerhalb von 5-10 Minuten erhältst, versuche es erneut oder kontaktiere unseren Support."
+  },
+  "errors": {
+    "required": "Pflichtfeld",
+    "invalidEmail": "Ungültige E-Mail"
+  },
+  "roles": {
+    "creator": "ERSTELLER",
+    "brand_manager": "MARKE",
+    "subadmin": "SUBADMIN",
+    "admin": "ADMIN"
+  }
+}

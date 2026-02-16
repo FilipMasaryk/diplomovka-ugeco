@@ -1,0 +1,26 @@
+{
+  "login": {
+    "title": "Přihlášení do účtu",
+    "forgotTitle": "Zapomenuté heslo",
+    "sentTitle": "Poslali jsme e-mail do vaší schránky",
+    "email": "E-mail",
+    "password": "Heslo",
+    "rememberMe": "Zapamatovat si",
+    "loginBtn": "Přihlásit",
+    "forgotBtn": "Zapomenuté heslo",
+    "forgotDescription": "Zadejte svou e-mailovou adresu.",
+    "resetBtn": "Obnovit heslo",
+    "backToLogin": "Zpět k přihlášení",
+    "sentDescription": "E-mail byl odeslán. Pokud e-mail nedostanete do 5-10 minut, zkuste ho poslat znovu nebo kontaktujte naši podporu."
+  },
+  "errors": {
+    "required": "Povinné pole",
+    "invalidEmail": "Neplatný e-mail"
+  },
+  "roles": {
+    "creator": "TVŮRCE",
+    "brand_manager": "ZNAČKA",
+    "subadmin": "SUBADMIN",
+    "admin": "ADMIN"
+  }
+}

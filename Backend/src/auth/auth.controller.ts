@@ -32,7 +32,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   signIn(@Body(new ZodValidationPipe(signInDto)) body: SignInUserDto) {
-    return this.authService.signIn(body.email, body.password);
+    return this.authService.signIn(body.email, body.password, body.rememberMe);
   }
 
   @UseGuards(AuthGuard)

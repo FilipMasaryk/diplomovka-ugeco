@@ -2,7 +2,10 @@ import { useState } from "react";
 import { FiBell, FiChevronDown } from "react-icons/fi";
 import "./navbar.css";
 import avatarImg from "../../../images/test.jpg";
-import { SK, CZ, PL, DE, HU, AT } from "country-flag-icons/react/3x2";
+import { SK, CZ, PL, DE, HU } from "country-flag-icons/react/3x2";
+import { useAuth } from "../../../context/useAuth";
+import i18n from "../../../translation";
+import { useTranslation } from "react-i18next";
 
 const languages = [
   { code: "SK", component: SK },
@@ -10,12 +13,13 @@ const languages = [
   { code: "PL", component: PL },
   { code: "DE", component: DE },
   { code: "HU", component: HU },
-  { code: "AT", component: AT },
 ];
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLang, setSelectedLang] = useState(languages[0]);
+  const { user } = useAuth();
+  const { t } = useTranslation();
 
   return (
     <nav className="navbar">
@@ -24,15 +28,23 @@ export const Navbar = () => {
       </div>
 
       <div className="navbar-right">
-        <FiBell className="icon-btn" />
-        <span className="role-badge">ADMIN</span>
+        {user && (
+          <>
+            <FiBell className="icon-btn" />
 
-        <div className="user">
-          <img src={avatarImg} alt="avatar" className="avatar" />
-          <span className="username">Filip Masaryk</span>
-        </div>
+            <span className={`role-badge role-${user.role}`}>
+              {t(`roles.${user.role}`)}
+            </span>
 
-        {/* Dropdown kontajner */}
+            <div className="user">
+              <img src={avatarImg} alt="avatar" className="avatar" />
+              <span className="username">
+                {user.name} {user.surName}
+              </span>
+            </div>
+          </>
+        )}
+
         <div className="lang-container">
           <div className="lang" onClick={() => setIsOpen(!isOpen)}>
             <selectedLang.component
@@ -43,7 +55,6 @@ export const Navbar = () => {
             <FiChevronDown className={`arrow-icon ${isOpen ? "rotate" : ""}`} />
           </div>
 
-          {/* Samotný rozbaľovací zoznam */}
           {isOpen && (
             <div className="lang-dropdown">
               {languages.map((lang) => (
@@ -52,6 +63,7 @@ export const Navbar = () => {
                   className="lang-option"
                   onClick={() => {
                     setSelectedLang(lang);
+                    i18n.changeLanguage(lang.code);
                     setIsOpen(false);
                   }}
                 >

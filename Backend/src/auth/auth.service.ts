@@ -14,7 +14,11 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(email: string, pass: string): Promise<{ access_token: string }> {
+  async signIn(
+    email: string,
+    pass: string,
+    rememberMe?: boolean,
+  ): Promise<{ access_token: string }> {
     const user = await this.usersService.findOneByEmail(email);
     if (!user) {
       throw new NotFoundException('User with this email does not exist');
@@ -29,13 +33,16 @@ export class AuthService {
     const payload = {
       id: user._id,
       name: user.name,
+      surName: user.surName,
       email: user.email,
       role: user.role,
       countries: user.countries ?? [],
       brands: user.brands ?? [],
     };
+
+    const expiresIn = rememberMe ? '30d' : '1h';
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      access_token: await this.jwtService.signAsync(payload, { expiresIn }),
     };
   }
 }

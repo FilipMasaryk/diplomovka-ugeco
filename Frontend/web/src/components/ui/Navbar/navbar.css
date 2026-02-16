@@ -29,6 +29,7 @@
   letter-spacing: 0px;
   font-family: "Aclonica";
   color: var(--color-text-bold);
+  margin-left: -55px;
 }
 
 .navbar-right {
@@ -165,4 +166,22 @@
 
 .lang-option .flag-icon-svg {
   width: 20px;
+}
+
+.role-creator {
+  background-color: var(--color-creator);
+  color: var(--color-text-bold);
+}
+
+.role-brand_manager {
+  background-color: var(--color-brand_manager);
+  color: var(--color-text-bold);
+}
+
+.role-subadmin {
+  background-color: var(--color-accent);
+}
+
+.role-admin {
+  background-color: var(--color-accent);
 }

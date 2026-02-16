@@ -1,0 +1,26 @@
+{
+  "login": {
+    "title": "Fiók bejelentkezés",
+    "forgotTitle": "Elfelejtett jelszó",
+    "sentTitle": "E-mailt küldtünk a postaládádba",
+    "email": "E-mail",
+    "password": "Jelszó",
+    "rememberMe": "Emlékezz rám",
+    "loginBtn": "Bejelentkezés",
+    "forgotBtn": "Elfelejtett jelszó",
+    "forgotDescription": "Add meg az e-mail címedet.",
+    "resetBtn": "Jelszó visszaállítása",
+    "backToLogin": "Vissza a bejelentkezéshez",
+    "sentDescription": "Az e-mailt elküldtük. Ha 5-10 percen belül nem kapod meg, próbáld újra vagy lépj kapcsolatba az ügyfélszolgálattal."
+  },
+  "errors": {
+    "required": "Kötelező mező",
+    "invalidEmail": "Érvénytelen e-mail"
+  },
+  "roles": {
+    "creator": "ALKOTÓ",
+    "brand_manager": "MÁRKA",
+    "subadmin": "SUBADMIN",
+    "admin": "ADMIN"
+  }
+}
