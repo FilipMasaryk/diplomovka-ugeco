@@ -1,11 +1,7 @@
-import {
-  loginSchema,
-  type LoginPayload,
-} from "../../web/src/pages/Login/schemas/loginValidation";
-const BASE_URL = "http://localhost:3000";
-
+import { type LoginPayload } from "../../../web/src/pages/Login/schemas/loginValidation";
+import { API_URL } from "../../config";
 export async function login(payload: LoginPayload) {
-  const response = await fetch(`${BASE_URL}/auth/login`, {
+  const response = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -81,6 +81,12 @@ export class OffersController {
     return this.offersService.findAllForCreator(req.user, filters);
   }
 
+  @Get('stats')
+  @Roles(UserRole.ADMIN)
+  async getStats() {
+    return this.offersService.getStats();
+  }
+
   @Post()
   @Roles(UserRole.ADMIN, UserRole.BRAND_MANAGER, UserRole.SUBADMIN)
   @UseInterceptors(FileInterceptor('image', { storage }))

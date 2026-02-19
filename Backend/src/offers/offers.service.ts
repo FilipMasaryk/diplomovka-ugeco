@@ -8,7 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { Offer, OfferDocument } from './schemas/offerSchema';
 import { Brand } from '../brands/schemas/brandSchema';
-import { User } from '../users/schemas/userSchema';
+import { User, UserDocument } from '../users/schemas/userSchema';
 import { CreateOfferDto } from './schemas/createOfferDto';
 import { UserRole } from 'src/common/enums/userRoleEnum';
 import { UpdateOfferDto } from './schemas/updateOfferDto';
@@ -27,6 +27,9 @@ export class OffersService {
 
     @InjectModel(Package.name)
     private readonly packageModel: Model<Package>,
+
+    @InjectModel(User.name)
+    private readonly userModel: Model<UserDocument>,
   ) {}
 
   async create(createOfferDto: CreateOfferDto, user: User): Promise<Offer> {
@@ -304,5 +307,29 @@ export class OffersService {
     }
 
     return this.offerModel.find(findQuery).populate('brand').exec();
+  }
+
+  async getStats() {
+    const now = new Date();
+
+    const [totalOffers, activeOffers, creatorsCount] = await Promise.all([
+      this.offerModel.countDocuments(),
+
+      this.offerModel.countDocuments({
+        activeFrom: { $lte: now },
+        activeTo: { $gte: now },
+        isArchived: false,
+      }),
+
+      this.userModel.countDocuments({
+        role: UserRole.CREATOR,
+      }),
+    ]);
+
+    return {
+      totalOffers,
+      activeOffers,
+      creatorsCount,
+    };
   }
 }

@@ -22,5 +22,31 @@
     "brand_manager": "MARKA",
     "subadmin": "SUBADMIN",
     "admin": "ADMIN"
+  },
+  "menubar": {
+    "overview": "Przegląd",
+    "users": "Konta użytkowników",
+    "brands": "Marki",
+    "brandList": "Lista marek",
+    "offerList": "Lista ofert",
+    "stats": "Statystyki",
+    "settings": "Ustawienia",
+    "news": "Nowości",
+    "admin": "Admin",
+    "creator": "Twórca",
+    "brand": "Marka",
+    "translations": "Tłumaczenia",
+    "offers": "Oferty",
+    "myOffers": "Moje oferty",
+    "profile": "Profil",
+    "managers": "Menedżerowie",
+    "support": "Wsparcie"
+  },
+  "dashboard": {
+    "creatorsCount": "Liczba twórców",
+    "totalOffers": "Liczba ofert",
+    "activeOffers": "Liczba aktywnych ofert",
+    "countriesCount": "Liczba krajów",
+    "allCountries": "Wszystkie kraje"
   }
 }

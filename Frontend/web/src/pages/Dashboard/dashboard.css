@@ -1,0 +1,68 @@
+@import "../../styles/colors.css";
+.dashboard-wrapper {
+  width: 100%;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  padding-left: 50px;
+  padding-right: 50px;
+  box-sizing: border-box;
+  background-color: white;
+}
+
+.stats-grid {
+  display: grid;
+  gap: 20px;
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.stat-card {
+  width: auto;
+
+  background-color: var(--color-background-elements);
+  border-radius: 12px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 150px;
+  border: 1px solid #e5eaf0;
+  box-shadow: 0px 1px 3px 0px #0000001a;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-header {
+  font-family: "Inter", sans-serif;
+  color: var(--color-text);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.stat-value {
+  font-family: "Inter", sans-serif;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1;
+  text-align: right;
+  margin: auto 0;
+}
+
+.stat-footer {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--color-text);
+  opacity: 0.7;
+}
+
+@media (min-width: 1200px) {
+  .stats-grid {
+    justify-content: flex-start;
+    gap: 30px;
+  }
+}

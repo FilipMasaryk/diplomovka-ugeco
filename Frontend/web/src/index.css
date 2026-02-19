@@ -22,3 +22,24 @@ body {
 #root {
   width: 100%;
 }
+/* Celkový obal aplikácie */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Celá výška obrazovky */
+  overflow: hidden;
+}
+
+/* Telo pod navbarom */
+.app-body {
+  display: flex;
+  flex: 1; /* Vyplní zvyšok vertikálneho priestoru */
+  overflow: hidden; /* Zabráni dvojitému scrollbaru */
+}
+
+/* Samotný obsah (Dashboard, atď.) */
+.main-content {
+  flex: 1; /* Vyplní zvyšok horizontálneho priestoru vedľa menubaru */
+  overflow-y: auto;
+  overflow: hidden; /* Ak je obsah dlhý, scrolluje sa len táto časť */
+}

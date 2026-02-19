@@ -6,6 +6,7 @@ import { Offer, OfferSchema } from './schemas/offerSchema';
 import { Brand, BrandSchema } from 'src/brands/schemas/brandSchema';
 import { AuthModule } from 'src/auth/auth.module';
 import { Package, PackageSchema } from 'src/packages/schemas/packageSchema';
+import { User, UserSchema } from 'src/users/schemas/userSchema';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { Package, PackageSchema } from 'src/packages/schemas/packageSchema';
       { name: Offer.name, schema: OfferSchema },
       { name: Brand.name, schema: BrandSchema },
       { name: Package.name, schema: PackageSchema },
+      { name: User.name, schema: UserSchema },
     ]),
     AuthModule,
   ],

@@ -4,9 +4,10 @@ import loginImage from "../../images/LoginImage.jpg";
 import { InputField } from "../../components/ui/InputField/InputField";
 import { Button } from "../../components/ui/Button/Button";
 import { forgotPasswordSchema, loginSchema } from "./schemas/loginValidation";
-import { login } from "../../../../shared/api/auth";
+import { login } from "../../../../shared/api/auth/auth";
 import { useAuth } from "../../context/useAuth";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
@@ -21,6 +22,7 @@ export const Login = () => {
 
   const { loginUser } = useAuth();
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +43,7 @@ export const Login = () => {
     try {
       const data = await login(result.data);
       loginUser(data.access_token);
+      navigate("/");
     } catch (error: any) {
       setApiError(error.message);
     }

@@ -4,7 +4,7 @@
 
 .navbar {
   box-sizing: border-box;
-  position: fixed;
+  position: relative;
   top: 0;
   left: 0;
   width: 100%;
@@ -29,7 +29,6 @@
   letter-spacing: 0px;
   font-family: "Aclonica";
   color: var(--color-text-bold);
-  margin-left: -55px;
 }
 
 .navbar-right {

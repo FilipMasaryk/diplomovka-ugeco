@@ -22,5 +22,31 @@
     "brand_manager": "MÁRKA",
     "subadmin": "SUBADMIN",
     "admin": "ADMIN"
+  },
+  "menubar": {
+    "overview": "Áttekintés",
+    "users": "Felhasználói fiókok",
+    "brands": "Márkák",
+    "brandList": "Márkalista",
+    "offerList": "Ajánlatok listája",
+    "stats": "Statisztikák",
+    "settings": "Beállítások",
+    "news": "Hírek",
+    "adm  in": "Admin",
+    "creator": "Alkotó",
+    "brand": "Márka",
+    "translations": "Fordítások",
+    "offers": "Ajánlatok",
+    "myOffers": "Saját ajánlataim",
+    "profile": "Profil",
+    "managers": "Menedzserek",
+    "support": "Támogatás"
+  },
+  "dashboard": {
+    "creatorsCount": "Alkotók száma",
+    "totalOffers": "Ajánlatok száma",
+    "activeOffers": "Aktív ajánlatok száma",
+    "countriesCount": "Országok száma",
+    "allCountries": "Minden ország"
   }
 }

@@ -22,5 +22,32 @@
     "brand_manager": "ZNAČKA",
     "subadmin": "SUBADMIN",
     "admin": "ADMIN"
+  },
+
+  "menubar": {
+    "overview": "Prehľad",
+    "users": "Užívateľské účty",
+    "brands": "Značky",
+    "brandList": "Zoznam značiek",
+    "offerList": "Zoznam ponúk",
+    "stats": "Štatistiky",
+    "settings": "Nastavenia",
+    "news": "Novinky",
+    "admin": "Admin",
+    "creator": "Tvorca",
+    "brand": "Značka",
+    "translations": "Preklady",
+    "offers": "Ponuky",
+    "myOffers": "Moje ponuky",
+    "profile": "Profil",
+    "managers": "Správcovia",
+    "support": "Support"
+  },
+  "dashboard": {
+    "creatorsCount": "Počet tvorcov",
+    "totalOffers": "Počet ponúk",
+    "activeOffers": "Počet aktívnych ponúk",
+    "countriesCount": "Počet krajín",
+    "allCountries": "Všetky krajiny"
   }
 }

@@ -1,0 +1,194 @@
+@import "../../../styles/colors.css";
+.menubar {
+  width: 284px;
+  height: calc(100vh - 70px);
+  background: var(--color-secondary);
+  color: #fff;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.menu-section {
+  margin-bottom: 10px;
+}
+
+.menu-select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  color: var(--color-text-bold);
+  font-size: 14px;
+}
+
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.menu-item.active {
+  background: #e6e6e6;
+  color: #00bfa6;
+  font-weight: 400;
+}
+
+.menu-icon {
+  font-size: 14px;
+}
+
+.gem-icon {
+  color: #4caf50;
+}
+
+.chevron {
+  margin-left: auto;
+  transition: transform 0.2s ease;
+}
+
+.chevron.rotate {
+  transform: rotate(180deg);
+}
+
+.submenu {
+  margin-left: 32px;
+  margin-top: 6px;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 12px;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+}
+
+.submenu-item {
+  padding: 12px 0;
+  font-size: 14px;
+  color: var(--color-text-bold);
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+/*
+.submenu-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}*/
+
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 16px 0;
+}
+
+.end-icon {
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+.fi-panel-left-icon {
+  display: flex;
+  justify-content: flex-start;
+  padding: 10px;
+}
+
+.submenu-item.active {
+  background: var(--color-background);
+  color: var(--color-primary);
+  font-weight: 400;
+  padding-left: 12px;
+  margin-left: -12px;
+  padding-right: 12px;
+  border-radius: 10px 10px 10px 10px;
+}
+
+.gems-select-container {
+  border: 1px solid rgba(255, 255, 255, 0.12); /* Tenká linka podľa obrázku */
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: transparent;
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.brand-selector-section {
+  margin-bottom: 24px;
+}
+
+.brand-selector-box {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+}
+
+.brand-selector-content,
+.brand-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  transition: background 0.2s ease;
+}
+
+.brand-dropdown {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.brand-dropdown-item {
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.brand-dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.brand-icon-wrapper {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.brand-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.brand-name {
+  color: #fff;
+  font-weight: 500;
+  font-size: 14px;
+  font-family: "Inter", sans-serif;
+}
+
+.brand-chevron {
+  margin-left: auto;
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.brand-chevron.rotate {
+  transform: rotate(180deg);
+}
