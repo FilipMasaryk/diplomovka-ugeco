@@ -1,0 +1,86 @@
+@import "../../../styles/colors.css";
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.modal-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 450px;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: modalAppear 0.1s ease-out;
+}
+
+.modal-title {
+  color: #181818;
+  margin-bottom: 12px;
+  margin-top: 0px;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 28px;
+  letter-spacing: 0%;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.modal-btn-confirm {
+  background-color: var(--color-primary);
+  color: #ffffff;
+  width: 222px;
+  height: 44px;
+  opacity: 1;
+  gap: 8;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-style: Medium;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0%;
+  vertical-align: middle;
+}
+
+.modal-btn-confirm.danger {
+  background-color: #ef4444 !important;
+}
+
+.modal-btn-cancel {
+  border: 1px solid var(--Border-default, #e4e4e7);
+  color: #181818;
+  width: 150px;
+  height: 44px;
+  opacity: 1;
+  gap: 8;
+  border-width: 1px;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-style: Medium;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0%;
+  vertical-align: middle;
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

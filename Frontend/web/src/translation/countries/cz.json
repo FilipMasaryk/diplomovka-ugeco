@@ -1,8 +1,8 @@
 {
   "login": {
-    "title": "Přihlášení do účtu",
+    "title": "Přihlášení k účtu",
     "forgotTitle": "Zapomenuté heslo",
-    "sentTitle": "Poslali jsme e-mail do vaší schránky",
+    "sentTitle": "Odeslali jsme e-mail do vaší schránky",
     "email": "E-mail",
     "password": "Heslo",
     "rememberMe": "Zapamatovat si",
@@ -10,12 +10,15 @@
     "forgotBtn": "Zapomenuté heslo",
     "forgotDescription": "Zadejte svou e-mailovou adresu.",
     "resetBtn": "Obnovit heslo",
-    "backToLogin": "Zpět k přihlášení",
-    "sentDescription": "E-mail byl odeslán. Pokud e-mail nedostanete do 5-10 minut, zkuste ho poslat znovu nebo kontaktujte naši podporu."
+    "backToLogin": "Zpět na přihlášení",
+    "sentDescription": "E-mail byl odeslán. Pokud jej neobdržíte do 5-10 minut, zkuste jej poslat znovu nebo kontaktujte podporu."
   },
   "errors": {
     "required": "Povinné pole",
     "invalidEmail": "Neplatný e-mail"
+  },
+  "validation": {
+    "required": "Toto pole je povinné"
   },
   "roles": {
     "creator": "TVŮRCE",
@@ -40,7 +43,7 @@
     "myOffers": "Moje nabídky",
     "profile": "Profil",
     "managers": "Správci",
-    "support": "Podpora"
+    "support": "Support"
   },
   "dashboard": {
     "creatorsCount": "Počet tvůrců",
@@ -48,5 +51,133 @@
     "activeOffers": "Počet aktivních nabídek",
     "countriesCount": "Počet zemí",
     "allCountries": "Všechny země"
+  },
+  "usersPage": {
+    "title": "Uživatelské účty",
+    "archiveBtn": "Archiv účtů",
+    "selectCountry": "Vyberte zemi",
+    "selectAccess": "Vyberte typ přístupu",
+    "selectBrand": "Vyberte značku",
+    "searchPlaceholder": "Vyhledat",
+    "createBtn": "Vytvořit uživatele",
+    "createBtnSubmit": "Vytvořit uživatele",
+    "loading": "Načítám uživatele...",
+    "updateBtnSubmit": "Uložit změny",
+    "updateModalTitle": "Upravit uživatele",
+    "selectPackage": "Vyberte balíček",
+    "createModal": {
+      "title": "Vytvořit nového uživatele"
+    },
+    "table": {
+      "name": "Jméno",
+      "surName": "Příjmení",
+      "email": "E-mail",
+      "password": "Heslo",
+      "access": "Přístup",
+      "brand": "Značka",
+      "brandAccess": "Přístup ke značce",
+      "country": "Země",
+      "profile": "Vyplněný profil",
+      "package": "Balíček",
+      "purchased": "Zakoupeno",
+      "expiration": "Expirace",
+      "ico": "IČO",
+      "yes": "Ano",
+      "no": "Ne"
+    },
+    "pagination": {
+      "rowsPerPage": "Počet řádků",
+      "prev": "Zpět",
+      "next": "Dále"
+    },
+    "archiveTitle": "Archiv uživatelů",
+    "activeUsersBtn": "Aktivní uživatelé",
+    "confirmRestore": "Opravdu chcete obnovit tohoto uživatele?",
+    "restore": "Obnovit",
+    "noData": "Nenašli se žádní uživatelé"
+  },
+  "countries": {
+    "SK": "Slovensko",
+    "CZ": "Česko",
+    "PL": "Polsko",
+    "DE": "Německo",
+    "HU": "Maďarsko",
+    "AT": "Rakousko"
+  },
+  "brandsPage": {
+    "title": "Seznam značek",
+    "searchPlaceholder": "Vyhledat",
+    "createBtn": "Vytvořit značku",
+    "createBtnSubmit": "Vytvořit značku",
+    "updateBtnSubmit": "Uložit změny",
+    "loading": "Načítám značky...",
+    "selectPackage": "Vyberte balíček",
+    "selectCategory": "Vyberte kategorii",
+    "noData": "Nenašly se žádné značky",
+    "createModal": {
+      "title": "Vytvořit novou značku"
+    },
+    "updateModal": {
+      "title": "Upravit značku"
+    },
+    "table": {
+      "name": "Název značky",
+      "ico": "IČO",
+      "address": "Adresa",
+      "city": "Město",
+      "zip": "PSČ",
+      "country": "Země",
+      "categories": "Kategorie",
+      "package": "Balíček",
+      "purchased": "Zakoupeno",
+      "expiration": "Expirace",
+      "offersCount": "Nabídky",
+      "activeOffers": "Aktivní nabídky",
+      "totalOffers": "Nabídky celkem",
+      "contact": "Kontakt",
+      "mainContact": "Hlavní kontakt"
+    },
+    "selectContact": "Vyberte kontakt"
+  },
+  "categories": {
+    "apps_and_technology": "Aplikace a technologie",
+    "auto_moto": "Auto a Moto",
+    "travelling": "Cestování",
+    "home_and_garden": "Dům a zahrada",
+    "electronics": "Elektronika",
+    "games": "Hry",
+    "music_and_dance": "Hudba a tanec",
+    "food_and_drinks": "Jídlo a nápoje",
+    "books": "Knihy",
+    "cosmetics": "Kosmetika",
+    "fashion": "Móda",
+    "family_and_kids": "Rodina a děti",
+    "services": "Služby",
+    "sport": "Sport",
+    "experiences": "Zážitky",
+    "health": "Zdraví",
+    "animals": "Zvířata",
+    "lifestyle": "Životní styl"
+  },
+  "modals": {
+    "confirm": "Potvrdit",
+    "cancel": "Zrušit",
+    "archive": {
+      "title": "Archivovat uživatele",
+      "message": "Jste si jisti, že chcete archivovat uživatele {{name}}?",
+      "confirmBtn": "Ano, archivovat",
+      "cancelBtn": "Ne, zrušit"
+    },
+    "restore": {
+      "title": "Obnovit uživatele",
+      "message": "Přejete si vrátit uživatele {{name}} mezi aktivní?",
+      "confirmBtn": "Ano, obnovit",
+      "cancelBtn": "Ne, zrušit"
+    },
+    "archiveBrand": {
+      "message": "Jste si jisti, že chcete archivovat značku {{name}}?",
+      "confirmBtn": "Ano, archivovat",
+      "cancelBtn": "Ne, zrušit"
+    }
   }
 }

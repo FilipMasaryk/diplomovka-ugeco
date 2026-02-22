@@ -52,6 +52,11 @@
   border: 1px solid var(--color-error);
 }
 
+.input-field:focus {
+  outline: none; /* odstráni default modrý outline */
+  border: 1px solid var(--color-primary);
+}
+
 .error-text {
   color: var(--color-error);
   font-size: 14px;

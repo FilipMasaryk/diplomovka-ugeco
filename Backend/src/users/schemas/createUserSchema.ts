@@ -1,13 +1,14 @@
 import { z } from 'zod';
 import { UserRole } from '../../common/enums/userRoleEnum';
 import { Country } from '../../common/enums/countryEnum';
+import { passwordSchema } from 'src/auth/schemas/passwordSchema';
 
 export const createUserSchema = z
   .object({
     name: z.string().min(1, 'Name is required'),
     surName: z.string().min(1, 'surName is required'),
     email: z.email('Invalid email'),
-    //password: z.string().min(8, 'Password must be at least 8 characters'),
+    password: passwordSchema,
     role: z.enum(UserRole).default(UserRole.CREATOR),
     package: z.string().optional(),
     ico: z.string().optional(),

@@ -1,21 +1,24 @@
 {
   "login": {
-    "title": "Fiók bejelentkezés",
+    "title": "Bejelentkezés",
     "forgotTitle": "Elfelejtett jelszó",
-    "sentTitle": "E-mailt küldtünk a postaládádba",
+    "sentTitle": "E-mailt küldtünk a fiókjába",
     "email": "E-mail",
     "password": "Jelszó",
     "rememberMe": "Emlékezz rám",
     "loginBtn": "Bejelentkezés",
     "forgotBtn": "Elfelejtett jelszó",
-    "forgotDescription": "Add meg az e-mail címedet.",
+    "forgotDescription": "Adja meg e-mail címét.",
     "resetBtn": "Jelszó visszaállítása",
     "backToLogin": "Vissza a bejelentkezéshez",
-    "sentDescription": "Az e-mailt elküldtük. Ha 5-10 percen belül nem kapod meg, próbáld újra vagy lépj kapcsolatba az ügyfélszolgálattal."
+    "sentDescription": "Az e-mailt elküldtük. Ha 5-10 percen belül nem kapja meg, próbálja meg újra, vagy lépjen kapcsolatba az ügyfélszolgálattal."
   },
   "errors": {
     "required": "Kötelező mező",
     "invalidEmail": "Érvénytelen e-mail"
+  },
+  "validation": {
+    "required": "Ez a mező kötelező"
   },
   "roles": {
     "creator": "ALKOTÓ",
@@ -32,21 +35,149 @@
     "stats": "Statisztikák",
     "settings": "Beállítások",
     "news": "Hírek",
-    "adm  in": "Admin",
+    "admin": "Admin",
     "creator": "Alkotó",
     "brand": "Márka",
     "translations": "Fordítások",
     "offers": "Ajánlatok",
     "myOffers": "Saját ajánlataim",
     "profile": "Profil",
-    "managers": "Menedzserek",
-    "support": "Támogatás"
+    "managers": "Kezelők",
+    "support": "Support"
   },
   "dashboard": {
     "creatorsCount": "Alkotók száma",
-    "totalOffers": "Ajánlatok száma",
-    "activeOffers": "Aktív ajánlatok száma",
+    "totalOffers": "Összes ajánlat",
+    "activeOffers": "Aktív ajánlatok",
     "countriesCount": "Országok száma",
     "allCountries": "Minden ország"
+  },
+  "usersPage": {
+    "title": "Felhasználói fiókok",
+    "archiveBtn": "Fiókarchívum",
+    "selectCountry": "Válasszon országot",
+    "selectAccess": "Válasszon hozzáférési típust",
+    "selectBrand": "Válasszon márkát",
+    "searchPlaceholder": "Keresés",
+    "createBtn": "Felhasználó létrehozása",
+    "createBtnSubmit": "Felhasználó létrehozása",
+    "updateModalTitle": "Felhasználó szerkesztése",
+    "loading": "Felhasználók betöltése...",
+    "updateBtnSubmit": "Módosítások mentése",
+    "selectPackage": "Válasszon csomagot",
+    "createModal": {
+      "title": "Új felhasználó létrehozása"
+    },
+    "table": {
+      "name": "Keresztnév",
+      "surName": "Vezetéknév",
+      "email": "E-mail",
+      "password": "Jelszó",
+      "access": "Hozzáférés",
+      "brand": "Márka",
+      "brandAccess": "Márka hozzáférés",
+      "country": "Ország",
+      "profile": "Kitöltött profil",
+      "package": "Csomag",
+      "purchased": "Vásárolva",
+      "expiration": "Lejárat",
+      "ico": "Adószám / ICO",
+      "yes": "Igen",
+      "no": "Nem"
+    },
+    "pagination": {
+      "rowsPerPage": "Sorok száma",
+      "prev": "Vissza",
+      "next": "Tovább"
+    },
+    "archiveTitle": "Felhasználói archívum",
+    "activeUsersBtn": "Aktív felhasználók",
+    "confirmRestore": "Biztosan vissza szeretné állítani ezt a felhasználót?",
+    "restore": "Visszaállítás",
+    "noData": "Nem találhatók felhasználók"
+  },
+  "countries": {
+    "SK": "Szlovákia",
+    "CZ": "Csehország",
+    "PL": "Lengyelország",
+    "DE": "Németország",
+    "HU": "Magyarország",
+    "AT": "Ausztria"
+  },
+  "brandsPage": {
+    "title": "Márkalista",
+    "searchPlaceholder": "Keresés",
+    "createBtn": "Márka létrehozása",
+    "createBtnSubmit": "Márka létrehozása",
+    "updateBtnSubmit": "Módosítások mentése",
+    "loading": "Márkák betöltése...",
+    "selectPackage": "Válasszon csomagot",
+    "selectCategory": "Válasszon kategóriát",
+    "noData": "Nem találhatók márkák",
+    "createModal": {
+      "title": "Új márka létrehozása"
+    },
+    "updateModal": {
+      "title": "Márka szerkesztése"
+    },
+    "table": {
+      "name": "Márka neve",
+      "ico": "Adószám / ICO",
+      "address": "Cím",
+      "city": "Város",
+      "zip": "Irányítószám",
+      "country": "Ország",
+      "categories": "Kategóriák",
+      "package": "Csomag",
+      "purchased": "Vásárolva",
+      "expiration": "Lejárat",
+      "offersCount": "Ajánlatok",
+      "activeOffers": "Aktív ajánlatok",
+      "totalOffers": "Összes ajánlat",
+      "contact": "Kapcsolat",
+      "mainContact": "Fő kapcsolat"
+    },
+    "selectContact": "Válasszon kapcsolatot"
+  },
+  "categories": {
+    "apps_and_technology": "Alkalmazások és technológia",
+    "auto_moto": "Autó és Motor",
+    "travelling": "Utazás",
+    "home_and_garden": "Otthon és kert",
+    "electronics": "Elektronika",
+    "games": "Játékok",
+    "music_and_dance": "Zene és tánc",
+    "food_and_drinks": "Étel és ital",
+    "books": "Könyvek",
+    "cosmetics": "Kozmetikumok",
+    "fashion": "Divat",
+    "family_and_kids": "Család és gyerekek",
+    "services": "Szolgáltatások",
+    "sport": "Sport",
+    "experiences": "Élmények",
+    "health": "Egészség",
+    "animals": "Állatok",
+    "lifestyle": "Életmód"
+  },
+  "modals": {
+    "confirm": "Megerősít",
+    "cancel": "Mégse",
+    "archive": {
+      "title": "Felhasználó archiválása",
+      "message": "Biztosan archiválni szeretné a(z) {{name}} felhasználót?",
+      "confirmBtn": "Igen, archiválás",
+      "cancelBtn": "Nem, mégse"
+    },
+    "restore": {
+      "title": "Felhasználó visszaállítása",
+      "message": "Szeretné visszaállítani a(z) {{name}} felhasználót az aktívak közé?",
+      "confirmBtn": "Igen, visszaállítás",
+      "cancelBtn": "Nem, mégse"
+    },
+    "archiveBrand": {
+      "message": "Biztosan archiválni szeretné a(z) {{name}} márkát?",
+      "confirmBtn": "Igen, archiválás",
+      "cancelBtn": "Nem, mégse"
+    }
   }
 }

@@ -20,16 +20,16 @@ export class AuthService {
     rememberMe?: boolean,
   ): Promise<{ access_token: string }> {
     const user = await this.usersService.findOneByEmail(email);
-    if (!user) {
-      throw new NotFoundException('User with this email does not exist');
+
+    if (!user || !user.password) {
+      throw new UnauthorizedException('Invalid email or password');
     }
-    if (!user.password) {
-      throw new UnauthorizedException('User has no password set yet');
-    }
+
     const passwordsMatch = await bcrypt.compare(pass, user.password);
     if (!passwordsMatch) {
-      throw new UnauthorizedException('Invalid password');
+      throw new UnauthorizedException('Invalid email or password');
     }
+
     const payload = {
       id: user._id,
       name: user.name,

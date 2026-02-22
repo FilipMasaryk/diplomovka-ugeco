@@ -17,13 +17,15 @@
     "required": "Povinné pole",
     "invalidEmail": "Neplatný e-mail"
   },
+  "validation": {
+    "required": "Toto pole je povinné"
+  },
   "roles": {
     "creator": "TVORCA",
     "brand_manager": "ZNAČKA",
     "subadmin": "SUBADMIN",
     "admin": "ADMIN"
   },
-
   "menubar": {
     "overview": "Prehľad",
     "users": "Užívateľské účty",
@@ -49,5 +51,133 @@
     "activeOffers": "Počet aktívnych ponúk",
     "countriesCount": "Počet krajín",
     "allCountries": "Všetky krajiny"
+  },
+  "usersPage": {
+    "title": "Užívateľské účty",
+    "archiveBtn": "Archív účtov",
+    "selectCountry": "Vyber krajinu",
+    "selectAccess": "Vyber typ prístupu",
+    "selectBrand": "Vyber značku",
+    "selectPackage": "Vyber balíček",
+    "searchPlaceholder": "Vyhľadať",
+    "createBtn": "Vytvoriť užívateľa",
+    "createBtnSubmit": "Vytvoriť užívateľa",
+    "updateBtnSubmit": "Uložiť zmeny",
+    "updateModalTitle": "Upraviť uživateľa",
+    "loading": "Načítavam užívateľov...",
+    "createModal": {
+      "title": "Vytvoriť nového užívateľa"
+    },
+    "table": {
+      "name": "Meno",
+      "surName": "Priezvisko",
+      "email": "E-mail",
+      "password": "Heslo",
+      "access": "Prístup",
+      "brand": "Značka",
+      "brandAccess": "Prístup k značke",
+      "country": "Krajina",
+      "profile": "Vyplnený profil",
+      "package": "Balíček",
+      "purchased": "Zakúpené",
+      "expiration": "Expirácia",
+      "ico": "IČO",
+      "yes": "Áno",
+      "no": "Nie"
+    },
+    "pagination": {
+      "rowsPerPage": "Počet riadkov",
+      "prev": "Späť",
+      "next": "Ďalej"
+    },
+    "archiveTitle": "Archív užívateľov",
+    "activeUsersBtn": "Aktívni užívatelia",
+    "confirmRestore": "Naozaj chcete obnoviť tohto užívateľa?",
+    "restore": "Obnoviť",
+    "noData": "Nenašli sa žiadni užívatelia"
+  },
+  "countries": {
+    "SK": "Slovensko",
+    "CZ": "Česko",
+    "PL": "Poľsko",
+    "DE": "Nemecko",
+    "HU": "Maďarsko",
+    "AT": "Rakúsko"
+  },
+  "brandsPage": {
+    "title": "Zoznam značiek",
+    "searchPlaceholder": "Vyhľadať",
+    "createBtn": "Vytvoriť značku",
+    "createBtnSubmit": "Vytvoriť značku",
+    "updateBtnSubmit": "Uložiť zmeny",
+    "loading": "Načítavam značky...",
+    "selectPackage": "Vyber balíček",
+    "selectCategory": "Vyber kategóriu",
+    "noData": "Nenašli sa žiadne značky",
+    "createModal": {
+      "title": "Vytvoriť novú značku"
+    },
+    "updateModal": {
+      "title": "Upraviť značku"
+    },
+    "table": {
+      "name": "Názov značky",
+      "ico": "IČO",
+      "address": "Adresa",
+      "city": "Mesto",
+      "zip": "PSČ",
+      "country": "Krajina",
+      "categories": "Kategórie",
+      "package": "Balíček",
+      "purchased": "Zakúpené",
+      "expiration": "Expirácia",
+      "offersCount": "Ponuky",
+      "activeOffers": "Aktívne ponuky",
+      "totalOffers": "Ponuky celkom",
+      "contact": "Kontakt",
+      "mainContact": "Hlavný kontakt"
+    },
+    "selectContact": "Vyber kontakt"
+  },
+  "categories": {
+    "apps_and_technology": "Aplikácie a technológie",
+    "auto_moto": "Auto a Moto",
+    "travelling": "Cestovanie",
+    "home_and_garden": "Dom a záhrada",
+    "electronics": "Elektronika",
+    "games": "Hry",
+    "music_and_dance": "Hudba a tanec",
+    "food_and_drinks": "Jedlo a nápoje",
+    "books": "Knihy",
+    "cosmetics": "Kozmetika",
+    "fashion": "Móda",
+    "family_and_kids": "Rodina a deti",
+    "services": "Služby",
+    "sport": "Šport",
+    "experiences": "Zážitky",
+    "health": "Zdravie",
+    "animals": "Zvieratá",
+    "lifestyle": "Životný štýl"
+  },
+  "modals": {
+    "confirm": "Potvrdiť",
+    "cancel": "Zrušiť",
+    "archive": {
+      "title": "Archivovať používateľa",
+      "message": "Ste si istí, že chcete archivovať používateľa {{name}}?",
+      "confirmBtn": "Áno, archivovať",
+      "cancelBtn": "Nie, zrušiť"
+    },
+    "restore": {
+      "title": "Obnoviť používateľa",
+      "message": "Prajete si vrátiť používateľa {{name}} medzi aktívnych?",
+      "confirmBtn": "Áno, obnoviť",
+      "cancelBtn": "Nie, zrušiť"
+    },
+    "archiveBrand": {
+      "message": "Ste si istí, že chcete archivovať značku {{name}}?",
+      "confirmBtn": "Áno, archivovať",
+      "cancelBtn": "Nie, zrušiť"
+    }
   }
 }

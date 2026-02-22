@@ -153,6 +153,8 @@ export class UsersService {
       .update(initToken)
       .digest('hex');
 
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+
     const brandIds =
       createUserDto.brands?.map((id) => new mongoose.Types.ObjectId(id)) || [];
 
@@ -160,15 +162,15 @@ export class UsersService {
       ...createUserDto,
       package: packageObj,
       brands: brandIds,
-      password: '',
-      initToken: hashedInitToken,
-      initTokenExpires: new Date(Date.now() + 1000 * 60 * 60), // platnost 1 hodina
+      password: hashedPassword,
+      //initToken: hashedInitToken,
+      //initTokenExpires: new Date(Date.now() + 1000 * 60 * 60), // platnost 1 hodina
     });
 
     await createdUser.save();
 
     // poslanie emailu s odkazom
-    await this.emailService.sendInitEmail(createdUser.email, initToken);
+    //await this.emailService.sendInitEmail(createdUser.email, initToken);
 
     return createdUser;
   }
@@ -231,12 +233,22 @@ export class UsersService {
   }
 
   //vrati len nearchivovanych pouzivatelov
-  async findAll(): Promise<User[]> {
+  async findAll(country?: string, role?: string): Promise<User[]> {
+    const query: any = { isArchived: false };
+    if (role) {
+      query.role = role;
+    }
+
+    if (country) {
+      query.countries = country;
+    }
+
     return this.userModel
-      .find({ isArchived: false })
+      .find(query)
       .select('-password')
       .populate('package')
       .populate('brands')
+      .populate('profile')
       .exec();
   }
 
@@ -262,8 +274,24 @@ export class UsersService {
     return this.userModel.findOne({ email }).exec();
   }
 
-  async findArchived() {
-    return this.userModel.find({ isArchived: true }).select('-password').exec();
+  async findArchived(country?: string, role?: string): Promise<User[]> {
+    const query: any = { isArchived: true };
+
+    if (role) {
+      query.role = role;
+    }
+
+    if (country) {
+      query.countries = country;
+    }
+
+    return this.userModel
+      .find(query)
+      .select('-password')
+      .populate('package')
+      .populate('brands')
+      .populate('profile')
+      .exec();
   }
 
   async update(
@@ -361,7 +389,23 @@ export class UsersService {
       );
     }
 
-    if (packageObj?.type !== PackageType.CREATOR) {
+    let purchasedAtToSet: Date | undefined;
+
+    if (packageObj) {
+      const currentRole = updateUserDto.role ?? user.role;
+
+      const currentPackageId = user.package?.toString();
+      const newPackageId = packageObj._id.toString();
+
+      if (
+        currentRole === UserRole.CREATOR &&
+        (!currentPackageId || currentPackageId !== newPackageId)
+      ) {
+        purchasedAtToSet = new Date();
+      }
+    }
+
+    if (packageObj && packageObj.type !== PackageType.CREATOR) {
       throw new BadRequestException(
         'User can only have a package of type "creator"',
       );
@@ -396,8 +440,10 @@ export class UsersService {
       ...updateUserDto,
       package: packageObj,
       brands: brandIds,
+      ...(purchasedAtToSet && { purchasedAt: purchasedAtToSet }),
     });
 
+    //console.log(user);
     await user.save();
 
     const { password, ...userWithoutPassword } = user.toObject();

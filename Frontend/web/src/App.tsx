@@ -7,6 +7,9 @@ import { ProtectedRoute } from "./routes/ProtectedRoute";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
 import { Menubar } from "./components/ui/Menubar/Menubar";
 import { PublicRoute } from "./routes/PublicRoute";
+import { UsersPage } from "./pages/UsersPage/UsersPage";
+import { BrandsPage } from "./pages/BrandsPage/BrandsPage";
+import { UserRole } from "./types/userRoles";
 
 function AppContent() {
   const { user } = useAuth();
@@ -31,6 +34,22 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/users"
+              element={
+                <ProtectedRoute roles={[UserRole.ADMIN, UserRole.SUBADMIN]}>
+                  <UsersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/brands"
+              element={
+                <ProtectedRoute roles={[UserRole.ADMIN, UserRole.SUBADMIN]}>
+                  <BrandsPage />
                 </ProtectedRoute>
               }
             />

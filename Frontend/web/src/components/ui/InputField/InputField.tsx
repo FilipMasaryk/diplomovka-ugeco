@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import "./input.css";
 
@@ -9,44 +9,48 @@ interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   errorMessage?: string;
 }
 
-export const InputField = ({
-  label,
-  required = false,
-  type = "text",
-  hasError = false,
-  errorMessage,
-  ...props
-}: InputFieldProps) => {
-  const [showPassword, setShowPassword] = useState(false);
-  const isPassword = type === "password";
+export const InputField = memo(
+  ({
+    label,
+    required = false,
+    type = "text",
+    hasError = false,
+    errorMessage,
+    ...props
+  }: InputFieldProps) => {
+    const [showPassword, setShowPassword] = useState(false);
+    const isPassword = type === "password";
 
-  return (
-    <div className="input-wrapper">
-      {label && (
-        <label className="input-label">
-          {label}
-          {required && <span className="required-star">*</span>}
-        </label>
-      )}
+    return (
+      <div className="input-wrapper">
+        {label && (
+          <label className="input-label">
+            {label}
+            {required && <span className="required-star">*</span>}
+          </label>
+        )}
 
-      <div className={isPassword ? "password-input" : ""}>
-        <input
-          type={isPassword && showPassword ? "text" : type}
-          className={`input-field ${hasError ? "input-error" : ""}`}
-          {...props}
-        />
+        <div className={isPassword ? "password-input" : ""}>
+          <input
+            type={isPassword && showPassword ? "text" : type}
+            className={`input-field ${hasError ? "input-error" : ""}`}
+            {...props}
+          />
 
-        {isPassword && (
-          <span
-            className="password-toggle"
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? <FiEyeOff /> : <FiEye />}
-          </span>
+          {isPassword && (
+            <span
+              className="password-toggle"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FiEyeOff /> : <FiEye />}
+            </span>
+          )}
+        </div>
+
+        {hasError && errorMessage && (
+          <p className="error-text">{errorMessage}</p>
         )}
       </div>
-
-      {hasError && errorMessage && <p className="error-text">{errorMessage}</p>}
-    </div>
-  );
-};
+    );
+  },
+);

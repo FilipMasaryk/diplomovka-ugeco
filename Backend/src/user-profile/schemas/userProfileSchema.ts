@@ -13,8 +13,7 @@ export class UserProfile {
 
   @Prop({ required: true })
   name: string;
-
-  @Prop({ type: Types.ObjectId, ref: User.name, required: true, unique: true })
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true, unique: true })
   user: Types.ObjectId;
 
   @Prop({ type: [String], enum: Country, required: true, default: [] })

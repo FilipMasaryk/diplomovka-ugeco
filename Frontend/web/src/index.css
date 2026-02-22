@@ -40,6 +40,5 @@ body {
 /* Samotný obsah (Dashboard, atď.) */
 .main-content {
   flex: 1; /* Vyplní zvyšok horizontálneho priestoru vedľa menubaru */
-  overflow-y: auto;
-  overflow: hidden; /* Ak je obsah dlhý, scrolluje sa len táto časť */
+  overflow-y: auto; /* Ak je obsah dlhý, scrolluje sa len táto časť */
 }

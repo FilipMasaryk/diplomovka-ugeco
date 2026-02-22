@@ -10,12 +10,15 @@ import { CreateUserProfileDto } from './schemas/createUserProfileSchema';
 import type { Multer } from 'multer';
 import * as fs from 'fs';
 import * as path from 'path';
+import { User } from 'src/users/schemas/userSchema';
 
 @Injectable()
 export class UserProfileService {
   constructor(
     @InjectModel(UserProfile.name)
     private profileModel: Model<UserProfileDocument>,
+    @InjectModel(User.name)
+    private userModel: Model<User>,
   ) {}
 
   async create(
@@ -37,7 +40,9 @@ export class UserProfileService {
       user: new Types.ObjectId(userId),
     });
 
-    return profile.save();
+    await profile.save();
+    await this.userModel.findByIdAndUpdate(userId, { profile: profile._id });
+    return profile;
   }
 
   async updateProfile(

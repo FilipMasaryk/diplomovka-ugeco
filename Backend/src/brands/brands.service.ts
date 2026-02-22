@@ -99,7 +99,11 @@ export class BrandsService {
   }
 
   async findAll(): Promise<Brand[]> {
-    return this.brandModel.find({ isArchived: false }).exec();
+    return this.brandModel
+      .find({ isArchived: false })
+      .populate('package', 'name validityMonths')
+      .populate('mainContact', 'email name surName')
+      .exec();
   }
 
   async findOne(id: string): Promise<Brand> {
@@ -117,6 +121,8 @@ export class BrandsService {
         _id: { $in: ids },
         isArchived: false,
       })
+      .populate('package', 'name validityMonths')
+      .populate('mainContact', 'email name surName')
       .exec();
   }
 
@@ -130,6 +136,8 @@ export class BrandsService {
         country: { $in: countries },
         isArchived: false,
       })
+      .populate('package', 'name validityMonths')
+      .populate('mainContact', 'email name surName')
       .exec();
   }
 
@@ -206,8 +214,17 @@ export class BrandsService {
       }
 
       packageObjectId = packageObj._id;
-      purchasedAt = new Date();
-      offersCount = packageObj.offersCount;
+
+      const currentPackageId = brand.package?.toString();
+      const newPackageId = packageObj._id.toString();
+
+      if (currentPackageId !== newPackageId) {
+        purchasedAt = new Date();
+        offersCount = packageObj.offersCount;
+      } else {
+        purchasedAt = brand.purchasedAt;
+        offersCount = brand.offersCount;
+      }
     } else if (updateBrandDto.package === null) {
       packageObjectId = undefined;
       purchasedAt = undefined;

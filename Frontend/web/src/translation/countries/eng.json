@@ -1,0 +1,183 @@
+{
+  "login": {
+    "title": "Account Login",
+    "forgotTitle": "Forgot Password",
+    "sentTitle": "We've sent an email to your inbox",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "loginBtn": "Login",
+    "forgotBtn": "Forgot password",
+    "forgotDescription": "Enter your email address.",
+    "resetBtn": "Reset password",
+    "backToLogin": "Back to login",
+    "sentDescription": "Email has been sent. If you don't receive it within 5-10 minutes, try sending it again or contact support."
+  },
+  "errors": {
+    "required": "Required field",
+    "invalidEmail": "Invalid email"
+  },
+  "validation": {
+    "required": "This field is required"
+  },
+  "roles": {
+    "creator": "CREATOR",
+    "brand_manager": "BRAND",
+    "subadmin": "SUBADMIN",
+    "admin": "ADMIN"
+  },
+  "menubar": {
+    "overview": "Overview",
+    "users": "User Accounts",
+    "brands": "Brands",
+    "brandList": "Brand List",
+    "offerList": "Offer List",
+    "stats": "Statistics",
+    "settings": "Settings",
+    "news": "News",
+    "admin": "Admin",
+    "creator": "Creator",
+    "brand": "Brand",
+    "translations": "Translations",
+    "offers": "Offers",
+    "myOffers": "My Offers",
+    "profile": "Profile",
+    "managers": "Managers",
+    "support": "Support"
+  },
+  "dashboard": {
+    "creatorsCount": "Creators count",
+    "totalOffers": "Total offers",
+    "activeOffers": "Active offers",
+    "countriesCount": "Countries count",
+    "allCountries": "All countries"
+  },
+  "usersPage": {
+    "title": "User Accounts",
+    "archiveBtn": "Account Archive",
+    "selectCountry": "Select country",
+    "selectAccess": "Select access type",
+    "selectBrand": "Select brand",
+    "searchPlaceholder": "Search",
+    "createBtn": "Create User",
+    "createBtnSubmit": "Create User",
+    "loading": "Loading users...",
+    "updateBtnSubmit": "Save changes",
+    "updateModalTitle": "Edit user",
+    "selectPackage": "Select package",
+    "createModal": {
+      "title": "Create New User"
+    },
+    "table": {
+      "name": "First Name",
+      "surName": "Last Name",
+      "email": "Email",
+      "password": "Password",
+      "access": "Access",
+      "brand": "Brand",
+      "brandAccess": "Brand Access",
+      "country": "Country",
+      "profile": "Profile Filled",
+      "package": "Package",
+      "purchased": "Purchased",
+      "expiration": "Expiration",
+      "ico": "Tax ID / ICO",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "pagination": {
+      "rowsPerPage": "Rows per page",
+      "prev": "Back",
+      "next": "Next"
+    },
+    "archiveTitle": "User Archive",
+    "activeUsersBtn": "Active Users",
+    "confirmRestore": "Are you sure you want to restore this user?",
+    "restore": "Restore",
+    "noData": "No users found"
+  },
+  "countries": {
+    "SK": "Slovakia",
+    "CZ": "Czech Republic",
+    "PL": "Poland",
+    "DE": "Germany",
+    "HU": "Hungary",
+    "AT": "Austria"
+  },
+  "brandsPage": {
+    "title": "Brand List",
+    "searchPlaceholder": "Search",
+    "createBtn": "Create Brand",
+    "createBtnSubmit": "Create Brand",
+    "updateBtnSubmit": "Save changes",
+    "loading": "Loading brands...",
+    "selectPackage": "Select package",
+    "selectCategory": "Select category",
+    "noData": "No brands found",
+    "createModal": {
+      "title": "Create New Brand"
+    },
+    "updateModal": {
+      "title": "Edit Brand"
+    },
+    "table": {
+      "name": "Brand Name",
+      "ico": "Tax ID / ICO",
+      "address": "Address",
+      "city": "City",
+      "zip": "ZIP",
+      "country": "Country",
+      "categories": "Categories",
+      "package": "Package",
+      "purchased": "Purchased",
+      "expiration": "Expiration",
+      "offersCount": "Offers",
+      "activeOffers": "Active Offers",
+      "totalOffers": "Total Offers",
+      "contact": "Contact",
+      "mainContact": "Main Contact"
+    },
+    "selectContact": "Select contact"
+  },
+  "categories": {
+    "apps_and_technology": "Apps & Technology",
+    "auto_moto": "Auto & Moto",
+    "travelling": "Travelling",
+    "home_and_garden": "Home & Garden",
+    "electronics": "Electronics",
+    "games": "Games",
+    "music_and_dance": "Music & Dance",
+    "food_and_drinks": "Food & Drinks",
+    "books": "Books",
+    "cosmetics": "Cosmetics",
+    "fashion": "Fashion",
+    "family_and_kids": "Family & Kids",
+    "services": "Services",
+    "sport": "Sport",
+    "experiences": "Experiences",
+    "health": "Health",
+    "animals": "Animals",
+    "lifestyle": "Lifestyle"
+  },
+  "modals": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "archive": {
+      "title": "Archive User",
+      "message": "Are you sure you want to archive user {{name}}?",
+      "confirmBtn": "Yes, archive",
+      "cancelBtn": "No, cancel"
+    },
+    "restore": {
+      "title": "Restore User",
+      "message": "Do you wish to return user {{name}} to active status?",
+      "confirmBtn": "Yes, restore",
+      "cancelBtn": "No, cancel"
+    },
+    "archiveBrand": {
+      "message": "Are you sure you want to archive brand {{name}}?",
+      "confirmBtn": "Yes, archive",
+      "cancelBtn": "No, cancel"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
   "login": {
-    "title": "Anmeldung zum Konto",
+    "title": "Konto-Login",
     "forgotTitle": "Passwort vergessen",
     "sentTitle": "Wir haben eine E-Mail an Ihr Postfach gesendet",
     "email": "E-Mail",
@@ -8,14 +8,17 @@
     "rememberMe": "Angemeldet bleiben",
     "loginBtn": "Anmelden",
     "forgotBtn": "Passwort vergessen",
-    "forgotDescription": "Gib deine E-Mail-Adresse ein.",
+    "forgotDescription": "Geben Sie Ihre E-Mail-Adresse ein.",
     "resetBtn": "Passwort zurücksetzen",
-    "backToLogin": "Zurück zur Anmeldung",
-    "sentDescription": "Die E-Mail wurde gesendet. Wenn du sie nicht innerhalb von 5-10 Minuten erhältst, versuche es erneut oder kontaktiere unseren Support."
+    "backToLogin": "Zurück zum Login",
+    "sentDescription": "E-Mail wurde gesendet. Wenn Sie sie nicht innerhalb von 5-10 Minuten erhalten, versuchen Sie es erneut oder kontaktieren Sie den Support."
   },
   "errors": {
     "required": "Pflichtfeld",
     "invalidEmail": "Ungültige E-Mail"
+  },
+  "validation": {
+    "required": "Dieses Feld ist erforderlich"
   },
   "roles": {
     "creator": "ERSTELLER",
@@ -39,14 +42,142 @@
     "offers": "Angebote",
     "myOffers": "Meine Angebote",
     "profile": "Profil",
-    "managers": "Manager",
+    "managers": "Verwalter",
     "support": "Support"
   },
   "dashboard": {
     "creatorsCount": "Anzahl der Ersteller",
-    "totalOffers": "Anzahl der Angebote",
-    "activeOffers": "Anzahl der aktiven Angebote",
+    "totalOffers": "Gesamtangebote",
+    "activeOffers": "Aktive Angebote",
     "countriesCount": "Anzahl der Länder",
     "allCountries": "Alle Länder"
+  },
+  "usersPage": {
+    "title": "Benutzerkonten",
+    "archiveBtn": "Kontenarchiv",
+    "selectCountry": "Land auswählen",
+    "selectAccess": "Zugriffstyp wählen",
+    "selectBrand": "Marke auswählen",
+    "searchPlaceholder": "Suchen",
+    "createBtn": "Benutzer erstellen",
+    "createBtnSubmit": "Benutzer erstellen",
+    "loading": "Benutzer werden geladen...",
+    "updateModalTitle": "Benutzer bearbeiten",
+    "updateBtnSubmit": "Änderungen speichern",
+    "selectPackage": "Paket auswählen",
+    "createModal": {
+      "title": "Neuen Benutzer erstellen"
+    },
+    "table": {
+      "name": "Vorname",
+      "surName": "Nachname",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "access": "Zugriff",
+      "brand": "Marke",
+      "brandAccess": "Markenzugriff",
+      "country": "Land",
+      "profile": "Profil ausgefüllt",
+      "package": "Paket",
+      "purchased": "Gekauft",
+      "expiration": "Ablauf",
+      "ico": "USt-IdNr. / ICO",
+      "yes": "Ja",
+      "no": "Nein"
+    },
+    "pagination": {
+      "rowsPerPage": "Zeilen pro Seite",
+      "prev": "Zurück",
+      "next": "Weiter"
+    },
+    "archiveTitle": "Benutzerarchiv",
+    "activeUsersBtn": "Aktive Benutzer",
+    "confirmRestore": "Sind Sie sicher, dass Sie diesen Benutzer wiederherstellen möchten?",
+    "restore": "Wiederherstellen",
+    "noData": "Keine Benutzer gefunden"
+  },
+  "countries": {
+    "SK": "Slowakei",
+    "CZ": "Tschechien",
+    "PL": "Polen",
+    "DE": "Deutschland",
+    "HU": "Ungarn",
+    "AT": "Österreich"
+  },
+  "brandsPage": {
+    "title": "Markenliste",
+    "searchPlaceholder": "Suchen",
+    "createBtn": "Marke erstellen",
+    "createBtnSubmit": "Marke erstellen",
+    "updateBtnSubmit": "Änderungen speichern",
+    "loading": "Marken werden geladen...",
+    "selectPackage": "Paket auswählen",
+    "selectCategory": "Kategorie auswählen",
+    "noData": "Keine Marken gefunden",
+    "createModal": {
+      "title": "Neue Marke erstellen"
+    },
+    "updateModal": {
+      "title": "Marke bearbeiten"
+    },
+    "table": {
+      "name": "Markenname",
+      "ico": "USt-IdNr. / ICO",
+      "address": "Adresse",
+      "city": "Stadt",
+      "zip": "PLZ",
+      "country": "Land",
+      "categories": "Kategorien",
+      "package": "Paket",
+      "purchased": "Gekauft",
+      "expiration": "Ablauf",
+      "offersCount": "Angebote",
+      "activeOffers": "Aktive Angebote",
+      "totalOffers": "Angebote gesamt",
+      "contact": "Kontakt",
+      "mainContact": "Hauptkontakt"
+    },
+    "selectContact": "Kontakt auswählen"
+  },
+  "categories": {
+    "apps_and_technology": "Apps & Technologie",
+    "auto_moto": "Auto & Moto",
+    "travelling": "Reisen",
+    "home_and_garden": "Haus & Garten",
+    "electronics": "Elektronik",
+    "games": "Spiele",
+    "music_and_dance": "Musik & Tanz",
+    "food_and_drinks": "Essen & Trinken",
+    "books": "Bücher",
+    "cosmetics": "Kosmetik",
+    "fashion": "Mode",
+    "family_and_kids": "Familie & Kinder",
+    "services": "Dienstleistungen",
+    "sport": "Sport",
+    "experiences": "Erlebnisse",
+    "health": "Gesundheit",
+    "animals": "Tiere",
+    "lifestyle": "Lebensstil"
+  },
+  "modals": {
+    "confirm": "Bestätigen",
+    "cancel": "Abbrechen",
+    "archive": {
+      "title": "Benutzer archivieren",
+      "message": "Sind Sie sicher, dass Sie den Benutzer {{name}} archivieren möchten?",
+      "confirmBtn": "Ja, archivieren",
+      "cancelBtn": "Nein, abbrechen"
+    },
+    "restore": {
+      "title": "Benutzer wiederherstellen",
+      "message": "Möchten Sie den Benutzer {{name}} wieder als aktiv setzen?",
+      "confirmBtn": "Ja, wiederherstellen",
+      "cancelBtn": "Nein, abbrechen"
+    },
+    "archiveBrand": {
+      "message": "Sind Sie sicher, dass Sie die Marke {{name}} archivieren möchten?",
+      "confirmBtn": "Ja, archivieren",
+      "cancelBtn": "Nein, abbrechen"
+    }
   }
 }

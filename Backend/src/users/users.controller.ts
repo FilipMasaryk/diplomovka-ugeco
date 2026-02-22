@@ -9,6 +9,7 @@
   UsePipes,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
@@ -65,17 +66,20 @@ export class UsersController {
   @UseGuards(AuthGuard, RolesGuard)
   @Get()
   @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Query('country') country?: string, @Query('role') role?: string) {
+    return this.usersService.findAll(country, role);
   }
 
   @UseGuards(AuthGuard, RolesGuard)
-  @Get('archived')
+  @Get('archived') // URL bude: /users/archived
   @Roles(UserRole.ADMIN)
-  getArchivedUsers() {
-    return this.usersService.findArchived();
+  getArchivedUsers(
+    @Query('country') country?: string,
+    @Query('role') role?: string,
+  ) {
+    // Tie parametre musíme poslať ďalej do servisu
+    return this.usersService.findArchived(country, role);
   }
-
   @UseGuards(AuthGuard, RolesGuard)
   @Get(':id')
   @Roles(UserRole.ADMIN, UserRole.SUBADMIN)

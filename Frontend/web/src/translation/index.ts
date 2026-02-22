@@ -5,7 +5,7 @@ import cz from "./countries/cz.json";
 import pl from "./countries/pl.json";
 import de from "./countries/de.json";
 import hu from "./countries/hu.json";
-
+import eng from "./countries/eng.json";
 i18n.use(initReactI18next).init({
   resources: {
     SK: { translation: sk },
@@ -14,6 +14,7 @@ i18n.use(initReactI18next).init({
     DE: { translation: de },
     HU: { translation: hu },
     AT: { translation: de },
+    GB: { translation: eng },
   },
   lng: "SK",
   fallbackLng: "SK",

@@ -4,6 +4,7 @@ import { Country } from '../../common/enums/countryEnum';
 import { UserRole } from '../../common/enums/userRoleEnum';
 import { BrandCategory } from 'src/common/enums/brandCategoriesEnum';
 import { OfferTarget } from 'src/common/enums/offerTargetEnum';
+import { UserProfile } from 'src/user-profile/schemas/userProfileSchema';
 export type UserDocument = HydratedDocument<User>;
 
 @Schema()
@@ -73,6 +74,9 @@ export class User {
     enum: Country,
   })
   countries?: Country[];
+
+  @Prop({ type: Types.ObjectId, ref: 'UserProfile' })
+  profile?: Types.ObjectId;
 
   //asi az pre profil
   /*
