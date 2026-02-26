@@ -9,6 +9,10 @@ import { Menubar } from "./components/ui/Menubar/Menubar";
 import { PublicRoute } from "./routes/PublicRoute";
 import { UsersPage } from "./pages/UsersPage/UsersPage";
 import { BrandsPage } from "./pages/BrandsPage/BrandsPage";
+import { OffersPage } from "./pages/OffersPage/OffersPage";
+import { CreateOfferPage } from "./pages/CreateOfferPage/CreateOfferPage";
+import { OfferDetailPage } from "./pages/OfferDetailPage/OfferDetailPage";
+import { PackagesPage } from "./pages/PackagesPage/PackagesPage";
 import { UserRole } from "./types/userRoles";
 
 function AppContent() {
@@ -50,6 +54,54 @@ function AppContent() {
               element={
                 <ProtectedRoute roles={[UserRole.ADMIN, UserRole.SUBADMIN]}>
                   <BrandsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/packages"
+              element={
+                <ProtectedRoute roles={[UserRole.ADMIN]}>
+                  <PackagesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/offers"
+              element={
+                <ProtectedRoute
+                  roles={[UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER]}
+                >
+                  <OffersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/offers/new"
+              element={
+                <ProtectedRoute
+                  roles={[UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER]}
+                >
+                  <CreateOfferPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/offers/:id"
+              element={
+                <ProtectedRoute
+                  roles={[UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER]}
+                >
+                  <OfferDetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/offers/:id/edit"
+              element={
+                <ProtectedRoute
+                  roles={[UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER]}
+                >
+                  <CreateOfferPage />
                 </ProtectedRoute>
               }
             />

@@ -3,9 +3,14 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types, Document } from 'mongoose';
 import { OfferTarget } from '../../common/enums/offerTargetEnum';
 import { BrandCategory } from 'src/common/enums/brandCategoriesEnum';
-import { Country } from 'src/common/enums/countryEnum';
+import { Language } from 'src/common/enums/languageEnum';
 
 export type OfferDocument = Offer & Document;
+
+export enum OfferStatus {
+  ACTIVE = 'active',
+  CONCEPT = 'concept',
+}
 
 @Schema({ timestamps: true })
 export class Offer {
@@ -33,10 +38,10 @@ export class Offer {
 
   @Prop({
     type: [String],
-    enum: Country,
+    enum: Language,
     required: true,
   })
-  languages: Country[];
+  languages: Language[];
 
   @Prop({
     type: [String],
@@ -63,11 +68,17 @@ export class Offer {
   @Prop()
   pinterest?: string;
 
+  @Prop()
+  contact?: string;
+
   @Prop({ type: Types.ObjectId, ref: 'Brand', required: true })
   brand: Types.ObjectId;
 
   @Prop({ default: false })
   isArchived: boolean;
+
+  @Prop({ default: OfferStatus.ACTIVE, enum: OfferStatus })
+  status: OfferStatus;
 }
 
 export const OfferSchema = SchemaFactory.createForClass(Offer);

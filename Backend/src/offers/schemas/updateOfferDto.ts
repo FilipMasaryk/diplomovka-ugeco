@@ -1,7 +1,18 @@
 import { z } from 'zod';
 import { OfferTarget } from '../../common/enums/offerTargetEnum';
-import { Country } from 'src/common/enums/countryEnum';
+import { Language } from 'src/common/enums/languageEnum';
 import { BrandCategory } from 'src/common/enums/brandCategoriesEnum';
+import { OfferStatus } from './offerSchema';
+
+const urlField = z.preprocess(
+  (val) => {
+    if (typeof val === 'string' && val && !val.match(/^https?:\/\//)) {
+      return `https://${val}`;
+    }
+    return val;
+  },
+  z.string().url().optional().or(z.literal('')),
+);
 
 export const updateOfferSchema = z
   .object({
@@ -37,9 +48,12 @@ export const updateOfferSchema = z
       .preprocess(
         (val) => {
           if (val === undefined) return undefined;
-          return Array.isArray(val) ? val : [val];
+          const arr = Array.isArray(val) ? val : [val];
+          return arr.map((v: unknown) =>
+            typeof v === 'string' ? v.toLowerCase() : v,
+          );
         },
-        z.array(z.enum(Country)).min(1),
+        z.array(z.enum(Language)).min(1),
       )
       .optional(),
 
@@ -55,11 +69,15 @@ export const updateOfferSchema = z
 
     description: z.string().optional(),
 
-    website: z.string().url().optional(),
-    facebook: z.string().url().optional(),
-    instagram: z.string().url().optional(),
-    tiktok: z.string().url().optional(),
-    pinterest: z.string().url().optional(),
+    website: urlField,
+    facebook: urlField,
+    instagram: urlField,
+    tiktok: urlField,
+    pinterest: urlField,
+
+    contact: z.string().optional().or(z.literal('')),
+
+    status: z.nativeEnum(OfferStatus).optional(),
   })
   .refine(
     (data) =>

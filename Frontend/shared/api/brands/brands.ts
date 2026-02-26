@@ -28,6 +28,7 @@ interface ApiBrand {
   offersCount: number;
   offers?: string[];
   isArchived: boolean;
+  logo?: string;
 }
 
 export interface BrandTableData {
@@ -112,6 +113,60 @@ export const fetchBrandsAdmin = async (): Promise<BrandTableData[]> => {
     });
   } catch (error) {
     console.error("Failed to fetch brands:", error);
+    return [];
+  }
+};
+
+export const fetchArchivedBrandsAdmin = async (): Promise<BrandTableData[]> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await fetch(`${API_URL}/brands/archived`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) throw new Error("Failed to fetch archived brands");
+
+    const data: ApiBrand[] = await response.json();
+
+    return data.map((brand) => {
+      const pkg =
+        brand.package && typeof brand.package === "object"
+          ? (brand.package as PopulatedPackage)
+          : null;
+
+      const contactObj =
+        brand.mainContact && typeof brand.mainContact === "object"
+          ? (brand.mainContact as PopulatedContact)
+          : null;
+
+      return {
+        id: brand._id,
+        name: brand.name,
+        ico: brand.ico || "-",
+        address: brand.address,
+        city: brand.city,
+        zip: brand.zip,
+        country: brand.country,
+        categories: brand.categories,
+        package: pkg?.name || "-",
+        packageId:
+          pkg?._id || (typeof brand.package === "string" ? brand.package : ""),
+        contact: contactObj?.email || "-",
+        contactId:
+          contactObj?._id ||
+          (typeof brand.mainContact === "string" ? brand.mainContact : ""),
+        purchased: formatDate(brand.purchasedAt),
+        expiration: calculateExpiration(brand.purchasedAt, pkg?.validityMonths),
+        activeOffers: brand.offers?.length ?? 0,
+        totalOffers: brand.offersCount ?? 0,
+      };
+    });
+  } catch (error) {
+    console.error("Failed to fetch archived brands:", error);
     return [];
   }
 };
@@ -206,6 +261,46 @@ export const fetchUsersForContact = async (): Promise<ContactUser[]> => {
     return response.ok ? await response.json() : [];
   } catch (error) {
     console.error("Failed to fetch users for contact:", error);
+    return [];
+  }
+};
+
+export interface BrandSelectOption {
+  _id: string;
+  name: string;
+  country: string;
+  mainContactDisplay?: string;
+  logo?: string;
+}
+
+export const fetchBrandsForSelect = async (): Promise<BrandSelectOption[]> => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await fetch(`${API_URL}/brands`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) return [];
+    const data: ApiBrand[] = await response.json();
+    return data
+      .filter((b) => !b.isArchived)
+      .map((brand) => {
+        const contact =
+          brand.mainContact && typeof brand.mainContact === "object"
+            ? (brand.mainContact as PopulatedContact)
+            : null;
+        const contactDisplay = contact
+          ? `${contact.name ?? ""} ${contact.surName ?? ""}`.trim() +
+            (contact.email ? ` (${contact.email})` : "")
+          : undefined;
+        return {
+          _id: brand._id,
+          name: brand.name,
+          country: brand.country,
+          mainContactDisplay: contactDisplay || undefined,
+          logo: brand.logo || undefined,
+        };
+      });
+  } catch {
     return [];
   }
 };

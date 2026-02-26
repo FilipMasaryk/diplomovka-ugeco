@@ -15,10 +15,14 @@
   },
   "errors": {
     "required": "Pole wymagane",
-    "invalidEmail": "Nieprawidłowy e-mail"
+    "invalidEmail": "Nieprawidłowy e-mail",
+    "invalidUrl": "Nieprawidłowy URL"
   },
   "validation": {
     "required": "To pole jest wymagane"
+  },
+  "navbar": {
+    "logout": "Wyloguj się"
   },
   "roles": {
     "creator": "TWÓRCA",
@@ -43,7 +47,8 @@
     "myOffers": "Moje oferty",
     "profile": "Profil",
     "managers": "Administratorzy",
-    "support": "Support"
+    "support": "Support",
+    "packages": "Pakiety"
   },
   "dashboard": {
     "creatorsCount": "Liczba twórców",
@@ -137,7 +142,11 @@
       "contact": "Kontakt",
       "mainContact": "Główny kontakt"
     },
-    "selectContact": "Wybierz kontakt"
+    "selectContact": "Wybierz kontakt",
+    "archiveBtn": "Archiwum marek",
+    "archiveTitle": "Archiwum marek",
+    "activeBrandsBtn": "Aktywne marki",
+    "restoreBtn": "Przywróć"
   },
   "categories": {
     "apps_and_technology": "Aplikacje i technologie",
@@ -178,6 +187,139 @@
       "message": "Czy na pewno chcesz zarchiwizować markę {{name}}?",
       "confirmBtn": "Tak, archiwizuj",
       "cancelBtn": "Nie, anuluj"
+    },
+    "restoreBrand": {
+      "message": "Czy chcesz przywrócić markę {{name}} do aktywnych?",
+      "confirmBtn": "Tak, przywróć",
+      "cancelBtn": "Nie, anuluj"
+    }
+  },
+  "offersPage": {
+    "title": "Lista ofert",
+    "archiveBtn": "Archiwum ofert",
+    "allCategories": "Wszystkie kategorie",
+    "allLanguages": "Wszystkie języki",
+    "allTargets": "Wszyscy",
+    "allStatuses": "Wszystkie statusy",
+    "statusActive": "Aktywna",
+    "statusConcept": "Szkic",
+    "statusEnded": "Zakończona",
+    "searchPlaceholder": "Szukaj",
+    "createBtn": "Utwórz ofertę",
+    "loading": "Ładowanie ofert...",
+    "noData": "Nie znaleziono ofert",
+    "archiveTitle": "Archiwum ofert",
+    "activeOffersBtn": "Aktywne oferty",
+    "archiveConfirm": "Czy na pewno chcesz zarchiwizować ofertę {{name}}?",
+    "deleteConfirm": "Czy na pewno chcesz usunąć szkic {{name}}?",
+    "deleteBtn": "Usuń",
+    "table": {
+      "name": "Nazwa oferty",
+      "brand": "Marka",
+      "targets": "Dla kogo",
+      "country": "Kraj",
+      "status": "Status",
+      "activeFrom": "Aktywna od",
+      "activeTo": "Aktywna do"
+    }
+  },
+  "targets": {
+    "man": "Mężczyzna",
+    "woman": "Kobieta",
+    "child": "Dziecko",
+    "family": "Rodzina",
+    "couple": "Para",
+    "friends": "Przyjaciele",
+    "animal": "Zwierzę"
+  },
+  "languages": {
+    "sk": "SK",
+    "en": "EN",
+    "cz": "CZ",
+    "pl": "PL",
+    "de": "DE",
+    "hu": "HU",
+    "it": "IT",
+    "es": "ES"
+  },
+  "createOfferPage": {
+    "title": "Utwórz ofertę",
+    "editTitle": "Edytuj ofertę",
+    "backBtn": "Wstecz",
+    "saveConceptBtn": "Zapisz szkic",
+    "publishBtn": "Opublikuj",
+    "paidCooperation": "Płatna współpraca",
+    "barter": "Barter",
+    "sectionBasic": "Podstawowe informacje",
+    "sectionSocial": "Sieci społecznościowe",
+    "name": "Nazwa oferty",
+    "brand": "Marka",
+    "activeFrom": "Aktywna od",
+    "activeTo": "Aktywna do",
+    "image": "Zdjęcie",
+    "contact": "Kontakt",
+    "categories": "Kategorie",
+    "languages": "Języki",
+    "targets": "Kogo szukamy",
+    "description": "Opis oferty",
+    "website": "Strona internetowa",
+    "facebook": "Facebook",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "pinterest": "Pinterest",
+    "leaveTitle": "Czy chcesz wyjść bez zapisywania?",
+    "leaveConfirm": "Tak, wyjdź",
+    "leaveCancel": "Nie, zostań",
+    "imageClick": "Kliknij, aby przesłać zdjęcie",
+    "brandLogo": "Logo marki",
+    "chooseFile": "Wybierz plik",
+    "contactPlaceholder": "Wpisz kontakt (email, telefon...)"
+  },
+  "offerDetailPage": {
+    "backBtn": "Wstecz",
+    "editBtn": "Edytuj",
+    "loading": "Ładowanie oferty...",
+    "notFound": "Nie znaleziono oferty",
+    "noImage": "Brak zdjęcia",
+    "type": "Typ współpracy",
+    "status": "Status",
+    "brand": "Marka",
+    "activeFrom": "Aktywna od",
+    "activeTo": "Aktywna do",
+    "categories": "Kategorie",
+    "languages": "Języki",
+    "targets": "Dla kogo",
+    "description": "Opis oferty",
+    "social": "Sieci społecznościowe",
+    "contact": "Kontakt",
+    "cooperationType": "Typ współpracy"
+  },
+  "packagesPage": {
+    "title": "Pakiety",
+    "searchPlaceholder": "Szukaj",
+    "createBtn": "Utwórz pakiet",
+    "createBtnSubmit": "Utwórz pakiet",
+    "updateBtnSubmit": "Zapisz zmiany",
+    "loading": "Ładowanie pakietów...",
+    "noData": "Nie znaleziono pakietów",
+    "allTypes": "Wszystkie typy",
+    "typeCreator": "Twórca",
+    "typeBrand": "Marka",
+    "selectType": "Wybierz typ",
+    "deleteConfirm": "Czy na pewno chcesz usunąć pakiet {{name}}?",
+    "deleteBtn": "Usuń",
+    "createModal": {
+      "title": "Utwórz nowy pakiet"
+    },
+    "updateModal": {
+      "title": "Edytuj pakiet"
+    },
+    "table": {
+      "name": "Nazwa",
+      "type": "Typ",
+      "validityMonths": "Ważność (miesiące)",
+      "offersCount": "Liczba ofert",
+      "months": "miesięcy"
     }
   }
 }

@@ -1,0 +1,25 @@
+@import "../UsersPage/userspage.css";
+
+.status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: "Inter", sans-serif;
+}
+
+.status-badge.active {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.status-badge.concept {
+  background-color: #fef9c3;
+  color: #ca8a04;
+}
+
+.status-badge.ended {
+  background-color: #fee2e2;
+  color: #dc2626;
+}

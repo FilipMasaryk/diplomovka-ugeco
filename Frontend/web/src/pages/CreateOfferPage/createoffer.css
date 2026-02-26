@@ -1,0 +1,650 @@
+.create-offer-page {
+  padding: 40px;
+  font-family: "Inter", sans-serif;
+  background: #f6f8f9;
+  min-height: 100vh;
+}
+
+.create-offer-page h1 {
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  font-size: 48px;
+  line-height: 100%;
+  margin: 0 0 24px 0;
+}
+
+/* ── Toggle ── */
+.cooperation-toggle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.coop-label {
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #71717a;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s;
+}
+
+.coop-label.active {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: var(--color-primary);
+  border-radius: 26px;
+  transition: background-color 0.3s;
+}
+
+.toggle-slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background-color: #a1a1aa;
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(22px);
+}
+
+/* ── Form card ── */
+.offer-form-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5eaf0;
+  padding: 32px;
+}
+
+/* ── Two-column grid ── */
+.offer-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 40px;
+  margin-bottom: 28px;
+}
+
+/* ── Field helpers ── */
+.offer-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.offer-field:last-child {
+  margin-bottom: 0;
+}
+
+.offer-label {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #181818;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.offer-label-spacer {
+  flex: 1;
+}
+
+.offer-label-hint {
+  font-size: 12px;
+  color: #71717a;
+  font-weight: 400;
+}
+
+.required-star {
+  color: var(--color-primary);
+  margin-left: 2px;
+}
+
+.offer-input {
+  height: 40px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-elements);
+  background: var(--color-background-elements);
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: #181818;
+  padding: 0 12px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.offer-input:focus {
+  border-color: var(--color-primary);
+}
+
+.offer-input.has-error {
+  border-color: var(--color-error);
+}
+
+.offer-input[readonly] {
+  background: #f4f4f5;
+  color: #71717a;
+  cursor: default;
+}
+
+/* ── DatePicker overrides ── */
+.datepicker-wrapper {
+  display: block !important;
+  width: 100%;
+}
+
+.react-datepicker-popper {
+  z-index: 10 !important;
+}
+
+.react-datepicker {
+  font-family: "Inter", sans-serif !important;
+  border: 1px solid #e5eaf0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+  overflow: hidden;
+}
+
+.react-datepicker__header {
+  background: #f6f8f9 !important;
+  border-bottom: 1px solid #e5eaf0 !important;
+  padding-top: 12px !important;
+  border-radius: 0 !important;
+}
+
+.react-datepicker__current-month {
+  font-family: "Inter", sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 15px !important;
+  color: #181818 !important;
+  margin-bottom: 8px !important;
+}
+
+.react-datepicker__day-names {
+  margin-top: 4px !important;
+}
+
+.react-datepicker__day-name {
+  font-family: "Inter", sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  color: #71717a !important;
+  width: 36px !important;
+  line-height: 36px !important;
+  margin: 2px !important;
+}
+
+.react-datepicker__month {
+  margin: 8px !important;
+}
+
+.react-datepicker__day {
+  font-family: "Inter", sans-serif !important;
+  font-size: 13px !important;
+  color: #181818 !important;
+  width: 36px !important;
+  line-height: 36px !important;
+  margin: 2px !important;
+  border-radius: 8px !important;
+  transition: background 0.15s, color 0.15s !important;
+}
+
+.react-datepicker__day:hover {
+  background: #e6f9f7 !important;
+  color: var(--color-primary) !important;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background: var(--color-primary) !important;
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+.react-datepicker__day--selected:hover {
+  background: var(--color-primary-hover) !important;
+  color: white !important;
+}
+
+.react-datepicker__day--today {
+  font-weight: 700 !important;
+  border: 1.5px solid var(--color-primary) !important;
+  line-height: 33px !important;
+}
+
+.react-datepicker__day--outside-month {
+  color: #c4c4c4 !important;
+}
+
+.react-datepicker__day--disabled {
+  color: #d4d4d8 !important;
+  cursor: not-allowed !important;
+}
+
+.react-datepicker__day--disabled:hover {
+  background: transparent !important;
+  color: #d4d4d8 !important;
+}
+
+.react-datepicker__navigation {
+  top: 10px !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: #71717a !important;
+  border-width: 2px 2px 0 0 !important;
+  height: 8px !important;
+  width: 8px !important;
+}
+
+.react-datepicker__navigation:hover .react-datepicker__navigation-icon::before {
+  border-color: var(--color-primary) !important;
+}
+
+.react-datepicker__triangle {
+  display: none !important;
+}
+
+.offer-textarea {
+  border-radius: 6px;
+  border: 1px solid var(--color-border-elements);
+  background: var(--color-background-elements);
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: #181818;
+  padding: 10px 12px;
+  outline: none;
+  resize: vertical;
+  min-height: 140px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.offer-textarea:focus {
+  border-color: var(--color-primary);
+}
+
+.offer-textarea.has-error {
+  border-color: var(--color-error);
+}
+
+.offer-field-error {
+  font-size: 12px;
+  color: var(--color-error);
+}
+
+/* ── Image upload ── */
+.image-upload-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.image-file-input-wrap {
+  width: calc(50% - 6px);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-elements);
+  background: var(--color-background-elements);
+  padding: 0 12px;
+  cursor: pointer;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: #71717a;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.image-file-input-wrap:hover {
+  border-color: var(--color-primary);
+}
+
+.image-file-input-wrap.has-error {
+  border-color: var(--color-error);
+}
+
+.image-file-input-wrap .file-choose-btn {
+  background: #e5eaf0;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 12px;
+  color: #181818;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.image-file-input-wrap .file-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.image-preview-thumb {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #e5eaf0;
+  flex-shrink: 0;
+}
+
+.image-preview-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  background: #f4f4f5;
+  border: 1px dashed #d4d4d8;
+  flex-shrink: 0;
+}
+
+/* ── Logo preview (small) ── */
+.logo-preview-thumb {
+  width: 90px;
+  height: 90px;
+}
+
+.logo-preview-placeholder {
+  width: 90px;
+  height: 90px;
+}
+
+/* ── Image input column (keeps error below input) ── */
+.image-input-col {
+  width: calc(50% - 6px);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.image-input-col .image-file-input-wrap {
+  width: 100%;
+}
+
+/* ── Image preview (large) ── */
+.image-upload-row-large {
+  align-items: flex-start;
+}
+
+.image-preview-large {
+  width: 220px;
+  height: 220px;
+}
+
+/* ── Checkboxes ── */
+.offer-full-row {
+  margin-bottom: 20px;
+}
+
+.offer-checkboxes-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin-top: 4px;
+}
+
+.offer-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: #181818;
+  cursor: pointer;
+  user-select: none;
+}
+
+.offer-checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+/* ── Social URL inputs ── */
+.offer-url-field {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.offer-url-label {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #181818;
+  width: 140px;
+  flex-shrink: 0;
+}
+
+.offer-url-input {
+  flex: 1;
+  height: 40px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-elements);
+  background: var(--color-background-elements);
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: #181818;
+  padding: 0 12px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.offer-url-input:focus {
+  border-color: var(--color-primary);
+}
+
+.offer-url-input::placeholder {
+  color: #a1a1aa;
+}
+
+/* ── Divider ── */
+.offer-section-divider {
+  border: none;
+  border-top: 1px solid #e5eaf0;
+  margin: 24px 0;
+}
+
+/* ── Footer buttons ── */
+.offer-form-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding-top: 24px;
+  border-top: 1px solid #e5eaf0;
+  margin-top: 24px;
+}
+
+.offer-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1.5px solid #181818;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: #181818;
+  padding: 9px 18px;
+  transition: background 0.2s;
+}
+
+.offer-back-btn:hover {
+  background: #f4f4f5;
+}
+
+.offer-concept-btn {
+  border: 1.5px solid var(--color-primary);
+  background: white;
+  color: var(--color-primary);
+  border-radius: 6px;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 9px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.offer-concept-btn:hover {
+  background: #f0fdf9;
+}
+
+.offer-publish-btn {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 9px 24px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.offer-publish-btn:hover {
+  background: var(--color-primary-hover);
+}
+
+.offer-concept-btn:disabled,
+.offer-publish-btn:disabled,
+.offer-back-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .create-offer-page {
+    padding: 24px 16px;
+  }
+
+  .create-offer-page h1 {
+    font-size: 32px;
+  }
+
+  .offer-form-card {
+    padding: 20px;
+  }
+
+  .offer-form-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .image-file-input-wrap {
+    width: 100%;
+  }
+
+  .image-input-col {
+    width: 100%;
+  }
+
+  .image-upload-row {
+    flex-wrap: wrap;
+  }
+
+  .image-preview-large {
+    width: 160px;
+    height: 160px;
+  }
+
+  .offer-url-field {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .offer-url-label {
+    width: auto;
+  }
+
+  .offer-form-footer {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 520px) {
+  .create-offer-page {
+    padding: 16px 10px;
+  }
+
+  .create-offer-page h1 {
+    font-size: 24px;
+  }
+
+  .offer-form-card {
+    padding: 14px;
+  }
+
+  .image-preview-large {
+    width: 120px;
+    height: 120px;
+  }
+
+  .logo-preview-thumb,
+  .logo-preview-placeholder {
+    width: 70px;
+    height: 70px;
+  }
+
+  .offer-form-footer {
+    justify-content: stretch;
+    gap: 8px;
+  }
+
+  .offer-form-footer button {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+  }
+}

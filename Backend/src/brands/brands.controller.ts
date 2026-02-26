@@ -81,6 +81,13 @@ export class BrandsController {
   }
 
   @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @Get('archived')
+  findAllArchived() {
+    return this.brandsService.findAllArchived();
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER)
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req) {

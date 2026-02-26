@@ -1,44 +1,28 @@
-:root {
-  --color-primary: #ff2941;
-  --color-primary-hover: #d30018;
-  --color-secondary: #1a1a2e;
-  --color-background: #e0e0e0;
-  --color-accent: #ffae87;
-  --color-text: #181818;
-  --color-text-bold: #ffffff;
-  --color-success: #2ecc71;
-  --color-warning: #ffc542;
-  --color-error: #ff4c4c;
-}
-
 html,
 body {
   margin: 0;
   padding: 0;
   width: 100%;
-  overflow-x: hidden; /* Dôležité: skryje vodorovný scrollbar */
+  overflow-x: hidden;
 }
 
 #root {
   width: 100%;
 }
-/* Celkový obal aplikácie */
 .app-container {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* Celá výška obrazovky */
+  height: 100vh;
   overflow: hidden;
 }
 
-/* Telo pod navbarom */
 .app-body {
   display: flex;
-  flex: 1; /* Vyplní zvyšok vertikálneho priestoru */
-  overflow: hidden; /* Zabráni dvojitému scrollbaru */
+  flex: 1;
+  overflow: hidden;
 }
 
-/* Samotný obsah (Dashboard, atď.) */
 .main-content {
-  flex: 1; /* Vyplní zvyšok horizontálneho priestoru vedľa menubaru */
-  overflow-y: auto; /* Ak je obsah dlhý, scrolluje sa len táto časť */
+  flex: 1;
+  overflow-y: auto;
 }

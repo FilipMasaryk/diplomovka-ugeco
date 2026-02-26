@@ -2,11 +2,20 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./brandspage.css";
 import { Button } from "../../components/ui/Button/Button";
-import { FiPlus, FiEdit3, FiChevronRight } from "react-icons/fi";
+import {
+  FiPlus,
+  FiEdit3,
+  FiChevronRight,
+  FiArchive,
+  FiUpload,
+} from "react-icons/fi";
 import { InputField } from "../../components/ui/InputField/InputField";
 import { CustomSelect } from "../../components/ui/CustomSelectMenu/CustomSelect";
 import {
   fetchBrandsAdmin,
+  fetchArchivedBrandsAdmin,
+  archiveBrand,
+  restoreBrand,
   createBrand,
   updateBrand,
   type BrandTableData,
@@ -17,6 +26,7 @@ import {
   type BrandFormState,
 } from "../../components/ui/CreateBrandModal/CreateBrandModal";
 import { UpdateBrandModal } from "../../components/ui/CreateBrandModal/UpdateBrandModal";
+import { ConfirmModal } from "../../components/ui/ConfirmModal/ConfirmModal";
 
 export const BrandsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -24,6 +34,7 @@ export const BrandsPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [showArchived, setShowArchived] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [brandToUpdate, setBrandToUpdate] = useState<
@@ -31,6 +42,12 @@ export const BrandsPage: React.FC = () => {
   >(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [modalData, setModalData] = useState<{
+    isOpen: boolean;
+    brandId: string;
+    brandName: string;
+    type: "archiveBrand" | "restoreBrand";
+  }>({ isOpen: false, brandId: "", brandName: "", type: "archiveBrand" });
 
   const countryOptions = useMemo(
     () => [
@@ -55,14 +72,16 @@ export const BrandsPage: React.FC = () => {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await fetchBrandsAdmin();
+      const data = showArchived
+        ? await fetchArchivedBrandsAdmin()
+        : await fetchBrandsAdmin();
       setBrands(data);
     } catch (error) {
       console.error("Error loading brands:", error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [showArchived]);
 
   useEffect(() => {
     loadData();
@@ -99,6 +118,36 @@ export const BrandsPage: React.FC = () => {
     [loadData],
   );
 
+  const openConfirm = (
+    brand: BrandTableData,
+    type: "archiveBrand" | "restoreBrand",
+  ) => {
+    setModalData({
+      isOpen: true,
+      brandId: brand.id,
+      brandName: brand.name,
+      type,
+    });
+  };
+
+  const closeConfirm = () => {
+    setModalData((prev) => ({ ...prev, isOpen: false }));
+  };
+
+  const handleConfirmAction = async () => {
+    const { brandId, type } = modalData;
+    closeConfirm();
+
+    const success =
+      type === "archiveBrand"
+        ? await archiveBrand(brandId)
+        : await restoreBrand(brandId);
+
+    if (success) {
+      loadData();
+    }
+  };
+
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
@@ -133,9 +182,34 @@ export const BrandsPage: React.FC = () => {
         />
       )}
 
+      <ConfirmModal
+        isOpen={modalData.isOpen}
+        title={t(`modals.${modalData.type}.message`, {
+          name: modalData.brandName,
+        })}
+        confirmLabel={t(`modals.${modalData.type}.confirmBtn`)}
+        cancelLabel={t(`modals.${modalData.type}.cancelBtn`)}
+        variant="primary"
+        onConfirm={handleConfirmAction}
+        onCancel={closeConfirm}
+      />
+
       <div className="header">
         <div className="header-left-group">
-          <h1>{t("brandsPage.title")}</h1>
+          <h1>
+            {showArchived
+              ? t("brandsPage.archiveTitle")
+              : t("brandsPage.title")}
+          </h1>
+          <Button
+            variant="outlined"
+            className="archive-btn"
+            onClick={() => setShowArchived(!showArchived)}
+          >
+            {showArchived
+              ? t("brandsPage.activeBrandsBtn")
+              : t("brandsPage.archiveBtn")}
+          </Button>
         </div>
       </div>
 
@@ -164,13 +238,15 @@ export const BrandsPage: React.FC = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Button
-            className="btn-create"
-            onClick={() => setIsCreateModalOpen(true)}
-          >
-            <FiPlus className="icon" />
-            {t("brandsPage.createBtn")}
-          </Button>
+          {!showArchived && (
+            <Button
+              className="btn-create"
+              onClick={() => setIsCreateModalOpen(true)}
+            >
+              <FiPlus className="icon" />
+              {t("brandsPage.createBtn")}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -209,10 +285,26 @@ export const BrandsPage: React.FC = () => {
                     <td>{brand.purchased}</td>
                     <td>{brand.expiration}</td>
                     <td className="actions">
-                      <FiEdit3
-                        className="action-icon edit"
-                        onClick={() => handleEditClick(brand)}
-                      />
+                      {showArchived ? (
+                        <div
+                          className="action-icon edit"
+                          onClick={() => openConfirm(brand, "restoreBrand")}
+                          title={t("brandsPage.restoreBtn")}
+                        >
+                          <FiUpload />
+                        </div>
+                      ) : (
+                        <>
+                          <FiEdit3
+                            className="action-icon edit"
+                            onClick={() => handleEditClick(brand)}
+                          />
+                          <FiArchive
+                            className="action-icon delete"
+                            onClick={() => openConfirm(brand, "archiveBrand")}
+                          />
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))

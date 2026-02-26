@@ -1,0 +1,202 @@
+.offer-detail-page {
+  padding: 40px;
+  font-family: "Inter", sans-serif;
+  background: #f6f8f9;
+  min-height: 100vh;
+}
+
+/* ── Header ── */
+.offer-detail-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1.5px solid var(--color-primary);
+  color: var(--color-primary);
+  background: white;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: background 0.2s;
+}
+
+.offer-detail-back-btn:hover {
+  background: #f0fdf9;
+}
+
+.offer-detail-title {
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  font-size: 36px;
+  line-height: 1.1;
+  color: #181818;
+  margin: 0 0 28px 0;
+}
+
+/* ── Two-column layout ── */
+.offer-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 0;
+  align-items: start;
+}
+
+/* ── Left: main content ── */
+.offer-detail-main {
+  padding-right: 40px;
+  min-width: 0;
+}
+
+.offer-image-brand-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.offer-detail-image {
+  width: 300px;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+  display: block;
+  flex-shrink: 0;
+}
+
+.offer-brand-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding-top: 20px;
+}
+
+.offer-brand-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  object-fit: contain;
+  border: 1.5px dashed #c4c4c4;
+  padding: 4px;
+}
+
+.offer-brand-logo-placeholder {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  border: 1.5px dashed #c4c4c4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #71717a;
+  font-size: 22px;
+  font-weight: 700;
+  background: #fafafa;
+}
+
+.offer-brand-name {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #181818;
+}
+
+.offer-detail-description {
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  line-height: 1.75;
+  color: #3f3f46;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* ── Right sidebar ── */
+.offer-detail-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  border-left: 1px solid #e0e0e0;
+  padding-left: 40px;
+}
+
+/* ── Sidebar sections ── */
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+
+.sidebar-section-label {
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: #181818;
+}
+
+.sidebar-section-value {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: #3f3f46;
+}
+
+/* ── Contact card ── */
+.offer-contact-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5eaf0;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.offer-contact-card-title {
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: #181818;
+}
+
+.offer-contact-value {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-primary);
+  word-break: break-all;
+}
+
+/* ── Social icons ── */
+.offer-social-icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.offer-social-icon-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #181818;
+  font-size: 22px;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.offer-social-icon-link:hover {
+  color: var(--color-primary);
+}
+
+/* ── Loading / not found ── */
+.offer-detail-loading {
+  padding: 60px;
+  text-align: center;
+  font-size: 16px;
+  color: #71717a;
+}

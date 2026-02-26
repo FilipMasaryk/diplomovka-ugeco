@@ -106,6 +106,14 @@ export class BrandsService {
       .exec();
   }
 
+  async findAllArchived(): Promise<Brand[]> {
+    return this.brandModel
+      .find({ isArchived: true })
+      .populate('package', 'name validityMonths')
+      .populate('mainContact', 'email name surName')
+      .exec();
+  }
+
   async findOne(id: string): Promise<Brand> {
     const brand = await this.brandModel.findOne({
       _id: id,

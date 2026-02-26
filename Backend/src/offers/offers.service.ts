@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { Offer, OfferDocument } from './schemas/offerSchema';
+import { Offer, OfferDocument, OfferStatus } from './schemas/offerSchema';
 import { Brand } from '../brands/schemas/brandSchema';
 import { User, UserDocument } from '../users/schemas/userSchema';
 import { CreateOfferDto } from './schemas/createOfferDto';
@@ -56,21 +56,25 @@ export class OffersService {
       throw new ForbiddenException('You cannot create offers for this brand');
     }
 
-    if (brand.package) {
-      const pkg = brand.package as unknown as PackageDocument;
+    const isConcept = createOfferDto.status === OfferStatus.CONCEPT;
 
-      if (brand.purchasedAt) {
-        const expiresAt = new Date(brand.purchasedAt);
-        expiresAt.setMonth(expiresAt.getMonth() + pkg.validityMonths);
+    if (!isConcept) {
+      if (brand.package) {
+        const pkg = brand.package as unknown as PackageDocument;
 
-        if (expiresAt < new Date()) {
-          throw new BadRequestException('Brand package has expired');
+        if (brand.purchasedAt) {
+          const expiresAt = new Date(brand.purchasedAt);
+          expiresAt.setMonth(expiresAt.getMonth() + pkg.validityMonths);
+
+          if (expiresAt < new Date()) {
+            throw new BadRequestException('Brand package has expired');
+          }
         }
       }
-    }
 
-    if (brand.offersCount <= 0) {
-      throw new BadRequestException('Brand does not have remaining offers');
+      if (brand.offersCount <= 0) {
+        throw new BadRequestException('Brand does not have remaining offers');
+      }
     }
 
     const offer = await this.offerModel.create({
@@ -78,21 +82,23 @@ export class OffersService {
       brand: brand._id,
     });
 
-    await this.brandModel.findByIdAndUpdate(brand._id, {
-      $inc: { offersCount: -1 },
-      $push: { offers: offer._id },
-    });
+    if (!isConcept) {
+      await this.brandModel.findByIdAndUpdate(brand._id, {
+        $inc: { offersCount: -1 },
+        $push: { offers: offer._id },
+      });
+    }
 
     return offer;
   }
 
-  async findAll(): Promise<Offer[]> {
-    return this.offerModel.find({ isArchived: false }).populate('brand').exec();
+  async findAll(archived = false): Promise<Offer[]> {
+    return this.offerModel.find({ isArchived: archived }).populate('brand').exec();
   }
 
-  async findAllForUser(user: User): Promise<Offer[]> {
+  async findAllForUser(user: User, archived = false): Promise<Offer[]> {
     if (user.role === UserRole.ADMIN) {
-      return this.findAll();
+      return this.findAll(archived);
     }
 
     if (user.role === UserRole.SUBADMIN) {
@@ -103,15 +109,15 @@ export class OffersService {
 
       return this.offerModel.find({
         brand: { $in: allowedBrandIds },
-        isArchived: false,
-      });
+        isArchived: archived,
+      }).populate('brand').exec();
     }
 
     if (user.role === UserRole.BRAND_MANAGER) {
       return this.offerModel.find({
         brand: { $in: user.brands },
-        isArchived: false,
-      });
+        isArchived: archived,
+      }).populate('brand').exec();
     }
 
     return [];
@@ -196,6 +202,21 @@ export class OffersService {
       }
     }
 
+    // When publishing a concept, deduct offersCount from brand
+    const isPublishing =
+      offer.status === OfferStatus.CONCEPT &&
+      updateOfferDto.status === OfferStatus.ACTIVE;
+
+    if (isPublishing) {
+      if (brand.offersCount <= 0) {
+        throw new BadRequestException('Brand does not have remaining offers');
+      }
+      await this.brandModel.findByIdAndUpdate(brand._id, {
+        $inc: { offersCount: -1 },
+        $push: { offers: offer._id },
+      });
+    }
+
     Object.assign(offer, updateOfferDto);
     return offer.save();
   }
@@ -231,8 +252,13 @@ export class OffersService {
       }
     }
 
-    offer.isArchived = true;
-    return offer.save();
+    const updated = await this.offerModel.findByIdAndUpdate(
+      id,
+      { isArchived: true },
+      { new: true },
+    );
+    if (!updated) throw new NotFoundException('Offer not found');
+    return updated;
   }
 
   async restore(id: string, user: User): Promise<Offer> {
@@ -266,8 +292,52 @@ export class OffersService {
       }
     }
 
-    offer.isArchived = false;
-    return offer.save();
+    const updated = await this.offerModel.findByIdAndUpdate(
+      id,
+      { isArchived: false },
+      { new: true },
+    );
+    if (!updated) throw new NotFoundException('Offer not found');
+    return updated;
+  }
+
+  async remove(id: string, user: User): Promise<{ deleted: boolean }> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid offer ID');
+    }
+
+    const offer = await this.offerModel.findById(id);
+    if (!offer) {
+      throw new NotFoundException('Offer not found');
+    }
+
+    if (offer.status !== OfferStatus.CONCEPT) {
+      throw new BadRequestException(
+        'Only concept offers can be deleted. Archive active offers instead.',
+      );
+    }
+
+    const brand = await this.brandModel.findById(offer.brand);
+    if (brand) {
+      if (
+        user.role === UserRole.SUBADMIN &&
+        !user.countries?.includes(brand.country)
+      ) {
+        throw new ForbiddenException(
+          'You cannot delete offers for this brand (country mismatch)',
+        );
+      }
+
+      if (
+        user.role === UserRole.BRAND_MANAGER &&
+        !user.brands?.some((b) => b.toString() === brand._id.toString())
+      ) {
+        throw new ForbiddenException('You cannot delete offers for this brand');
+      }
+    }
+
+    await this.offerModel.findByIdAndDelete(id);
+    return { deleted: true };
   }
 
   async findAllForCreator(

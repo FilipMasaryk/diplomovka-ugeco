@@ -13,7 +13,7 @@
   color: #181818;
 }
 .required-star {
-  color: #ef4444;
+  color: var(--color-primary);
   margin-left: 4px;
 }
 

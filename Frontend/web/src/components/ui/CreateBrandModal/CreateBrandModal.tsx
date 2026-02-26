@@ -177,6 +177,12 @@ export const CreateBrandModal: React.FC<CreateBrandModalProps> = React.memo(
                   errorMessage={errors.name ? t(errors.name) : ""}
                 />
                 <InputField
+                  label={t("brandsPage.table.ico")}
+                  name="ico"
+                  value={formData.ico}
+                  onChange={handleChange}
+                />
+                <InputField
                   label={t("brandsPage.table.address")}
                   name="address"
                   required
@@ -184,6 +190,15 @@ export const CreateBrandModal: React.FC<CreateBrandModalProps> = React.memo(
                   onChange={handleChange}
                   hasError={!!errors.address}
                   errorMessage={errors.address ? t(errors.address) : ""}
+                />
+                <InputField
+                  label={t("brandsPage.table.city")}
+                  name="city"
+                  required
+                  value={formData.city}
+                  onChange={handleChange}
+                  hasError={!!errors.city}
+                  errorMessage={errors.city ? t(errors.city) : ""}
                 />
                 <InputField
                   label={t("brandsPage.table.zip")}
@@ -205,33 +220,9 @@ export const CreateBrandModal: React.FC<CreateBrandModalProps> = React.memo(
                   placeholder={t("usersPage.selectCountry")}
                   error={errors.country ? t(errors.country) : ""}
                 />
-                <CustomSelect
-                  label={t("brandsPage.table.package")}
-                  options={packageOptions}
-                  value={packageOptions.find(
-                    (o) => o.value === formData.package,
-                  )}
-                  onChange={(val) => handleSingleSelectChange(val, "package")}
-                  placeholder={t("brandsPage.selectPackage")}
-                />
               </div>
 
               <div className="form-column">
-                <InputField
-                  label={t("brandsPage.table.ico")}
-                  name="ico"
-                  value={formData.ico}
-                  onChange={handleChange}
-                />
-                <InputField
-                  label={t("brandsPage.table.city")}
-                  name="city"
-                  required
-                  value={formData.city}
-                  onChange={handleChange}
-                  hasError={!!errors.city}
-                  errorMessage={errors.city ? t(errors.city) : ""}
-                />
                 <CustomSelect
                   isMulti
                   label={t("brandsPage.table.categories")}
@@ -243,6 +234,15 @@ export const CreateBrandModal: React.FC<CreateBrandModalProps> = React.memo(
                   onChange={(val) => handleMultiSelectChange(val, "categories")}
                   placeholder={t("brandsPage.selectCategory")}
                   error={errors.categories ? t(errors.categories) : ""}
+                />
+                <CustomSelect
+                  label={t("brandsPage.table.package")}
+                  options={packageOptions}
+                  value={packageOptions.find(
+                    (o) => o.value === formData.package,
+                  )}
+                  onChange={(val) => handleSingleSelectChange(val, "package")}
+                  placeholder={t("brandsPage.selectPackage")}
                 />
                 <CustomSelect
                   label={t("brandsPage.table.mainContact")}

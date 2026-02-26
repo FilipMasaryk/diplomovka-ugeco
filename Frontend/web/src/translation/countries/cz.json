@@ -15,10 +15,14 @@
   },
   "errors": {
     "required": "Povinné pole",
-    "invalidEmail": "Neplatný e-mail"
+    "invalidEmail": "Neplatný e-mail",
+    "invalidUrl": "Neplatná URL adresa"
   },
   "validation": {
     "required": "Toto pole je povinné"
+  },
+  "navbar": {
+    "logout": "Odhlásit se"
   },
   "roles": {
     "creator": "TVŮRCE",
@@ -43,7 +47,8 @@
     "myOffers": "Moje nabídky",
     "profile": "Profil",
     "managers": "Správci",
-    "support": "Support"
+    "support": "Support",
+    "packages": "Balíčky"
   },
   "dashboard": {
     "creatorsCount": "Počet tvůrců",
@@ -137,7 +142,11 @@
       "contact": "Kontakt",
       "mainContact": "Hlavní kontakt"
     },
-    "selectContact": "Vyberte kontakt"
+    "selectContact": "Vyberte kontakt",
+    "archiveBtn": "Archiv značek",
+    "archiveTitle": "Archiv značek",
+    "activeBrandsBtn": "Aktivní značky",
+    "restoreBtn": "Obnovit"
   },
   "categories": {
     "apps_and_technology": "Aplikace a technologie",
@@ -178,6 +187,139 @@
       "message": "Jste si jisti, že chcete archivovat značku {{name}}?",
       "confirmBtn": "Ano, archivovat",
       "cancelBtn": "Ne, zrušit"
+    },
+    "restoreBrand": {
+      "message": "Přejete si vrátit značku {{name}} mezi aktivní?",
+      "confirmBtn": "Ano, obnovit",
+      "cancelBtn": "Ne, zrušit"
+    }
+  },
+  "offersPage": {
+    "title": "Seznam nabídek",
+    "archiveBtn": "Archiv nabídek",
+    "allCategories": "Všechny kategorie",
+    "allLanguages": "Všechny jazyky",
+    "allTargets": "Všichni",
+    "allStatuses": "Všechny stavy",
+    "statusActive": "Aktivní",
+    "statusConcept": "Koncept",
+    "statusEnded": "Ukončená",
+    "searchPlaceholder": "Vyhledat",
+    "createBtn": "Vytvořit nabídku",
+    "loading": "Načítám nabídky...",
+    "noData": "Nenašly se žádné nabídky",
+    "archiveTitle": "Archiv nabídek",
+    "activeOffersBtn": "Aktivní nabídky",
+    "archiveConfirm": "Opravdu chcete archivovat nabídku {{name}}?",
+    "deleteConfirm": "Opravdu chcete smazat koncept {{name}}?",
+    "deleteBtn": "Smazat",
+    "table": {
+      "name": "Název nabídky",
+      "brand": "Značka",
+      "targets": "Pro koho",
+      "country": "Země",
+      "status": "Stav",
+      "activeFrom": "Aktivní od",
+      "activeTo": "Aktivní do"
+    }
+  },
+  "targets": {
+    "man": "Muž",
+    "woman": "Žena",
+    "child": "Dítě",
+    "family": "Rodina",
+    "couple": "Pár",
+    "friends": "Přátelé",
+    "animal": "Zvíře"
+  },
+  "languages": {
+    "sk": "SK",
+    "en": "EN",
+    "cz": "CZ",
+    "pl": "PL",
+    "de": "DE",
+    "hu": "HU",
+    "it": "IT",
+    "es": "ES"
+  },
+  "createOfferPage": {
+    "title": "Vytvořit nabídku",
+    "editTitle": "Upravit nabídku",
+    "backBtn": "Zpět",
+    "saveConceptBtn": "Uložit koncept",
+    "publishBtn": "Publikovat",
+    "paidCooperation": "Placená spolupráce",
+    "barter": "Barter",
+    "sectionBasic": "Základní informace",
+    "sectionSocial": "Sociální sítě",
+    "name": "Název nabídky",
+    "brand": "Značka",
+    "activeFrom": "Aktivní od",
+    "activeTo": "Aktivní do",
+    "image": "Obrázek",
+    "contact": "Kontakt",
+    "categories": "Kategorie",
+    "languages": "Jazyky",
+    "targets": "Koho hledáme",
+    "description": "Popis nabídky",
+    "website": "Webová stránka",
+    "facebook": "Facebook",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "pinterest": "Pinterest",
+    "leaveTitle": "Chcete odejít bez uložení?",
+    "leaveConfirm": "Ano, odejít",
+    "leaveCancel": "Ne, zůstat",
+    "imageClick": "Klikněte pro nahrání obrázku",
+    "brandLogo": "Logo značky",
+    "chooseFile": "Vybrat soubor",
+    "contactPlaceholder": "Zadejte kontakt (email, telefon...)"
+  },
+  "offerDetailPage": {
+    "backBtn": "Zpět",
+    "editBtn": "Upravit",
+    "loading": "Načítám nabídku...",
+    "notFound": "Nabídka nenalezena",
+    "noImage": "Bez obrázku",
+    "type": "Typ spolupráce",
+    "status": "Stav",
+    "brand": "Značka",
+    "activeFrom": "Aktivní od",
+    "activeTo": "Aktivní do",
+    "categories": "Kategorie",
+    "languages": "Jazyky",
+    "targets": "Pro koho",
+    "description": "Popis nabídky",
+    "social": "Sociální sítě",
+    "contact": "Kontakt",
+    "cooperationType": "Typ spolupráce"
+  },
+  "packagesPage": {
+    "title": "Balíčky",
+    "searchPlaceholder": "Vyhledat",
+    "createBtn": "Vytvořit balíček",
+    "createBtnSubmit": "Vytvořit balíček",
+    "updateBtnSubmit": "Uložit změny",
+    "loading": "Načítám balíčky...",
+    "noData": "Nenašly se žádné balíčky",
+    "allTypes": "Všechny typy",
+    "typeCreator": "Tvůrce",
+    "typeBrand": "Značka",
+    "selectType": "Vyberte typ",
+    "deleteConfirm": "Opravdu chcete smazat balíček {{name}}?",
+    "deleteBtn": "Smazat",
+    "createModal": {
+      "title": "Vytvořit nový balíček"
+    },
+    "updateModal": {
+      "title": "Upravit balíček"
+    },
+    "table": {
+      "name": "Název",
+      "type": "Typ",
+      "validityMonths": "Platnost (měsíce)",
+      "offersCount": "Počet nabídek",
+      "months": "měsíců"
     }
   }
 }

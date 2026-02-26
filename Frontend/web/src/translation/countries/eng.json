@@ -15,10 +15,14 @@
   },
   "errors": {
     "required": "Required field",
-    "invalidEmail": "Invalid email"
+    "invalidEmail": "Invalid email",
+    "invalidUrl": "Invalid URL"
   },
   "validation": {
     "required": "This field is required"
+  },
+  "navbar": {
+    "logout": "Logout"
   },
   "roles": {
     "creator": "CREATOR",
@@ -43,7 +47,8 @@
     "myOffers": "My Offers",
     "profile": "Profile",
     "managers": "Managers",
-    "support": "Support"
+    "support": "Support",
+    "packages": "Packages"
   },
   "dashboard": {
     "creatorsCount": "Creators count",
@@ -137,7 +142,11 @@
       "contact": "Contact",
       "mainContact": "Main Contact"
     },
-    "selectContact": "Select contact"
+    "selectContact": "Select contact",
+    "archiveBtn": "Brand Archive",
+    "archiveTitle": "Brand Archive",
+    "activeBrandsBtn": "Active Brands",
+    "restoreBtn": "Restore"
   },
   "categories": {
     "apps_and_technology": "Apps & Technology",
@@ -178,6 +187,139 @@
       "message": "Are you sure you want to archive brand {{name}}?",
       "confirmBtn": "Yes, archive",
       "cancelBtn": "No, cancel"
+    },
+    "restoreBrand": {
+      "message": "Do you wish to restore brand {{name}} to active status?",
+      "confirmBtn": "Yes, restore",
+      "cancelBtn": "No, cancel"
+    }
+  },
+  "offersPage": {
+    "title": "Offers List",
+    "archiveBtn": "Archive",
+    "allCategories": "All Categories",
+    "allLanguages": "All Languages",
+    "allTargets": "All Targets",
+    "allStatuses": "All Statuses",
+    "statusActive": "Active",
+    "statusConcept": "Draft",
+    "statusEnded": "Ended",
+    "searchPlaceholder": "Search",
+    "createBtn": "Create Offer",
+    "loading": "Loading offers...",
+    "noData": "No offers found",
+    "archiveTitle": "Offer Archive",
+    "activeOffersBtn": "Active Offers",
+    "archiveConfirm": "Are you sure you want to archive the offer {{name}}?",
+    "deleteConfirm": "Are you sure you want to delete the concept {{name}}?",
+    "deleteBtn": "Delete",
+    "table": {
+      "name": "Offer Name",
+      "brand": "Brand",
+      "targets": "Target",
+      "country": "Country",
+      "status": "Status",
+      "activeFrom": "Active From",
+      "activeTo": "Active To"
+    }
+  },
+  "targets": {
+    "man": "Man",
+    "woman": "Woman",
+    "child": "Child",
+    "family": "Family",
+    "couple": "Couple",
+    "friends": "Friends",
+    "animal": "Animal"
+  },
+  "languages": {
+    "sk": "SK",
+    "en": "EN",
+    "cz": "CZ",
+    "pl": "PL",
+    "de": "DE",
+    "hu": "HU",
+    "it": "IT",
+    "es": "ES"
+  },
+  "createOfferPage": {
+    "title": "Create Offer",
+    "editTitle": "Edit Offer",
+    "backBtn": "Back",
+    "saveConceptBtn": "Save Draft",
+    "publishBtn": "Publish",
+    "paidCooperation": "Paid Cooperation",
+    "barter": "Barter",
+    "sectionBasic": "Basic Information",
+    "sectionSocial": "Social Networks",
+    "name": "Offer Name",
+    "brand": "Brand",
+    "activeFrom": "Active From",
+    "activeTo": "Active To",
+    "image": "Image",
+    "contact": "Contact",
+    "categories": "Categories",
+    "languages": "Languages",
+    "targets": "Who We're Looking For",
+    "description": "Offer Description",
+    "website": "Website",
+    "facebook": "Facebook",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "pinterest": "Pinterest",
+    "leaveTitle": "Leave without saving?",
+    "leaveConfirm": "Yes, leave",
+    "leaveCancel": "No, stay",
+    "imageClick": "Click to upload an image",
+    "brandLogo": "Brand logo",
+    "chooseFile": "Choose file",
+    "contactPlaceholder": "Enter contact (email, phone...)"
+  },
+  "offerDetailPage": {
+    "backBtn": "Back",
+    "editBtn": "Edit",
+    "loading": "Loading offer...",
+    "notFound": "Offer not found",
+    "noImage": "No image",
+    "type": "Cooperation Type",
+    "status": "Status",
+    "brand": "Brand",
+    "activeFrom": "Active From",
+    "activeTo": "Active To",
+    "categories": "Categories",
+    "languages": "Languages",
+    "targets": "Target",
+    "description": "Offer Description",
+    "social": "Social Networks",
+    "contact": "Contact",
+    "cooperationType": "Cooperation Type"
+  },
+  "packagesPage": {
+    "title": "Packages",
+    "searchPlaceholder": "Search",
+    "createBtn": "Create Package",
+    "createBtnSubmit": "Create Package",
+    "updateBtnSubmit": "Save Changes",
+    "loading": "Loading packages...",
+    "noData": "No packages found",
+    "allTypes": "All Types",
+    "typeCreator": "Creator",
+    "typeBrand": "Brand",
+    "selectType": "Select type",
+    "deleteConfirm": "Are you sure you want to delete the package {{name}}?",
+    "deleteBtn": "Delete",
+    "createModal": {
+      "title": "Create New Package"
+    },
+    "updateModal": {
+      "title": "Edit Package"
+    },
+    "table": {
+      "name": "Name",
+      "type": "Type",
+      "validityMonths": "Validity (months)",
+      "offersCount": "Offers Count",
+      "months": "mo."
     }
   }
 }

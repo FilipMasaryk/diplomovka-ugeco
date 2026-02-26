@@ -14,6 +14,7 @@ import {
   FiChevronLeft,
   FiMenu,
   FiSidebar,
+  FiPackage,
 } from "react-icons/fi";
 import "./menubar.css";
 import type { UserRole } from "../../../types/userRoles";
@@ -172,13 +173,19 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
                   {t("menubar.brandList")}
                 </div>
                 <div
-                  className={`submenu-item ${activeItem === "offerList" ? "active" : ""}`}
-                  onClick={() => setActiveItem("offerList")}
+                  className={`submenu-item ${location.pathname === "/offers" ? "active" : ""}`}
+                  onClick={() => navigate("/offers")}
                 >
                   {t("menubar.offerList")}
                 </div>
               </div>
             )}
+            {role === "admin" &&
+              renderMenuItem(
+                "/packages",
+                t("menubar.packages"),
+                <FiPackage className="menu-icon" />,
+              )}
             {renderMenuItem(
               "stats",
               t("menubar.stats"),

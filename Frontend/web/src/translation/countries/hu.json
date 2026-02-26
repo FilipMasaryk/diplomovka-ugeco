@@ -15,10 +15,14 @@
   },
   "errors": {
     "required": "Kötelező mező",
-    "invalidEmail": "Érvénytelen e-mail"
+    "invalidEmail": "Érvénytelen e-mail",
+    "invalidUrl": "Érvénytelen URL"
   },
   "validation": {
     "required": "Ez a mező kötelező"
+  },
+  "navbar": {
+    "logout": "Kijelentkezés"
   },
   "roles": {
     "creator": "ALKOTÓ",
@@ -43,7 +47,8 @@
     "myOffers": "Saját ajánlataim",
     "profile": "Profil",
     "managers": "Kezelők",
-    "support": "Support"
+    "support": "Support",
+    "packages": "Csomagok"
   },
   "dashboard": {
     "creatorsCount": "Alkotók száma",
@@ -137,7 +142,11 @@
       "contact": "Kapcsolat",
       "mainContact": "Fő kapcsolat"
     },
-    "selectContact": "Válasszon kapcsolatot"
+    "selectContact": "Válasszon kapcsolatot",
+    "archiveBtn": "Márka archívum",
+    "archiveTitle": "Márka archívum",
+    "activeBrandsBtn": "Aktív márkák",
+    "restoreBtn": "Visszaállítás"
   },
   "categories": {
     "apps_and_technology": "Alkalmazások és technológia",
@@ -178,6 +187,139 @@
       "message": "Biztosan archiválni szeretné a(z) {{name}} márkát?",
       "confirmBtn": "Igen, archiválás",
       "cancelBtn": "Nem, mégse"
+    },
+    "restoreBrand": {
+      "message": "Szeretné visszaállítani a(z) {{name}} márkát az aktívak közé?",
+      "confirmBtn": "Igen, visszaállítás",
+      "cancelBtn": "Nem, mégse"
+    }
+  },
+  "offersPage": {
+    "title": "Ajánlatok listája",
+    "archiveBtn": "Archívum",
+    "allCategories": "Összes kategória",
+    "allLanguages": "Összes nyelv",
+    "allTargets": "Mindenki",
+    "allStatuses": "Összes állapot",
+    "statusActive": "Aktív",
+    "statusConcept": "Piszkozat",
+    "statusEnded": "Befejezett",
+    "searchPlaceholder": "Keresés",
+    "createBtn": "Ajánlat létrehozása",
+    "loading": "Ajánlatok betöltése...",
+    "noData": "Nem találhatók ajánlatok",
+    "archiveTitle": "Ajánlatok archívuma",
+    "activeOffersBtn": "Aktív ajánlatok",
+    "archiveConfirm": "Biztosan archiválja a(z) {{name}} ajánlatot?",
+    "deleteConfirm": "Biztosan törli a(z) {{name}} piszkozatot?",
+    "deleteBtn": "Törlés",
+    "table": {
+      "name": "Ajánlat neve",
+      "brand": "Márka",
+      "targets": "Kinek szól",
+      "country": "Ország",
+      "status": "Állapot",
+      "activeFrom": "Aktív-tól",
+      "activeTo": "Aktív-ig"
+    }
+  },
+  "targets": {
+    "man": "Férfi",
+    "woman": "Nő",
+    "child": "Gyerek",
+    "family": "Család",
+    "couple": "Pár",
+    "friends": "Barátok",
+    "animal": "Állat"
+  },
+  "languages": {
+    "sk": "SK",
+    "en": "EN",
+    "cz": "CZ",
+    "pl": "PL",
+    "de": "DE",
+    "hu": "HU",
+    "it": "IT",
+    "es": "ES"
+  },
+  "createOfferPage": {
+    "title": "Ajánlat létrehozása",
+    "editTitle": "Ajánlat szerkesztése",
+    "backBtn": "Vissza",
+    "saveConceptBtn": "Piszkozat mentése",
+    "publishBtn": "Közzététel",
+    "paidCooperation": "Fizetett együttműködés",
+    "barter": "Csere",
+    "sectionBasic": "Alapinformációk",
+    "sectionSocial": "Közösségi hálók",
+    "name": "Ajánlat neve",
+    "brand": "Márka",
+    "activeFrom": "Aktív-tól",
+    "activeTo": "Aktív-ig",
+    "image": "Kép",
+    "contact": "Kapcsolat",
+    "categories": "Kategóriák",
+    "languages": "Nyelvek",
+    "targets": "Kit keresünk",
+    "description": "Ajánlat leírása",
+    "website": "Weboldal",
+    "facebook": "Facebook",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "pinterest": "Pinterest",
+    "leaveTitle": "Mentés nélkül szeretne kilépni?",
+    "leaveConfirm": "Igen, kilépés",
+    "leaveCancel": "Nem, maradás",
+    "imageClick": "Kattintson a kép feltöltéséhez",
+    "brandLogo": "Márka logó",
+    "chooseFile": "Fájl kiválasztása",
+    "contactPlaceholder": "Adja meg a kontaktot (email, telefon...)"
+  },
+  "offerDetailPage": {
+    "backBtn": "Vissza",
+    "editBtn": "Szerkesztés",
+    "loading": "Ajánlat betöltése...",
+    "notFound": "Ajánlat nem található",
+    "noImage": "Nincs kép",
+    "type": "Együttműködés típusa",
+    "status": "Állapot",
+    "brand": "Márka",
+    "activeFrom": "Aktív-tól",
+    "activeTo": "Aktív-ig",
+    "categories": "Kategóriák",
+    "languages": "Nyelvek",
+    "targets": "Kinek szól",
+    "description": "Ajánlat leírása",
+    "social": "Közösségi hálók",
+    "contact": "Kapcsolat",
+    "cooperationType": "Együttműködés típusa"
+  },
+  "packagesPage": {
+    "title": "Csomagok",
+    "searchPlaceholder": "Keresés",
+    "createBtn": "Csomag létrehozása",
+    "createBtnSubmit": "Csomag létrehozása",
+    "updateBtnSubmit": "Módosítások mentése",
+    "loading": "Csomagok betöltése...",
+    "noData": "Nem találhatók csomagok",
+    "allTypes": "Összes típus",
+    "typeCreator": "Alkotó",
+    "typeBrand": "Márka",
+    "selectType": "Válasszon típust",
+    "deleteConfirm": "Biztosan törli a(z) {{name}} csomagot?",
+    "deleteBtn": "Törlés",
+    "createModal": {
+      "title": "Új csomag létrehozása"
+    },
+    "updateModal": {
+      "title": "Csomag szerkesztése"
+    },
+    "table": {
+      "name": "Név",
+      "type": "Típus",
+      "validityMonths": "Érvényesség (hónapok)",
+      "offersCount": "Ajánlatok száma",
+      "months": "hónap"
     }
   }
 }

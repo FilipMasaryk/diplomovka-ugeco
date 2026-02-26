@@ -16,7 +16,7 @@ export class Package {
   @Prop({ required: true })
   validityMonths: number;
 
-  @Prop({ required: true })
+  @Prop({ required: true, default: 0 })
   offersCount: number;
 
   @Prop({
