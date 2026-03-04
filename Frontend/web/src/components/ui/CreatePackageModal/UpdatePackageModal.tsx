@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { FiX } from "react-icons/fi";
 import { InputField } from "../InputField/InputField";
 import { Button } from "../Button/Button";
+import { useToast } from "../../../context/useToast";
 import "../../ui/CreateUserModal/createUserModal.css";
 import type { PackageFormState } from "../../../pages/PackagesPage/PackagesPage";
 
@@ -20,13 +21,12 @@ export const UpdatePackageModal: React.FC<UpdatePackageModalProps> = React.memo(
       ...packageData,
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [backendError, setBackendError] = useState<string | null>(null);
+    const { showToast } = useToast();
 
     useEffect(() => {
       if (isOpen) {
         setFormData({ ...packageData });
         setErrors({});
-        setBackendError(null);
       }
     }, [isOpen, packageData]);
 
@@ -66,7 +66,6 @@ export const UpdatePackageModal: React.FC<UpdatePackageModalProps> = React.memo(
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      setBackendError(null);
 
       if (!validate()) return;
 
@@ -78,9 +77,9 @@ export const UpdatePackageModal: React.FC<UpdatePackageModalProps> = React.memo(
           const cleanMsg = firstMsg.includes(":")
             ? firstMsg.split(":")[1].trim()
             : firstMsg;
-          setBackendError(cleanMsg);
+          showToast(cleanMsg, "error");
         } else {
-          setBackendError(error?.message || t("errors.somethingWentWrong"));
+          showToast(error?.message || t("errors.somethingWentWrong"), "error");
         }
       }
     };
@@ -151,10 +150,6 @@ export const UpdatePackageModal: React.FC<UpdatePackageModalProps> = React.memo(
                 )}
               </div>
             </div>
-
-            {backendError && (
-              <div className="general-error">{backendError}</div>
-            )}
 
             <div className="modal-footer">
               <Button type="submit" className="btn-create-submit">

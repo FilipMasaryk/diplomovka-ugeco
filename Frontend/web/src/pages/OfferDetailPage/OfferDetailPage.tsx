@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import "./offerdetail.css";
-import { FiArrowLeft } from "react-icons/fi";
 import {
   FaGlobe,
   FaInstagram,
@@ -10,6 +9,7 @@ import {
   FaTiktok,
   FaPinterest,
 } from "react-icons/fa6";
+import { Button } from "../../components/ui/Button/Button";
 import {
   fetchOfferById,
   type ApiOffer,
@@ -57,22 +57,22 @@ export const OfferDetailPage: React.FC = () => {
   const brandLogoUrl = brand?.logo ? `${API_URL}${brand.logo}` : null;
 
   const socials = [
-    { key: "website", url: offer.website, icon: <FaGlobe /> },
-    { key: "instagram", url: offer.instagram, icon: <FaInstagram /> },
-    { key: "facebook", url: offer.facebook, icon: <FaFacebook /> },
-    { key: "tiktok", url: offer.tiktok, icon: <FaTiktok /> },
-    { key: "pinterest", url: offer.pinterest, icon: <FaPinterest /> },
+    { key: "website", url: offer.website, icon: <FaGlobe color="#4A90D9" /> },
+    { key: "instagram", url: offer.instagram, icon: <FaInstagram color="#E4405F" /> },
+    { key: "facebook", url: offer.facebook, icon: <FaFacebook color="#1877F2" /> },
+    { key: "tiktok", url: offer.tiktok, icon: <FaTiktok color="#000000" /> },
+    { key: "pinterest", url: offer.pinterest, icon: <FaPinterest color="#E60023" /> },
   ].filter((s) => s.url);
 
   return (
     <div className="offer-detail-page">
-      <button
+      <Button
+        variant="outlined"
         className="offer-detail-back-btn"
         onClick={() => navigate("/offers")}
       >
-        <FiArrowLeft size={14} />
         {t("offerDetailPage.backBtn")}
-      </button>
+      </Button>
 
       <h1 className="offer-detail-title">{offer.name}</h1>
 
@@ -108,7 +108,6 @@ export const OfferDetailPage: React.FC = () => {
 
         {/* ── RIGHT: sidebar ── */}
         <div className="offer-detail-sidebar">
-          {/* Categories */}
           <div className="sidebar-section">
             <span className="sidebar-section-label">
               {t("offerDetailPage.categories")}:
@@ -120,7 +119,6 @@ export const OfferDetailPage: React.FC = () => {
             </span>
           </div>
 
-          {/* Languages */}
           <div className="sidebar-section">
             <span className="sidebar-section-label">
               {t("offerDetailPage.languages")}:
@@ -134,7 +132,6 @@ export const OfferDetailPage: React.FC = () => {
             </span>
           </div>
 
-          {/* Targets */}
           <div className="sidebar-section">
             <span className="sidebar-section-label">
               {t("offerDetailPage.targets")}:
@@ -146,7 +143,6 @@ export const OfferDetailPage: React.FC = () => {
             </span>
           </div>
 
-          {/* Contact card */}
           {offer.contact && (
             <div className="offer-contact-card">
               <span className="offer-contact-card-title">
@@ -156,7 +152,6 @@ export const OfferDetailPage: React.FC = () => {
             </div>
           )}
 
-          {/* Cooperation type */}
           <div className="sidebar-section">
             <span className="sidebar-section-label">
               {t("offerDetailPage.cooperationType")}:
@@ -168,7 +163,6 @@ export const OfferDetailPage: React.FC = () => {
             </span>
           </div>
 
-          {/* Social icons */}
           {socials.length > 0 && (
             <div className="offer-social-icons">
               {socials.map((s) => (

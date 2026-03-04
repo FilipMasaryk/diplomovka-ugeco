@@ -235,7 +235,7 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
 
         {/* SPOLOČNÉ MENU */}
         {renderMenuItem(
-          "settings",
+          "/settings",
           t("menubar.settings"),
           <FiSettings className="menu-icon" />,
         )}

@@ -21,6 +21,7 @@ import {
   type BrandSelectOption,
 } from "../../../../shared/api/brands/brands";
 import { API_URL } from "../../../../shared/config";
+import { useToast } from "../../context/useToast";
 
 interface FormState {
   name: string;
@@ -82,7 +83,7 @@ export const CreateOfferPage: React.FC = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [serverError, setServerError] = useState<string | null>(null);
+  const { showToast } = useToast();
   const [brandLogo, setBrandLogo] = useState<File | null>(null);
   const [brandLogoPreview, setBrandLogoPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -222,7 +223,6 @@ export const CreateOfferPage: React.FC = () => {
       return;
     }
     setSubmitting(true);
-    setServerError(null);
     try {
       const fd = new FormData();
       fd.append("name", form.name);
@@ -247,19 +247,20 @@ export const CreateOfferPage: React.FC = () => {
       setIsDirty(false);
       if (isEdit && id) {
         await updateOffer(id, fd);
+        showToast(t("toasts.offerUpdated"), "success");
       } else {
         await createOffer(fd);
+        showToast(t("toasts.offerCreated"), "success");
       }
       navigate("/offers");
     } catch (err: unknown) {
-      console.error("Failed to save offer:", err);
       if (err && typeof err === "object") {
         const e = err as Record<string, unknown>;
         const msg =
           Array.isArray(e.message) ? e.message.join(", ") : String(e.message ?? "");
-        setServerError(msg || JSON.stringify(err));
+        showToast(msg || JSON.stringify(err), "error");
       } else {
-        setServerError(String(err));
+        showToast(String(err), "error");
       }
     } finally {
       setSubmitting(false);
@@ -606,13 +607,6 @@ export const CreateOfferPage: React.FC = () => {
             )}
           </div>
         ))}
-
-        {/* ── Server error ── */}
-        {serverError && (
-          <span className="offer-field-error" style={{ marginTop: 12 }}>
-            {serverError}
-          </span>
-        )}
 
         {/* ── Footer buttons ── */}
         <div className="offer-form-footer">

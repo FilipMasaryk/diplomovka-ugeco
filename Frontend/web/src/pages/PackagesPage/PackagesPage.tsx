@@ -15,6 +15,7 @@ import {
 import { ConfirmModal } from "../../components/ui/ConfirmModal/ConfirmModal";
 import { CreatePackageModal } from "../../components/ui/CreatePackageModal/CreatePackageModal";
 import { UpdatePackageModal } from "../../components/ui/CreatePackageModal/UpdatePackageModal";
+import { useToast } from "../../context/useToast";
 
 export type PackageFormState = {
   name: string;
@@ -25,6 +26,7 @@ export type PackageFormState = {
 
 export const PackagesPage: React.FC = () => {
   const { t } = useTranslation();
+  const { showToast } = useToast();
   const [packages, setPackages] = useState<PackageTableData[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -102,12 +104,13 @@ export const PackagesPage: React.FC = () => {
         });
         setIsCreateModalOpen(false);
         loadData();
+        showToast(t("toasts.packageCreated"), "success");
       } catch (error: any) {
         console.error("Error creating package:", error);
         throw error;
       }
     },
-    [loadData],
+    [loadData, showToast, t],
   );
 
   const openDeleteConfirm = (pkg: PackageTableData) => {
@@ -128,6 +131,7 @@ export const PackagesPage: React.FC = () => {
     const success = await deletePackage(packageId);
     if (success) {
       loadData();
+      showToast(t("toasts.packageDeleted"), "success");
     }
   };
 
@@ -164,6 +168,7 @@ export const PackagesPage: React.FC = () => {
             });
             setIsUpdateModalOpen(false);
             loadData();
+            showToast(t("toasts.packageUpdated"), "success");
           }}
           packageData={packageToUpdate}
         />

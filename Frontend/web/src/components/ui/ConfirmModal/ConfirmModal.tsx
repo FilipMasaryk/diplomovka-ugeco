@@ -1,5 +1,4 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 import "./ConfirmModal.css";
 import { Button } from "../Button/Button";
 

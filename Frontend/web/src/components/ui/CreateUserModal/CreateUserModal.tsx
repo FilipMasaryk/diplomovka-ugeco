@@ -14,6 +14,7 @@ import {
   type Brand,
 } from "../../../../../shared/api/users/admin/users";
 import { createUserSchema } from "../../../pages/UsersPage/schemas/createUserSchema";
+import { useToast } from "../../../context/useToast";
 import "./createUserModal.css";
 
 interface SelectOption {
@@ -60,7 +61,7 @@ export const CreateUserModal: React.FC<UserModalProps> = React.memo(
       initialData || initialFormState,
     );
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [backendError, setBackendError] = useState<string | null>(null);
+    const { showToast } = useToast();
     const [dbPackages, setDbPackages] = useState<Package[]>([]);
     const [dbBrands, setDbBrands] = useState<Brand[]>([]);
 
@@ -68,7 +69,6 @@ export const CreateUserModal: React.FC<UserModalProps> = React.memo(
       if (isOpen) {
         setFormData(initialData || initialFormState);
         setErrors({});
-        setBackendError(null);
 
         const loadData = async () => {
           const [pkgs, brnds] = await Promise.all([
@@ -150,7 +150,6 @@ export const CreateUserModal: React.FC<UserModalProps> = React.memo(
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      setBackendError(null);
 
       const result = createUserSchema.safeParse(formData);
       if (!result.success) {
@@ -168,17 +167,16 @@ export const CreateUserModal: React.FC<UserModalProps> = React.memo(
       try {
         await onSubmit(formData);
       } catch (error: any) {
-        // Spracovanie backend erroru (zobrazenie len prvej správy)
         if (error && Array.isArray(error.message) && error.message.length > 0) {
           const firstMsg = error.message[0];
           const cleanMsg = firstMsg.includes(":")
             ? firstMsg.split(":")[1].trim()
             : firstMsg;
-          setBackendError(cleanMsg);
+          showToast(cleanMsg, "error");
         } else if (typeof error?.message === "string") {
-          setBackendError(error.message);
+          showToast(error.message, "error");
         } else {
-          setBackendError(t("errors.somethingWentWrong"));
+          showToast(t("errors.somethingWentWrong"), "error");
         }
       }
     };
@@ -308,10 +306,6 @@ export const CreateUserModal: React.FC<UserModalProps> = React.memo(
                 />
               </div>
             </div>
-
-            {backendError && (
-              <div className="general-error">{backendError}</div>
-            )}
 
             <div className="modal-footer">
               <Button type="submit" className="btn-create-submit">

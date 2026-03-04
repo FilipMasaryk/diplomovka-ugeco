@@ -27,9 +27,11 @@ import {
 } from "../../components/ui/CreateBrandModal/CreateBrandModal";
 import { UpdateBrandModal } from "../../components/ui/CreateBrandModal/UpdateBrandModal";
 import { ConfirmModal } from "../../components/ui/ConfirmModal/ConfirmModal";
+import { useToast } from "../../context/useToast";
 
 export const BrandsPage: React.FC = () => {
   const { t } = useTranslation();
+  const { showToast } = useToast();
   const [brands, setBrands] = useState<BrandTableData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -110,12 +112,13 @@ export const BrandsPage: React.FC = () => {
         await createBrand(formData);
         setIsCreateModalOpen(false);
         loadData();
+        showToast(t("toasts.brandCreated"), "success");
       } catch (error: any) {
         console.error("Error creating brand:", error);
         throw error;
       }
     },
-    [loadData],
+    [loadData, showToast, t],
   );
 
   const openConfirm = (
@@ -145,6 +148,10 @@ export const BrandsPage: React.FC = () => {
 
     if (success) {
       loadData();
+      showToast(
+        t(type === "archiveBrand" ? "toasts.brandArchived" : "toasts.brandRestored"),
+        "success",
+      );
     }
   };
 
@@ -177,6 +184,7 @@ export const BrandsPage: React.FC = () => {
             await updateBrand(id, data);
             setIsUpdateModalOpen(false);
             loadData();
+            showToast(t("toasts.brandUpdated"), "success");
           }}
           brandData={brandToUpdate}
         />

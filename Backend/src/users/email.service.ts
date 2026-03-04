@@ -18,7 +18,7 @@ export class EmailService {
   }
 
   async sendInitEmail(to: string, initToken: string) {
-    const initUrl = `http://localhost:3000/auth/initialize-password/${initToken}`;
+    const initUrl = `http://localhost:5173/initialize-password/${initToken}`;
     try {
       await this.transporter.sendMail({
         from: `"Ugeco" <ugecotest@outlook.com>`,
@@ -38,7 +38,7 @@ export class EmailService {
   }
 
   async sendResetEmail(to: string, resetToken: string) {
-    const resetUrl = `http://localhost:3000/auth/reset-password/${resetToken}`;
+    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
     try {
       await this.transporter.sendMail({
         from: `"Ugeco" <ugecotest@outlook.com>`,

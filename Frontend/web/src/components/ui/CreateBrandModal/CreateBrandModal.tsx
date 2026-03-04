@@ -14,6 +14,7 @@ import {
   type ContactUser,
 } from "../../../../../shared/api/brands/brands";
 import { createBrandSchema } from "../../../pages/BrandsPage/schemas/createBrandSchema";
+import { useToast } from "../../../context/useToast";
 import "../../ui/CreateUserModal/createUserModal.css";
 
 interface SelectOption {
@@ -56,7 +57,7 @@ export const CreateBrandModal: React.FC<CreateBrandModalProps> = React.memo(
     const { t } = useTranslation();
     const [formData, setFormData] = useState<BrandFormState>(initialFormState);
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [backendError, setBackendError] = useState<string | null>(null);
+    const { showToast } = useToast();
     const [dbPackages, setDbPackages] = useState<BrandPackage[]>([]);
     const [dbUsers, setDbUsers] = useState<ContactUser[]>([]);
 
@@ -64,7 +65,6 @@ export const CreateBrandModal: React.FC<CreateBrandModalProps> = React.memo(
       if (isOpen) {
         setFormData(initialFormState);
         setErrors({});
-        setBackendError(null);
         fetchBrandPackages().then(setDbPackages);
         fetchUsersForContact().then(setDbUsers);
       }
@@ -124,7 +124,6 @@ export const CreateBrandModal: React.FC<CreateBrandModalProps> = React.memo(
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      setBackendError(null);
 
       const result = createBrandSchema.safeParse(formData);
       if (!result.success) {
@@ -147,11 +146,11 @@ export const CreateBrandModal: React.FC<CreateBrandModalProps> = React.memo(
           const cleanMsg = firstMsg.includes(":")
             ? firstMsg.split(":")[1].trim()
             : firstMsg;
-          setBackendError(cleanMsg);
+          showToast(cleanMsg, "error");
         } else if (typeof error?.message === "string") {
-          setBackendError(error.message);
+          showToast(error.message, "error");
         } else {
-          setBackendError(t("errors.somethingWentWrong"));
+          showToast(t("errors.somethingWentWrong"), "error");
         }
       }
     };
@@ -257,10 +256,6 @@ export const CreateBrandModal: React.FC<CreateBrandModalProps> = React.memo(
                 />
               </div>
             </div>
-
-            {backendError && (
-              <div className="general-error">{backendError}</div>
-            )}
 
             <div className="modal-footer">
               <Button type="submit" className="btn-create-submit">

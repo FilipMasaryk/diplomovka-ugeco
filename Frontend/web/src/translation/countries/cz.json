@@ -16,7 +16,15 @@
   "errors": {
     "required": "Povinné pole",
     "invalidEmail": "Neplatný e-mail",
-    "invalidUrl": "Neplatná URL adresa"
+    "invalidUrl": "Neplatná URL adresa",
+    "passwordMin": "Heslo musí mít alespoň 8 znaků",
+    "passwordUppercase": "Heslo musí obsahovat alespoň jedno velké písmeno",
+    "passwordLowercase": "Heslo musí obsahovat alespoň jedno malé písmeno",
+    "passwordNumber": "Heslo musí obsahovat alespoň jednu číslici",
+    "passwordSpecial": "Heslo musí obsahovat alespoň jeden speciální znak",
+    "passwordsMismatch": "Hesla se neshodují",
+    "emailsMismatch": "E-maily se neshodují",
+    "somethingWentWrong": "Něco se pokazilo"
   },
   "validation": {
     "required": "Toto pole je povinné"
@@ -55,7 +63,9 @@
     "totalOffers": "Počet nabídek",
     "activeOffers": "Počet aktivních nabídek",
     "countriesCount": "Počet zemí",
-    "allCountries": "Všechny země"
+    "allCountries": "Všechny země",
+    "creatorsChartTitle": "Počet tvůrců",
+    "offersChartTitle": "Počet nabídek"
   },
   "usersPage": {
     "title": "Uživatelské účty",
@@ -233,14 +243,14 @@
     "animal": "Zvíře"
   },
   "languages": {
-    "sk": "SK",
-    "en": "EN",
-    "cz": "CZ",
-    "pl": "PL",
-    "de": "DE",
-    "hu": "HU",
-    "it": "IT",
-    "es": "ES"
+    "sk": "Slovenský",
+    "en": "Anglický",
+    "cz": "Český",
+    "pl": "Polský",
+    "de": "Německý",
+    "hu": "Maďarský",
+    "it": "Italský",
+    "es": "Španělský"
   },
   "createOfferPage": {
     "title": "Vytvořit nabídku",
@@ -321,5 +331,47 @@
       "offersCount": "Počet nabídek",
       "months": "měsíců"
     }
+  },
+  "resetPassword": {
+    "title": "Obnovení hesla",
+    "description": "Zadejte nové heslo pro váš účet.",
+    "password": "Nové heslo",
+    "passwordConfirm": "Potvrzení hesla",
+    "submitBtn": "Nastavit heslo",
+    "successTitle": "Heslo bylo úspěšně změněno",
+    "successDescription": "Vaše heslo bylo úspěšně obnoveno. Nyní se můžete přihlásit s novým heslem.",
+    "backToLogin": "Zpět na přihlášení"
+  },
+  "settingsPage": {
+    "title": "Nastavení",
+    "name": "Jméno",
+    "surname": "Příjmení",
+    "newEmailTitle": "Nový e-mail",
+    "newEmail": "Nový e-mail",
+    "emailConfirm": "Potvrzení e-mailu",
+    "newEmailPlaceholder": "novy@email.cz",
+    "newPasswordTitle": "Nové heslo",
+    "newPassword": "Nové heslo",
+    "passwordConfirm": "Potvrzení hesla",
+    "saveBtn": "Uložit",
+    "successMessage": "Změny byly úspěšně uloženy"
+  },
+  "toasts": {
+    "userCreated": "Uživatel byl úspěšně vytvořen",
+    "userUpdated": "Uživatel byl úspěšně upraven",
+    "userArchived": "Uživatel byl archivován",
+    "userRestored": "Uživatel byl obnoven",
+    "brandCreated": "Značka byla úspěšně vytvořena",
+    "brandUpdated": "Značka byla úspěšně upravena",
+    "brandArchived": "Značka byla archivována",
+    "brandRestored": "Značka byla obnovena",
+    "packageCreated": "Balíček byl úspěšně vytvořen",
+    "packageUpdated": "Balíček byl úspěšně upraven",
+    "packageDeleted": "Balíček byl smazán",
+    "offerCreated": "Nabídka byla úspěšně vytvořena",
+    "offerUpdated": "Nabídka byla úspěšně upravena",
+    "offerArchived": "Nabídka byla archivována",
+    "offerRestored": "Nabídka byla obnovena",
+    "offerDeleted": "Nabídka byla smazána"
   }
 }

@@ -93,7 +93,10 @@ export class OffersService {
   }
 
   async findAll(archived = false): Promise<Offer[]> {
-    return this.offerModel.find({ isArchived: archived }).populate('brand').exec();
+    return this.offerModel
+      .find({ isArchived: archived })
+      .populate('brand')
+      .exec();
   }
 
   async findAllForUser(user: User, archived = false): Promise<Offer[]> {
@@ -107,17 +110,23 @@ export class OffersService {
         isArchived: false,
       });
 
-      return this.offerModel.find({
-        brand: { $in: allowedBrandIds },
-        isArchived: archived,
-      }).populate('brand').exec();
+      return this.offerModel
+        .find({
+          brand: { $in: allowedBrandIds },
+          isArchived: archived,
+        })
+        .populate('brand')
+        .exec();
     }
 
     if (user.role === UserRole.BRAND_MANAGER) {
-      return this.offerModel.find({
-        brand: { $in: user.brands },
-        isArchived: archived,
-      }).populate('brand').exec();
+      return this.offerModel
+        .find({
+          brand: { $in: user.brands },
+          isArchived: archived,
+        })
+        .populate('brand')
+        .exec();
     }
 
     return [];
@@ -202,18 +211,14 @@ export class OffersService {
       }
     }
 
-    // When publishing a concept, deduct offersCount from brand
+    // When publishing a concept, add offer to brand (but don't deduct offersCount — that only happens on create)
     const isPublishing =
       offer.status === OfferStatus.CONCEPT &&
       updateOfferDto.status === OfferStatus.ACTIVE;
 
     if (isPublishing) {
-      if (brand.offersCount <= 0) {
-        throw new BadRequestException('Brand does not have remaining offers');
-      }
       await this.brandModel.findByIdAndUpdate(brand._id, {
-        $inc: { offersCount: -1 },
-        $push: { offers: offer._id },
+        $addToSet: { offers: offer._id },
       });
     }
 
@@ -400,6 +405,67 @@ export class OffersService {
       totalOffers,
       activeOffers,
       creatorsCount,
+    };
+  }
+
+  async getMonthlyStats(months = 7) {
+    const now = new Date();
+    const startDate = new Date(
+      now.getFullYear(),
+      now.getMonth() - months + 1,
+      1,
+    );
+
+    const monthBuckets: string[] = [];
+    for (let i = 0; i < months; i++) {
+      const d = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
+      monthBuckets.push(
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`,
+      );
+    }
+
+    const [creatorsAgg, offersAgg] = await Promise.all([
+      this.userModel.aggregate([
+        {
+          $match: {
+            role: UserRole.CREATOR,
+            createdAt: { $gte: startDate },
+          },
+        },
+        {
+          $group: {
+            _id: { $dateToString: { format: '%Y-%m', date: '$createdAt' } },
+            count: { $sum: 1 },
+          },
+        },
+      ]),
+      this.offerModel.aggregate([
+        {
+          $match: {
+            createdAt: { $gte: startDate },
+          },
+        },
+        {
+          $group: {
+            _id: { $dateToString: { format: '%Y-%m', date: '$createdAt' } },
+            count: { $sum: 1 },
+          },
+        },
+      ]),
+    ]);
+
+    const creatorsMap = new Map(creatorsAgg.map((r) => [r._id, r.count]));
+    const offersMap = new Map(offersAgg.map((r) => [r._id, r.count]));
+
+    return {
+      creatorsMonthly: monthBuckets.map((m) => ({
+        month: m,
+        count: creatorsMap.get(m) || 0,
+      })),
+      offersMonthly: monthBuckets.map((m) => ({
+        month: m,
+        count: offersMap.get(m) || 0,
+      })),
     };
   }
 }

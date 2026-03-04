@@ -12,6 +12,7 @@
   Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { JwtService } from '@nestjs/jwt';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import {
   createUserSchema,
@@ -40,17 +41,36 @@ import {
 } from './schemas/updateBrandManagerSchema';
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @UseGuards(AuthGuard)
-  @Roles(UserRole.CREATOR)
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER, UserRole.CREATOR)
   @Patch('me')
   async updateMe(
     @Req() req,
     @Body(new ZodValidationPipe(updateSelfSchema))
     updateData: UpdateSelfDto,
   ) {
-    return this.usersService.updateSelf(req.user.id, updateData);
+    const user = await this.usersService.updateSelf(req.user.id, updateData);
+
+    const payload = {
+      id: user._id,
+      name: user.name,
+      surName: user.surName,
+      email: user.email,
+      role: user.role,
+      countries: user.countries ?? [],
+      brands: user.brands ?? [],
+    };
+
+    const access_token = await this.jwtService.signAsync(payload, {
+      expiresIn: '1h',
+    });
+
+    return { ...user, access_token };
   }
 
   @UseGuards(AuthGuard, RolesGuard)

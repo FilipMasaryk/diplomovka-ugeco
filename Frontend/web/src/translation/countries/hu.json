@@ -16,7 +16,15 @@
   "errors": {
     "required": "Kötelező mező",
     "invalidEmail": "Érvénytelen e-mail",
-    "invalidUrl": "Érvénytelen URL"
+    "invalidUrl": "Érvénytelen URL",
+    "passwordMin": "A jelszónak legalább 8 karakter hosszúnak kell lennie",
+    "passwordUppercase": "A jelszónak legalább egy nagybetűt kell tartalmaznia",
+    "passwordLowercase": "A jelszónak legalább egy kisbetűt kell tartalmaznia",
+    "passwordNumber": "A jelszónak legalább egy számot kell tartalmaznia",
+    "passwordSpecial": "A jelszónak legalább egy speciális karaktert kell tartalmaznia",
+    "passwordsMismatch": "A jelszavak nem egyeznek",
+    "emailsMismatch": "Az e-mail címek nem egyeznek",
+    "somethingWentWrong": "Valami hiba történt"
   },
   "validation": {
     "required": "Ez a mező kötelező"
@@ -55,7 +63,9 @@
     "totalOffers": "Összes ajánlat",
     "activeOffers": "Aktív ajánlatok",
     "countriesCount": "Országok száma",
-    "allCountries": "Minden ország"
+    "allCountries": "Minden ország",
+    "creatorsChartTitle": "Alkotók száma",
+    "offersChartTitle": "Ajánlatok száma"
   },
   "usersPage": {
     "title": "Felhasználói fiókok",
@@ -233,14 +243,14 @@
     "animal": "Állat"
   },
   "languages": {
-    "sk": "SK",
-    "en": "EN",
-    "cz": "CZ",
-    "pl": "PL",
-    "de": "DE",
-    "hu": "HU",
-    "it": "IT",
-    "es": "ES"
+    "sk": "Szlovák",
+    "en": "Angol",
+    "cz": "Cseh",
+    "pl": "Lengyel",
+    "de": "Német",
+    "hu": "Magyar",
+    "it": "Olasz",
+    "es": "Spanyol"
   },
   "createOfferPage": {
     "title": "Ajánlat létrehozása",
@@ -321,5 +331,47 @@
       "offersCount": "Ajánlatok száma",
       "months": "hónap"
     }
+  },
+  "resetPassword": {
+    "title": "Jelszó visszaállítása",
+    "description": "Adjon meg egy új jelszót a fiókjához.",
+    "password": "Új jelszó",
+    "passwordConfirm": "Jelszó megerősítése",
+    "submitBtn": "Jelszó beállítása",
+    "successTitle": "Jelszó sikeresen megváltoztatva",
+    "successDescription": "Jelszava sikeresen visszaállítva. Most már bejelentkezhet az új jelszavával.",
+    "backToLogin": "Vissza a bejelentkezéshez"
+  },
+  "settingsPage": {
+    "title": "Beállítások",
+    "name": "Keresztnév",
+    "surname": "Vezetéknév",
+    "newEmailTitle": "Új e-mail",
+    "newEmail": "Új e-mail",
+    "emailConfirm": "E-mail megerősítése",
+    "newEmailPlaceholder": "uj@email.hu",
+    "newPasswordTitle": "Új jelszó",
+    "newPassword": "Új jelszó",
+    "passwordConfirm": "Jelszó megerősítése",
+    "saveBtn": "Mentés",
+    "successMessage": "A változtatások sikeresen mentve"
+  },
+  "toasts": {
+    "userCreated": "Felhasználó sikeresen létrehozva",
+    "userUpdated": "Felhasználó sikeresen frissítve",
+    "userArchived": "Felhasználó archiválva",
+    "userRestored": "Felhasználó visszaállítva",
+    "brandCreated": "Márka sikeresen létrehozva",
+    "brandUpdated": "Márka sikeresen frissítve",
+    "brandArchived": "Márka archiválva",
+    "brandRestored": "Márka visszaállítva",
+    "packageCreated": "Csomag sikeresen létrehozva",
+    "packageUpdated": "Csomag sikeresen frissítve",
+    "packageDeleted": "Csomag törölve",
+    "offerCreated": "Ajánlat sikeresen létrehozva",
+    "offerUpdated": "Ajánlat sikeresen frissítve",
+    "offerArchived": "Ajánlat archiválva",
+    "offerRestored": "Ajánlat visszaállítva",
+    "offerDeleted": "Ajánlat törölve"
   }
 }

@@ -17,6 +17,7 @@ interface AuthContextType {
   token: string | null;
   loginUser: (token: string) => void;
   logout: () => void;
+  updateUser: (data: Partial<User>) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -41,6 +42,10 @@ export const AuthProvider = ({ children }: any) => {
     localStorage.setItem("access_token", token);
   };
 
+  const updateUser = (data: Partial<User>) => {
+    setUser((prev) => (prev ? { ...prev, ...data } : prev));
+  };
+
   const logout = () => {
     setToken(null);
     setUser(null);
@@ -50,7 +55,7 @@ export const AuthProvider = ({ children }: any) => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <AuthContext.Provider value={{ user, token, loginUser, logout }}>
+    <AuthContext.Provider value={{ user, token, loginUser, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

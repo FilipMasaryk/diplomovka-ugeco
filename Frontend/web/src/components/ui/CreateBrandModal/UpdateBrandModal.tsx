@@ -15,6 +15,7 @@ import {
 } from "../../../../../shared/api/brands/brands";
 import { updateBrandSchema } from "../../../pages/BrandsPage/schemas/updateBrandSchema";
 import type { BrandFormState } from "./CreateBrandModal";
+import { useToast } from "../../../context/useToast";
 import "../../ui/CreateUserModal/createUserModal.css";
 
 interface SelectOption {
@@ -34,7 +35,7 @@ export const UpdateBrandModal: React.FC<UpdateBrandModalProps> = React.memo(
     const { t } = useTranslation();
     const [formData, setFormData] = useState<BrandFormState>({ ...brandData });
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [backendError, setBackendError] = useState<string | null>(null);
+    const { showToast } = useToast();
     const [dbPackages, setDbPackages] = useState<BrandPackage[]>([]);
     const [dbUsers, setDbUsers] = useState<ContactUser[]>([]);
 
@@ -42,7 +43,6 @@ export const UpdateBrandModal: React.FC<UpdateBrandModalProps> = React.memo(
       if (isOpen) {
         setFormData({ ...brandData });
         setErrors({});
-        setBackendError(null);
         fetchBrandPackages().then(setDbPackages);
         fetchUsersForContact().then(setDbUsers);
       }
@@ -117,7 +117,6 @@ export const UpdateBrandModal: React.FC<UpdateBrandModalProps> = React.memo(
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      setBackendError(null);
 
       const result = updateBrandSchema.safeParse(formData);
       if (!result.success) {
@@ -140,9 +139,9 @@ export const UpdateBrandModal: React.FC<UpdateBrandModalProps> = React.memo(
           const cleanMsg = firstMsg.includes(":")
             ? firstMsg.split(":")[1].trim()
             : firstMsg;
-          setBackendError(cleanMsg);
+          showToast(cleanMsg, "error");
         } else {
-          setBackendError(error?.message || t("errors.somethingWentWrong"));
+          showToast(error?.message || t("errors.somethingWentWrong"), "error");
         }
       }
     };
@@ -248,10 +247,6 @@ export const UpdateBrandModal: React.FC<UpdateBrandModalProps> = React.memo(
                 />
               </div>
             </div>
-
-            {backendError && (
-              <div className="general-error">{backendError}</div>
-            )}
 
             <div className="modal-footer">
               <Button type="submit" className="btn-create-submit">

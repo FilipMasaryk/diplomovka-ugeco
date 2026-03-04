@@ -15,6 +15,7 @@ import {
 } from "../../../../../shared/api/users/admin/users";
 import type { FormState } from "../CreateUserModal/CreateUserModal";
 import { updateUserSchema } from "../../../pages/UsersPage/schemas/updateUserSchema";
+import { useToast } from "../../../context/useToast";
 import "../CreateUserModal/createUserModal.css";
 
 interface SelectOption {
@@ -34,7 +35,7 @@ export const UpdateUserModal: React.FC<UpdateUserModalProps> = React.memo(
     const { t } = useTranslation();
     const [formData, setFormData] = useState<FormState>({ ...userData });
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [backendError, setBackendError] = useState<string | null>(null);
+    const { showToast } = useToast();
     const [dbPackages, setDbPackages] = useState<Package[]>([]);
     const [dbBrands, setDbBrands] = useState<Brand[]>([]);
 
@@ -48,7 +49,6 @@ export const UpdateUserModal: React.FC<UpdateUserModalProps> = React.memo(
           package: userData.package || "",
         });
         setErrors({});
-        setBackendError(null);
 
         const loadData = async () => {
           const [pkgs, brnds] = await Promise.all([
@@ -143,7 +143,6 @@ export const UpdateUserModal: React.FC<UpdateUserModalProps> = React.memo(
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      setBackendError(null);
 
       // 1. Zod validácia
       const result = updateUserSchema.safeParse(formData);
@@ -190,9 +189,9 @@ export const UpdateUserModal: React.FC<UpdateUserModalProps> = React.memo(
           const cleanMsg = firstMsg.includes(":")
             ? firstMsg.split(":")[1].trim()
             : firstMsg;
-          setBackendError(cleanMsg);
+          showToast(cleanMsg, "error");
         } else {
-          setBackendError(error?.message || t("errors.somethingWentWrong"));
+          showToast(error?.message || t("errors.somethingWentWrong"), "error");
         }
       }
     };
@@ -310,10 +309,6 @@ export const UpdateUserModal: React.FC<UpdateUserModalProps> = React.memo(
                 />
               </div>
             </div>
-
-            {backendError && (
-              <div className="general-error">{backendError}</div>
-            )}
 
             <div className="modal-footer">
               <Button type="submit" className="btn-create-submit">

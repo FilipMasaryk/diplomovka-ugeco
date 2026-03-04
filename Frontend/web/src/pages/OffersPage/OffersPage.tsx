@@ -24,9 +24,11 @@ import { BrandCategory } from "../../types/brandCategories";
 import { OfferTarget } from "../../types/offerTarget";
 import { OfferLanguage } from "../../types/offerLanguage";
 import { ConfirmModal } from "../../components/ui/ConfirmModal/ConfirmModal";
+import { useToast } from "../../context/useToast";
 
 export const OffersPage: React.FC = () => {
   const { t } = useTranslation();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const [offers, setOffers] = useState<OfferTableData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -144,19 +146,28 @@ export const OffersPage: React.FC = () => {
 
   const handleArchiveConfirm = async () => {
     const ok = await archiveOffer(archiveModal.offerId);
-    if (ok) loadData(false);
+    if (ok) {
+      loadData(false);
+      showToast(t("toasts.offerArchived"), "success");
+    }
     setArchiveModal({ isOpen: false, offerId: "", offerName: "" });
   };
 
   const handleRestoreConfirm = async () => {
     const ok = await restoreOffer(restoreModal.offerId);
-    if (ok) loadData(true);
+    if (ok) {
+      loadData(true);
+      showToast(t("toasts.offerRestored"), "success");
+    }
     setRestoreModal({ isOpen: false, offerId: "", offerName: "" });
   };
 
   const handleDeleteConfirm = async () => {
     const ok = await deleteOffer(deleteModal.offerId);
-    if (ok) loadData(isArchivedView);
+    if (ok) {
+      loadData(isArchivedView);
+      showToast(t("toasts.offerDeleted"), "success");
+    }
     setDeleteModal({ isOpen: false, offerId: "", offerName: "" });
   };
 

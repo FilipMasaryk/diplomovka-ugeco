@@ -30,9 +30,11 @@ import {
 } from "../../components/ui/CreateUserModal/CreateUserModal";
 import { createUserSchema } from "./schemas/createUserSchema";
 import { UpdateUserModal } from "../../components/ui/CreateUserModal/UpdateUserModal";
+import { useToast } from "../../context/useToast";
 
 export const UsersPage: React.FC = () => {
   const { t } = useTranslation();
+  const { showToast } = useToast();
   const [users, setUsers] = useState<UserTableData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -132,12 +134,13 @@ export const UsersPage: React.FC = () => {
         await createUser(formData);
         setIsCreateModalOpen(false);
         loadData();
+        showToast(t("toasts.userCreated"), "success");
       } catch (error: any) {
         console.error("Chyba pri vytváraní:", error);
         throw error;
       }
     },
-    [loadData],
+    [loadData, showToast, t],
   );
 
   useEffect(() => {
@@ -169,6 +172,10 @@ export const UsersPage: React.FC = () => {
 
     if (success) {
       loadData();
+      showToast(
+        t(type === "archive" ? "toasts.userArchived" : "toasts.userRestored"),
+        "success",
+      );
     }
   };
 
@@ -201,6 +208,7 @@ export const UsersPage: React.FC = () => {
             await updateUser(id, data);
             setIsUpdateModalOpen(false);
             loadData();
+            showToast(t("toasts.userUpdated"), "success");
           }}
           userData={userToUpdate}
         />

@@ -16,7 +16,15 @@
   "errors": {
     "required": "Povinné pole",
     "invalidEmail": "Neplatný e-mail",
-    "invalidUrl": "Neplatná URL adresa"
+    "invalidUrl": "Neplatná URL adresa",
+    "passwordMin": "Heslo musí mať aspoň 8 znakov",
+    "passwordUppercase": "Heslo musí obsahovať aspoň jedno veľké písmeno",
+    "passwordLowercase": "Heslo musí obsahovať aspoň jedno malé písmeno",
+    "passwordNumber": "Heslo musí obsahovať aspoň jednu číslicu",
+    "passwordSpecial": "Heslo musí obsahovať aspoň jeden špeciálny znak",
+    "passwordsMismatch": "Heslá sa nezhodujú",
+    "emailsMismatch": "E-maily sa nezhodujú",
+    "somethingWentWrong": "Niečo sa pokazilo"
   },
   "validation": {
     "required": "Toto pole je povinné"
@@ -55,7 +63,9 @@
     "totalOffers": "Počet ponúk",
     "activeOffers": "Počet aktívnych ponúk",
     "countriesCount": "Počet krajín",
-    "allCountries": "Všetky krajiny"
+    "allCountries": "Všetky krajiny",
+    "creatorsChartTitle": "Počet tvorcov",
+    "offersChartTitle": "Počet ponúk"
   },
   "usersPage": {
     "title": "Užívateľské účty",
@@ -233,14 +243,14 @@
     "animal": "Zviera"
   },
   "languages": {
-    "sk": "SK",
-    "en": "EN",
-    "cz": "CZ",
-    "pl": "PL",
-    "de": "DE",
-    "hu": "HU",
-    "it": "IT",
-    "es": "ES"
+    "sk": "Slovenský",
+    "en": "Anglický",
+    "cz": "Český",
+    "pl": "Poľský",
+    "de": "Nemecký",
+    "hu": "Maďarský",
+    "it": "Taliansky",
+    "es": "Španielsky"
   },
   "createOfferPage": {
     "title": "Vytvoriť ponuku",
@@ -321,5 +331,47 @@
       "offersCount": "Počet ponúk",
       "months": "mes."
     }
+  },
+  "resetPassword": {
+    "title": "Obnovenie hesla",
+    "description": "Zadajte nové heslo pre váš účet.",
+    "password": "Nové heslo",
+    "passwordConfirm": "Potvrdenie hesla",
+    "submitBtn": "Nastaviť heslo",
+    "successTitle": "Heslo bolo úspešne zmenené",
+    "successDescription": "Vaše heslo bolo úspešne obnovené. Teraz sa môžete prihlásiť s novým heslom.",
+    "backToLogin": "Späť na prihlásenie"
+  },
+  "settingsPage": {
+    "title": "Nastavenia",
+    "name": "Meno",
+    "surname": "Priezvisko",
+    "newEmailTitle": "Nový e-mail",
+    "newEmail": "Nový e-mail",
+    "emailConfirm": "Potvrdenie e-mailu",
+    "newEmailPlaceholder": "novy@email.sk",
+    "newPasswordTitle": "Nové heslo",
+    "newPassword": "Nové heslo",
+    "passwordConfirm": "Potvrdenie hesla",
+    "saveBtn": "Uložiť",
+    "successMessage": "Zmeny boli úspešne uložené"
+  },
+  "toasts": {
+    "userCreated": "Užívateľ bol úspešne vytvorený",
+    "userUpdated": "Užívateľ bol úspešne upravený",
+    "userArchived": "Užívateľ bol archivovaný",
+    "userRestored": "Užívateľ bol obnovený",
+    "brandCreated": "Značka bola úspešne vytvorená",
+    "brandUpdated": "Značka bola úspešne upravená",
+    "brandArchived": "Značka bola archivovaná",
+    "brandRestored": "Značka bola obnovená",
+    "packageCreated": "Balíček bol úspešne vytvorený",
+    "packageUpdated": "Balíček bol úspešne upravený",
+    "packageDeleted": "Balíček bol vymazaný",
+    "offerCreated": "Ponuka bola úspešne vytvorená",
+    "offerUpdated": "Ponuka bola úspešne upravená",
+    "offerArchived": "Ponuka bola archivovaná",
+    "offerRestored": "Ponuka bola obnovená",
+    "offerDeleted": "Ponuka bola vymazaná"
   }
 }

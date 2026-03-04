@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/ui/Navbar/Navbar";
 import { Login } from "./pages/Login/Login";
 import { AuthProvider } from "./context/AuthContext";
+import { ToastProvider } from "./context/ToastContext";
 import { useAuth } from "./context/useAuth";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
@@ -13,6 +14,8 @@ import { OffersPage } from "./pages/OffersPage/OffersPage";
 import { CreateOfferPage } from "./pages/CreateOfferPage/CreateOfferPage";
 import { OfferDetailPage } from "./pages/OfferDetailPage/OfferDetailPage";
 import { PackagesPage } from "./pages/PackagesPage/PackagesPage";
+import { ResetPasswordPage } from "./pages/ResetPasswordPage/ResetPasswordPage";
+import { SettingsPage } from "./pages/SettingsPage/SettingsPage";
 import { UserRole } from "./types/userRoles";
 
 function AppContent() {
@@ -30,6 +33,14 @@ function AppContent() {
               element={
                 <PublicRoute>
                   <Login />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/reset-password/:token"
+              element={
+                <PublicRoute>
+                  <ResetPasswordPage />
                 </PublicRoute>
               }
             />
@@ -96,6 +107,14 @@ function AppContent() {
               }
             />
             <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <SettingsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/offers/:id/edit"
               element={
                 <ProtectedRoute
@@ -114,11 +133,13 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
-    </AuthProvider>
+    <ToastProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <AppContent />
+        </BrowserRouter>
+      </AuthProvider>
+    </ToastProvider>
   );
 }
 

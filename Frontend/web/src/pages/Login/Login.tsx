@@ -4,8 +4,9 @@ import loginImage from "../../images/LoginImage.jpg";
 import { InputField } from "../../components/ui/InputField/InputField";
 import { Button } from "../../components/ui/Button/Button";
 import { forgotPasswordSchema, loginSchema } from "./schemas/loginValidation";
-import { login } from "../../../../shared/api/auth/auth";
+import { login, forgotPassword } from "../../../../shared/api/auth/auth";
 import { useAuth } from "../../context/useAuth";
+import { useToast } from "../../context/useToast";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -18,15 +19,14 @@ export const Login = () => {
     {},
   );
   const [forgotErrors, setForgotErrors] = useState<{ email?: string }>({});
-  const [apiError, setApiError] = useState<string | null>(null);
 
   const { loginUser } = useAuth();
+  const { showToast } = useToast();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setApiError(null);
 
     const result = loginSchema.safeParse({ email, password, rememberMe });
     if (!result.success) {
@@ -45,11 +45,11 @@ export const Login = () => {
       loginUser(data.access_token);
       navigate("/");
     } catch (error: any) {
-      setApiError(error.message);
+      showToast(error.message, "error");
     }
   };
 
-  const handleForgotSubmit = (e: React.FormEvent) => {
+  const handleForgotSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = forgotPasswordSchema.safeParse({ email });
     if (!result.success) {
@@ -58,10 +58,13 @@ export const Login = () => {
         if (issue.path[0] === "email") fieldErrors.email = issue.message;
       });
       setForgotErrors(fieldErrors);
-    } else {
-      setForgotErrors({});
-      setView("sent");
+      return;
     }
+    setForgotErrors({});
+    try {
+      await forgotPassword(email);
+    } catch {}
+    setView("sent");
   };
 
   return (
@@ -109,8 +112,6 @@ export const Login = () => {
                 {t("login.rememberMe")}
               </label>
             </div>
-
-            {apiError && <p className="error-text">{apiError}</p>}
 
             <Button type="submit">{t("login.loginBtn")}</Button>
             <Button

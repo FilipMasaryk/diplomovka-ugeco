@@ -21,3 +21,31 @@ export const getOffersStats = async (token: string): Promise<OffersStats> => {
 
   return response.json();
 };
+
+export interface MonthlyDataPoint {
+  month: string;
+  count: number;
+}
+
+export interface MonthlyStats {
+  creatorsMonthly: MonthlyDataPoint[];
+  offersMonthly: MonthlyDataPoint[];
+}
+
+export const getMonthlyStats = async (
+  token: string,
+): Promise<MonthlyStats> => {
+  const response = await fetch(`${API_URL}/offers/stats/monthly`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch monthly stats");
+  }
+
+  return response.json();
+};

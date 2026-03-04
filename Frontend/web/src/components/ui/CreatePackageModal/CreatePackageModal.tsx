@@ -5,6 +5,7 @@ import { type SingleValue } from "react-select";
 import { InputField } from "../InputField/InputField";
 import { Button } from "../Button/Button";
 import { CustomSelect } from "../CustomSelectMenu/CustomSelect";
+import { useToast } from "../../../context/useToast";
 import "../../ui/CreateUserModal/createUserModal.css";
 import type { PackageFormState } from "../../../pages/PackagesPage/PackagesPage";
 
@@ -31,13 +32,12 @@ export const CreatePackageModal: React.FC<CreatePackageModalProps> = React.memo(
     const { t } = useTranslation();
     const [formData, setFormData] = useState<PackageFormState>(initialFormState);
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [backendError, setBackendError] = useState<string | null>(null);
+    const { showToast } = useToast();
 
     useEffect(() => {
       if (isOpen) {
         setFormData(initialFormState);
         setErrors({});
-        setBackendError(null);
       }
     }, [isOpen]);
 
@@ -98,7 +98,6 @@ export const CreatePackageModal: React.FC<CreatePackageModalProps> = React.memo(
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      setBackendError(null);
 
       if (!validate()) return;
 
@@ -110,11 +109,11 @@ export const CreatePackageModal: React.FC<CreatePackageModalProps> = React.memo(
           const cleanMsg = firstMsg.includes(":")
             ? firstMsg.split(":")[1].trim()
             : firstMsg;
-          setBackendError(cleanMsg);
+          showToast(cleanMsg, "error");
         } else if (typeof error?.message === "string") {
-          setBackendError(error.message);
+          showToast(error.message, "error");
         } else {
-          setBackendError(t("errors.somethingWentWrong"));
+          showToast(t("errors.somethingWentWrong"), "error");
         }
       }
     };
@@ -183,10 +182,6 @@ export const CreatePackageModal: React.FC<CreatePackageModalProps> = React.memo(
                 )}
               </div>
             </div>
-
-            {backendError && (
-              <div className="general-error">{backendError}</div>
-            )}
 
             <div className="modal-footer">
               <Button type="submit" className="btn-create-submit">

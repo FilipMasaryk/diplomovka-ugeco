@@ -16,7 +16,15 @@
   "errors": {
     "required": "Required field",
     "invalidEmail": "Invalid email",
-    "invalidUrl": "Invalid URL"
+    "invalidUrl": "Invalid URL",
+    "passwordMin": "Password must be at least 8 characters",
+    "passwordUppercase": "Password must contain at least one uppercase letter",
+    "passwordLowercase": "Password must contain at least one lowercase letter",
+    "passwordNumber": "Password must contain at least one number",
+    "passwordSpecial": "Password must contain at least one special character",
+    "passwordsMismatch": "Passwords do not match",
+    "emailsMismatch": "Emails do not match",
+    "somethingWentWrong": "Something went wrong"
   },
   "validation": {
     "required": "This field is required"
@@ -55,7 +63,9 @@
     "totalOffers": "Total offers",
     "activeOffers": "Active offers",
     "countriesCount": "Countries count",
-    "allCountries": "All countries"
+    "allCountries": "All countries",
+    "creatorsChartTitle": "Creators count",
+    "offersChartTitle": "Offers count"
   },
   "usersPage": {
     "title": "User Accounts",
@@ -233,14 +243,14 @@
     "animal": "Animal"
   },
   "languages": {
-    "sk": "SK",
-    "en": "EN",
-    "cz": "CZ",
-    "pl": "PL",
-    "de": "DE",
-    "hu": "HU",
-    "it": "IT",
-    "es": "ES"
+    "sk": "Slovak",
+    "en": "English",
+    "cz": "Czech",
+    "pl": "Polish",
+    "de": "German",
+    "hu": "Hungarian",
+    "it": "Italian",
+    "es": "Spanish"
   },
   "createOfferPage": {
     "title": "Create Offer",
@@ -321,5 +331,47 @@
       "offersCount": "Offers Count",
       "months": "mo."
     }
+  },
+  "resetPassword": {
+    "title": "Reset Password",
+    "description": "Enter a new password for your account.",
+    "password": "New password",
+    "passwordConfirm": "Confirm password",
+    "submitBtn": "Set password",
+    "successTitle": "Password successfully changed",
+    "successDescription": "Your password has been reset. You can now log in with your new password.",
+    "backToLogin": "Back to login"
+  },
+  "settingsPage": {
+    "title": "Settings",
+    "name": "First name",
+    "surname": "Last name",
+    "newEmailTitle": "New email",
+    "newEmail": "New email",
+    "emailConfirm": "Email confirmation",
+    "newEmailPlaceholder": "new@email.com",
+    "newPasswordTitle": "New password",
+    "newPassword": "New password",
+    "passwordConfirm": "Password confirmation",
+    "saveBtn": "Save",
+    "successMessage": "Changes saved successfully"
+  },
+  "toasts": {
+    "userCreated": "User created successfully",
+    "userUpdated": "User updated successfully",
+    "userArchived": "User archived",
+    "userRestored": "User restored",
+    "brandCreated": "Brand created successfully",
+    "brandUpdated": "Brand updated successfully",
+    "brandArchived": "Brand archived",
+    "brandRestored": "Brand restored",
+    "packageCreated": "Package created successfully",
+    "packageUpdated": "Package updated successfully",
+    "packageDeleted": "Package deleted",
+    "offerCreated": "Offer created successfully",
+    "offerUpdated": "Offer updated successfully",
+    "offerArchived": "Offer archived",
+    "offerRestored": "Offer restored",
+    "offerDeleted": "Offer deleted"
   }
 }

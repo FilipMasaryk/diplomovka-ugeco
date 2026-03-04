@@ -94,6 +94,12 @@ export class OffersController {
     return this.offersService.getStats();
   }
 
+  @Get('stats/monthly')
+  @Roles(UserRole.ADMIN)
+  async getMonthlyStats() {
+    return this.offersService.getMonthlyStats();
+  }
+
   @Post()
   @Roles(UserRole.ADMIN, UserRole.BRAND_MANAGER, UserRole.SUBADMIN)
   @UseInterceptors(

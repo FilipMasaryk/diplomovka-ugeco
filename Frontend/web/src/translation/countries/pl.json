@@ -16,7 +16,15 @@
   "errors": {
     "required": "Pole wymagane",
     "invalidEmail": "Nieprawidłowy e-mail",
-    "invalidUrl": "Nieprawidłowy URL"
+    "invalidUrl": "Nieprawidłowy URL",
+    "passwordMin": "Hasło musi mieć co najmniej 8 znaków",
+    "passwordUppercase": "Hasło musi zawierać co najmniej jedną wielką literę",
+    "passwordLowercase": "Hasło musi zawierać co najmniej jedną małą literę",
+    "passwordNumber": "Hasło musi zawierać co najmniej jedną cyfrę",
+    "passwordSpecial": "Hasło musi zawierać co najmniej jeden znak specjalny",
+    "passwordsMismatch": "Hasła nie są zgodne",
+    "emailsMismatch": "Adresy e-mail nie są zgodne",
+    "somethingWentWrong": "Coś poszło nie tak"
   },
   "validation": {
     "required": "To pole jest wymagane"
@@ -55,7 +63,9 @@
     "totalOffers": "Liczba ofert",
     "activeOffers": "Aktywne oferty",
     "countriesCount": "Liczba krajów",
-    "allCountries": "Wszystkie kraje"
+    "allCountries": "Wszystkie kraje",
+    "creatorsChartTitle": "Liczba twórców",
+    "offersChartTitle": "Liczba ofert"
   },
   "usersPage": {
     "title": "Konta użytkowników",
@@ -233,14 +243,14 @@
     "animal": "Zwierzę"
   },
   "languages": {
-    "sk": "SK",
-    "en": "EN",
-    "cz": "CZ",
-    "pl": "PL",
-    "de": "DE",
-    "hu": "HU",
-    "it": "IT",
-    "es": "ES"
+    "sk": "Słowacki",
+    "en": "Angielski",
+    "cz": "Czeski",
+    "pl": "Polski",
+    "de": "Niemiecki",
+    "hu": "Węgierski",
+    "it": "Włoski",
+    "es": "Hiszpański"
   },
   "createOfferPage": {
     "title": "Utwórz ofertę",
@@ -321,5 +331,47 @@
       "offersCount": "Liczba ofert",
       "months": "miesięcy"
     }
+  },
+  "resetPassword": {
+    "title": "Resetowanie hasła",
+    "description": "Wprowadź nowe hasło dla swojego konta.",
+    "password": "Nowe hasło",
+    "passwordConfirm": "Potwierdź hasło",
+    "submitBtn": "Ustaw hasło",
+    "successTitle": "Hasło zostało zmienione",
+    "successDescription": "Twoje hasło zostało pomyślnie zresetowane. Możesz się teraz zalogować nowym hasłem.",
+    "backToLogin": "Powrót do logowania"
+  },
+  "settingsPage": {
+    "title": "Ustawienia",
+    "name": "Imię",
+    "surname": "Nazwisko",
+    "newEmailTitle": "Nowy e-mail",
+    "newEmail": "Nowy e-mail",
+    "emailConfirm": "Potwierdzenie e-maila",
+    "newEmailPlaceholder": "nowy@email.pl",
+    "newPasswordTitle": "Nowe hasło",
+    "newPassword": "Nowe hasło",
+    "passwordConfirm": "Potwierdzenie hasła",
+    "saveBtn": "Zapisz",
+    "successMessage": "Zmiany zostały zapisane"
+  },
+  "toasts": {
+    "userCreated": "Użytkownik został pomyślnie utworzony",
+    "userUpdated": "Użytkownik został pomyślnie zaktualizowany",
+    "userArchived": "Użytkownik zarchiwizowany",
+    "userRestored": "Użytkownik przywrócony",
+    "brandCreated": "Marka została pomyślnie utworzona",
+    "brandUpdated": "Marka została pomyślnie zaktualizowana",
+    "brandArchived": "Marka zarchiwizowana",
+    "brandRestored": "Marka przywrócona",
+    "packageCreated": "Pakiet został pomyślnie utworzony",
+    "packageUpdated": "Pakiet został pomyślnie zaktualizowany",
+    "packageDeleted": "Pakiet usunięty",
+    "offerCreated": "Oferta została pomyślnie utworzona",
+    "offerUpdated": "Oferta została pomyślnie zaktualizowana",
+    "offerArchived": "Oferta zarchiwizowana",
+    "offerRestored": "Oferta przywrócona",
+    "offerDeleted": "Oferta usunięta"
   }
 }
