@@ -7,6 +7,7 @@ import { Button } from "../Button/Button";
 import { CustomSelect } from "../CustomSelectMenu/CustomSelect";
 import { UserRole } from "../../../types/userRoles";
 import { Countries } from "../../../types/countryEnum";
+import { useAuth } from "../../../context/useAuth";
 import {
   fetchPackages,
   fetchBrands,
@@ -33,6 +34,8 @@ interface UpdateUserModalProps {
 export const UpdateUserModal: React.FC<UpdateUserModalProps> = React.memo(
   ({ isOpen, onClose, onSubmit, userData }) => {
     const { t } = useTranslation();
+    const { user: authUser } = useAuth();
+    const isSubadmin = authUser?.role === "subadmin";
     const [formData, setFormData] = useState<FormState>({ ...userData });
     const [errors, setErrors] = useState<Record<string, string>>({});
     const { showToast } = useToast();
@@ -64,27 +67,40 @@ export const UpdateUserModal: React.FC<UpdateUserModalProps> = React.memo(
 
     const roleOptions = useMemo(
       () =>
-        Object.values(UserRole).map((role) => ({
-          value: role,
-          label:
-            t(`roles.${role.toLowerCase()}`).charAt(0).toUpperCase() +
-            t(`roles.${role.toLowerCase()}`).slice(1),
-        })),
-      [t],
+        Object.values(UserRole)
+          .filter((role) => !isSubadmin || role !== UserRole.ADMIN)
+          .map((role) => ({
+            value: role,
+            label:
+              t(`roles.${role.toLowerCase()}`).charAt(0).toUpperCase() +
+              t(`roles.${role.toLowerCase()}`).slice(1),
+          })),
+      [t, isSubadmin],
     );
 
     const countryOptions = useMemo(
-      () =>
-        Object.values(Countries).map((c) => ({
+      () => {
+        const all = Object.values(Countries);
+        const available = isSubadmin && authUser?.countries?.length
+          ? all.filter((c) => authUser.countries!.includes(c))
+          : all;
+        return available.map((c) => ({
           value: c,
           label: t(`countries.${c}`),
-        })),
-      [t],
+        }));
+      },
+      [t, isSubadmin, authUser?.countries],
     );
 
     const brandOptions = useMemo(
-      () => dbBrands.map((b) => ({ value: b._id, label: b.name })),
-      [dbBrands],
+      () => dbBrands
+        .filter((b) =>
+          formData.countries.length === 0 || !b.country
+            ? true
+            : formData.countries.includes(b.country),
+        )
+        .map((b) => ({ value: b._id, label: b.name })),
+      [dbBrands, formData.countries],
     );
 
     const packageOptions = useMemo(

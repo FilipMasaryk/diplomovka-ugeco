@@ -14,8 +14,8 @@ import { UserProfileService } from './user-profile.service';
 import {
   type CreateUserProfileDto,
   createUserProfileSchema,
+  validateForPublish,
 } from './schemas/createUserProfileSchema';
-import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
@@ -23,6 +23,7 @@ import * as fs from 'fs';
 import { AuthGuard } from '../auth/auth.guard';
 import type { Multer } from 'multer';
 import { ZodError } from 'zod';
+
 const storage = diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = path.join(process.cwd(), 'src/uploads/profiles');
@@ -47,16 +48,26 @@ export class UserProfileController {
   async createProfile(
     @Req() req,
     @Body() body: any,
-    @UploadedFile() file: Multer.File,
+    @UploadedFile() file?: Multer.File,
   ) {
-    if (!file) {
-      throw new BadRequestException('Image file is required');
+    if (file) {
+      body.image = `/uploads/profiles/${file.filename}`;
     }
-
-    body.image = `/uploads/profiles/${file.filename}`;
 
     try {
       const dto: CreateUserProfileDto = createUserProfileSchema.parse(body);
+
+      // Only enforce strict validation when publishing
+      if (dto.published) {
+        if (!file && !dto.image) {
+          throw new BadRequestException('Image file is required for publishing');
+        }
+        const publishErrors = validateForPublish(dto);
+        if (publishErrors.length > 0) {
+          throw new BadRequestException(publishErrors);
+        }
+      }
+
       return await this.profilesService.create(req.user.id, dto);
     } catch (err) {
       if (file && fs.existsSync(file.path)) {
@@ -84,6 +95,27 @@ export class UserProfileController {
     try {
       const dto = createUserProfileSchema.partial().parse(body);
 
+      // Don't let empty defaults overwrite existing image
+      if (!file && (!dto.image || dto.image === '')) {
+        delete dto.image;
+      }
+
+      // Only enforce strict validation when publishing
+      if (dto.published) {
+        const existing = await this.profilesService.findByUser(req.user.id);
+        const existingObj = existing
+          ? (existing as any).toObject
+            ? (existing as any).toObject()
+            : existing
+          : {};
+        const merged = { ...existingObj, ...dto };
+        if (file) merged.image = `/uploads/profiles/${file.filename}`;
+        const publishErrors = validateForPublish(merged);
+        if (publishErrors.length > 0) {
+          throw new BadRequestException(publishErrors);
+        }
+      }
+
       return await this.profilesService.updateProfile(req.user.id, dto, file);
     } catch (err) {
       if (file && fs.existsSync(file.path)) {
@@ -99,6 +131,7 @@ export class UserProfileController {
       throw err;
     }
   }
+
   @UseGuards(AuthGuard)
   @Get('me')
   async getMyProfile(@Req() req) {

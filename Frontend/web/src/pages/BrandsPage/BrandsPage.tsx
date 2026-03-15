@@ -21,6 +21,7 @@ import {
   type BrandTableData,
 } from "../../../../shared/api/brands/brands";
 import { Countries } from "../../types/countryEnum";
+import { useAuth } from "../../context/useAuth";
 import {
   CreateBrandModal,
   type BrandFormState,
@@ -32,6 +33,8 @@ import { useToast } from "../../context/useToast";
 export const BrandsPage: React.FC = () => {
   const { t } = useTranslation();
   const { showToast } = useToast();
+  const { user: authUser } = useAuth();
+  const isSubadmin = authUser?.role === "subadmin";
   const [brands, setBrands] = useState<BrandTableData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -52,14 +55,20 @@ export const BrandsPage: React.FC = () => {
   }>({ isOpen: false, brandId: "", brandName: "", type: "archiveBrand" });
 
   const countryOptions = useMemo(
-    () => [
-      { value: "", label: t("usersPage.selectCountry") },
-      ...Object.values(Countries).map((code) => ({
-        value: code,
-        label: t(`countries.${code}`),
-      })),
-    ],
-    [t],
+    () => {
+      const all = Object.values(Countries);
+      const available = isSubadmin && authUser?.countries?.length
+        ? all.filter((c) => authUser.countries!.includes(c))
+        : all;
+      return [
+        { value: "", label: t("usersPage.selectCountry") },
+        ...available.map((code) => ({
+          value: code,
+          label: t(`countries.${code}`),
+        })),
+      ];
+    },
+    [t, isSubadmin, authUser?.countries],
   );
 
   const filteredBrands = useMemo(() => {
@@ -167,7 +176,7 @@ export const BrandsPage: React.FC = () => {
   const totalPages = Math.ceil(filteredBrands.length / rowsPerPage);
 
   return (
-    <div className="users-page">
+    <div className="users-page brands-page">
       {isCreateModalOpen && (
         <CreateBrandModal
           isOpen={isCreateModalOpen}
@@ -266,8 +275,9 @@ export const BrandsPage: React.FC = () => {
             <thead>
               <tr>
                 <th>{t("brandsPage.table.name")}</th>
+                <th>{t("brandsPage.table.totalOffersMade")}</th>
                 <th>{t("brandsPage.table.activeOffers")}</th>
-                <th>{t("brandsPage.table.totalOffers")}</th>
+                <th>{t("brandsPage.table.remainingOffers")}</th>
                 <th>{t("brandsPage.table.contact")}</th>
                 <th>{t("brandsPage.table.country")}</th>
                 <th>{t("brandsPage.table.package")}</th>
@@ -281,6 +291,7 @@ export const BrandsPage: React.FC = () => {
                 currentBrands.map((brand) => (
                   <tr key={brand.id}>
                     <td className="link">{brand.name}</td>
+                    <td>{brand.totalOffersMade}</td>
                     <td>{brand.activeOffers}</td>
                     <td>{brand.totalOffers}</td>
                     <td>{brand.contact}</td>
@@ -318,7 +329,7 @@ export const BrandsPage: React.FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={9} className="no-data-text">
+                  <td colSpan={10} className="no-data-text">
                     {t("brandsPage.noData")}
                   </td>
                 </tr>

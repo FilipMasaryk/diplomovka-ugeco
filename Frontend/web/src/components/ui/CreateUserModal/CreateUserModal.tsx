@@ -7,6 +7,7 @@ import { Button } from "../Button/Button";
 import { CustomSelect } from "../CustomSelectMenu/CustomSelect";
 import { UserRole } from "../../../types/userRoles";
 import { Countries } from "../../../types/countryEnum";
+import { useAuth } from "../../../context/useAuth";
 import {
   fetchPackages,
   fetchBrands,
@@ -56,6 +57,8 @@ interface UserModalProps {
 export const CreateUserModal: React.FC<UserModalProps> = React.memo(
   ({ isOpen, onClose, onSubmit, initialData }) => {
     const { t } = useTranslation();
+    const { user: authUser } = useAuth();
+    const isSubadmin = authUser?.role === "subadmin";
 
     const [formData, setFormData] = useState<FormState>(
       initialData || initialFormState,
@@ -82,19 +85,33 @@ export const CreateUserModal: React.FC<UserModalProps> = React.memo(
       }
     }, [isOpen, initialData]);
 
-    const roleOptions = Object.values(UserRole).map((role) => ({
-      value: role,
-      label:
-        t(`roles.${role.toLowerCase()}`).charAt(0).toUpperCase() +
-        t(`roles.${role.toLowerCase()}`).slice(1),
-    }));
+    const roleOptions = Object.values(UserRole)
+      .filter((role) => !isSubadmin || role !== UserRole.ADMIN)
+      .map((role) => ({
+        value: role,
+        label:
+          t(`roles.${role.toLowerCase()}`).charAt(0).toUpperCase() +
+          t(`roles.${role.toLowerCase()}`).slice(1),
+      }));
 
-    const countryOptions = Object.values(Countries).map((c) => ({
-      value: c,
-      label: t(`countries.${c}`),
-    }));
+    const countryOptions = (() => {
+      const all = Object.values(Countries);
+      const available = isSubadmin && authUser?.countries?.length
+        ? all.filter((c) => authUser.countries!.includes(c))
+        : all;
+      return available.map((c) => ({
+        value: c,
+        label: t(`countries.${c}`),
+      }));
+    })();
 
-    const brandOptions = dbBrands.map((b) => ({ value: b._id, label: b.name }));
+    const brandOptions = dbBrands
+      .filter((b) =>
+        formData.countries.length === 0 || !b.country
+          ? true
+          : formData.countries.includes(b.country),
+      )
+      .map((b) => ({ value: b._id, label: b.name }));
 
     const packageOptions = dbPackages
       .filter((p) => p.type === "creator")

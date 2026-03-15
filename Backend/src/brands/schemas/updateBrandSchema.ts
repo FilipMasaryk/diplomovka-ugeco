@@ -2,10 +2,22 @@ import { z } from 'zod';
 import { Country } from '../../common/enums/countryEnum';
 import { BrandCategory } from '../../common/enums/brandCategoriesEnum';
 
+const urlField = z.preprocess(
+  (val) => {
+    if (typeof val === 'string' && val && !val.match(/^https?:\/\//)) {
+      return `https://${val}`;
+    }
+    return val;
+  },
+  z.string().url().optional().or(z.literal('')),
+);
+
 export const updateBrandSchema = z.object({
   name: z.string().min(1, 'Brand name is required').optional(),
 
   ico: z.string().optional(),
+
+  dic: z.string().optional(),
 
   address: z.string().min(1, 'Address is required').optional(),
 
@@ -15,22 +27,28 @@ export const updateBrandSchema = z.object({
 
   country: z.enum(Country).optional(),
 
-  categories: z
-    .array(z.enum(BrandCategory))
-    .min(1, 'At least one category is required')
-    .optional(),
+  categories: z.preprocess(
+    (val) => {
+      if (!val) return undefined;
+      return Array.isArray(val) ? val : [val];
+    },
+    z
+      .array(z.enum(BrandCategory))
+      .min(1, 'At least one category is required')
+      .optional(),
+  ),
 
   package: z.string().nullable().optional(),
 
-  mainContact: z.string().optional(),
+  mainContact: z.string().nullable().optional(),
 
   logo: z.string().url('Logo must be a valid URL').optional(),
-  website: z.string().url('Website must be a valid URL').optional(),
-  facebook: z.string().url('Facebook link must be a valid URL').optional(),
-  instagram: z.string().url('Instagram link must be a valid URL').optional(),
-  tiktok: z.string().url('TikTok link must be a valid URL').optional(),
-  pinterest: z.string().url('Pinterest link must be a valid URL').optional(),
-  youtube: z.string().url('YouTube link must be a valid URL').optional(),
+  website: urlField,
+  facebook: urlField,
+  instagram: urlField,
+  tiktok: urlField,
+  pinterest: urlField,
+  youtube: urlField,
 });
 
 export type UpdateBrandDto = z.infer<typeof updateBrandSchema>;

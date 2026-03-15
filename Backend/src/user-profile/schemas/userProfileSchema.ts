@@ -11,28 +11,29 @@ export type UserProfileDocument = HydratedDocument<UserProfile>;
 export class UserProfile {
   _id: Types.ObjectId;
 
-  @Prop({ required: true })
-  name: string;
+  @Prop()
+  name?: string;
+
   @Prop({ type: Types.ObjectId, ref: 'User', required: true, unique: true })
   user: Types.ObjectId;
 
-  @Prop({ type: [String], enum: Country, required: true, default: [] })
+  @Prop({ type: [String], enum: Country, default: [] })
   languages: Country[];
 
-  @Prop({ type: [String], enum: BrandCategory, required: true, default: [] })
+  @Prop({ type: [String], enum: BrandCategory, default: [] })
   categories: BrandCategory[];
 
-  @Prop({ type: [String], enum: OfferTarget, required: true, default: [] })
+  @Prop({ type: [String], enum: OfferTarget, default: [] })
   creatingAs: OfferTarget[];
 
-  @Prop({ required: true })
+  @Prop()
   image?: string;
 
-  @Prop({ required: true })
-  about: string;
+  @Prop()
+  about?: string;
 
-  @Prop({ required: true })
-  portfolio: string;
+  @Prop()
+  portfolio?: string;
 
   @Prop()
   instagram?: string;

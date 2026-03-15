@@ -57,11 +57,11 @@ export const OfferDetailPage: React.FC = () => {
   const brandLogoUrl = brand?.logo ? `${API_URL}${brand.logo}` : null;
 
   const socials = [
-    { key: "website", url: offer.website, icon: <FaGlobe color="#4A90D9" /> },
-    { key: "instagram", url: offer.instagram, icon: <FaInstagram color="#E4405F" /> },
-    { key: "facebook", url: offer.facebook, icon: <FaFacebook color="#1877F2" /> },
-    { key: "tiktok", url: offer.tiktok, icon: <FaTiktok color="#000000" /> },
-    { key: "pinterest", url: offer.pinterest, icon: <FaPinterest color="#E60023" /> },
+    { key: "website", url: offer.website || brand?.website, icon: <FaGlobe color="#4A90D9" /> },
+    { key: "instagram", url: offer.instagram || brand?.instagram, icon: <FaInstagram color="#E4405F" /> },
+    { key: "facebook", url: offer.facebook || brand?.facebook, icon: <FaFacebook color="#1877F2" /> },
+    { key: "tiktok", url: offer.tiktok || brand?.tiktok, icon: <FaTiktok color="#000000" /> },
+    { key: "pinterest", url: offer.pinterest || brand?.pinterest, icon: <FaPinterest color="#E60023" /> },
   ].filter((s) => s.url);
 
   return (
@@ -69,7 +69,7 @@ export const OfferDetailPage: React.FC = () => {
       <Button
         variant="outlined"
         className="offer-detail-back-btn"
-        onClick={() => navigate("/offers")}
+        onClick={() => navigate(-1)}
       >
         {t("offerDetailPage.backBtn")}
       </Button>

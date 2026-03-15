@@ -9,8 +9,8 @@ import {
   FiChevronDown,
   FiLayout,
   FiBell,
-  FiGlobe,
   FiSmile,
+  FiSliders,
   FiChevronLeft,
   FiMenu,
   FiSidebar,
@@ -20,6 +20,7 @@ import "./menubar.css";
 import type { UserRole } from "../../../types/userRoles";
 import avatarImg from "../../../images/test.jpg";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useBrand } from "../../../context/useBrand";
 
 interface MenubarProps {
   role: UserRole;
@@ -28,12 +29,12 @@ interface MenubarProps {
 export const Menubar: FC<MenubarProps> = ({ role }) => {
   const { t } = useTranslation();
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
-  const [activeItem, setActiveItem] = useState<string>("overview");
   const [brandsOpen, setBrandsOpen] = useState<boolean>(false);
   const [newsOpen, setNewsOpen] = useState<boolean>(false);
   const [brandSelectorOpen, setBrandSelectorOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { brands, selectedBrand, setSelectedBrand } = useBrand();
 
   const renderMenuItem = (
     path: string,
@@ -87,26 +88,30 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
           <FiSidebar />
         </button>
       </div>
-      {/* BRAND SELECTOR (zobrazený inak pri zbalení) */}
-      {role === "brand_manager" && (
+      {/* BRAND SELECTOR */}
+      {role === "brand_manager" && selectedBrand && (
         <div className="brand-selector-section">
           <div
             className={`brand-selector-box ${brandSelectorOpen ? "active" : ""} ${isCollapsed ? "collapsed-box" : ""}`}
-            onClick={() =>
-              !isCollapsed && setBrandSelectorOpen(!brandSelectorOpen)
-            }
+            onClick={() => setBrandSelectorOpen(!brandSelectorOpen)}
           >
-            <div className="brand-selector-content">
+            <div className={`brand-selector-content ${isCollapsed ? "collapsed-content" : ""}`}>
               <div className="brand-icon-wrapper">
-                <img
-                  src={avatarImg}
-                  alt="current-brand"
-                  className="brand-img"
-                />
+                {selectedBrand.logo ? (
+                  <img
+                    src={`http://localhost:3000${selectedBrand.logo}`}
+                    alt={selectedBrand.name}
+                    className="brand-img"
+                  />
+                ) : (
+                  <div className="brand-img-placeholder">
+                    {selectedBrand.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
               </div>
               {!isCollapsed && (
                 <>
-                  <span className="brand-name">Gems</span>
+                  <span className="brand-name">{selectedBrand.name}</span>
                   <FiChevronDown
                     className={`brand-chevron ${brandSelectorOpen ? "rotate" : ""}`}
                   />
@@ -114,28 +119,37 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
               )}
             </div>
 
-            {brandSelectorOpen && !isCollapsed && (
-              <div className="brand-dropdown">
-                <div className="brand-dropdown-item">
-                  <div className="brand-icon-wrapper">
-                    <img
-                      src={avatarImg}
-                      alt="other-brand"
-                      className="brand-img"
-                    />
-                  </div>
-                  <span className="brand-name">Iná Značka</span>
-                </div>
-                <div className="brand-dropdown-item">
-                  <div className="brand-icon-wrapper">
-                    <img
-                      src={avatarImg}
-                      alt="another-brand"
-                      className="brand-img"
-                    />
-                  </div>
-                  <span className="brand-name">Ďalšia Značka</span>
-                </div>
+            {brandSelectorOpen && brands.length > 1 && (
+              <div className={`brand-dropdown ${isCollapsed ? "collapsed-dropdown" : ""}`}>
+                {brands
+                  .filter((b) => b._id !== selectedBrand._id)
+                  .map((brand) => (
+                    <div
+                      key={brand._id}
+                      className="brand-dropdown-item"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedBrand(brand);
+                        setBrandSelectorOpen(false);
+                      }}
+                      title={brand.name}
+                    >
+                      <div className="brand-icon-wrapper">
+                        {brand.logo ? (
+                          <img
+                            src={`http://localhost:3000${brand.logo}`}
+                            alt={brand.name}
+                            className="brand-img"
+                          />
+                        ) : (
+                          <div className="brand-img-placeholder">
+                            {brand.name.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                      {!isCollapsed && <span className="brand-name">{brand.name}</span>}
+                    </div>
+                  ))}
               </div>
             )}
           </div>
@@ -198,14 +212,19 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
         {role === "creator" && (
           <>
             {renderMenuItem(
-              "offers",
+              "/creator-offers",
               t("menubar.offers"),
               <FiLayout className="menu-icon" />,
             )}
             {renderMenuItem(
-              "profile",
+              "/profile",
               t("menubar.profile"),
               <FiUsers className="menu-icon" />,
+            )}
+            {renderMenuItem(
+              "/news",
+              t("menubar.news"),
+              <FiBell className="menu-icon" />,
             )}
           </>
         )}
@@ -214,17 +233,17 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
         {role === "brand_manager" && (
           <>
             {renderMenuItem(
-              "overview",
+              "/",
               t("menubar.overview"),
               <FiLayout className="menu-icon" />,
             )}
             {renderMenuItem(
-              "myOffers",
+              "/my-offers",
               t("menubar.myOffers"),
               <FiLayout className="menu-icon" />,
             )}
             {renderMenuItem(
-              "managers",
+              "/managers",
               t("menubar.managers"),
               <FiSmile className="menu-icon" />,
             )}
@@ -232,6 +251,13 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
         )}
 
         <div className="divider" />
+
+        {role === "brand_manager" &&
+          renderMenuItem(
+            "/brand-settings",
+            t("menubar.brandSettings"),
+            <FiSliders className="menu-icon" />,
+          )}
 
         {/* SPOLOČNÉ MENU */}
         {renderMenuItem(
@@ -253,29 +279,24 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
             {newsOpen && !isCollapsed && (
               <div className="submenu">
                 <div
-                  className={`submenu-item ${activeItem === "newsAdmin" ? "active" : ""}`}
-                  onClick={() => setActiveItem("newsAdmin")}
+                  className={`submenu-item ${location.pathname === "/news/admin" ? "active" : ""}`}
+                  onClick={() => navigate("/news/admin")}
                 >
                   {t("menubar.admin")}
                 </div>
                 <div
-                  className={`submenu-item ${activeItem === "newsCreator" ? "active" : ""}`}
-                  onClick={() => setActiveItem("newsCreator")}
+                  className={`submenu-item ${location.pathname === "/news/creator" ? "active" : ""}`}
+                  onClick={() => navigate("/news/creator")}
                 >
                   {t("menubar.creator")}
                 </div>
                 <div
-                  className={`submenu-item ${activeItem === "newsBrand" ? "active" : ""}`}
-                  onClick={() => setActiveItem("newsBrand")}
+                  className={`submenu-item ${location.pathname === "/news/brand" ? "active" : ""}`}
+                  onClick={() => navigate("/news/brand")}
                 >
                   {t("menubar.brand")}
                 </div>
               </div>
-            )}
-            {renderMenuItem(
-              "translations",
-              t("menubar.translations"),
-              <FiGlobe className="menu-icon" />,
             )}
           </>
         ) : (

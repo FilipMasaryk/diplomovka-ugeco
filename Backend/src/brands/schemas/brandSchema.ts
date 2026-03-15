@@ -12,6 +12,9 @@ export class Brand {
   @Prop()
   ico?: string;
 
+  @Prop()
+  dic?: string;
+
   @Prop({ required: true })
   address: string;
 
@@ -45,6 +48,9 @@ export class Brand {
 
   @Prop({ default: 0 })
   offersCount: number;
+
+  @Prop({ default: 0 })
+  totalOffersMade: number;
 
   @Prop({ required: false }) // logo bude validované cez Zod, aby bolo povinné pre brand_managera
   logo?: string;

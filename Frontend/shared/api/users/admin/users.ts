@@ -1,4 +1,4 @@
-import { API_URL } from "../../../config";
+import { apiFetch } from "../../apiFetch";
 
 interface ApiUser {
   _id: string;
@@ -11,6 +11,7 @@ interface ApiUser {
   package?: { _id: string; name: string; validityMonths: number } | null;
   purchasedAt?: string;
   profile?: any;
+  ico?: string;
 }
 
 export interface UserTableData {
@@ -32,6 +33,7 @@ export interface UserTableData {
 
   purchased: string;
   expiration: string;
+  ico: string;
 }
 
 const formatDate = (dateString?: string): string => {
@@ -63,10 +65,7 @@ export interface Brand {
 // 1. Získanie všetkých balíčkov
 export const fetchPackages = async (): Promise<Package[]> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await fetch(`${API_URL}/packages`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await apiFetch(`/packages`);
     return response.ok ? await response.json() : [];
   } catch (error) {
     console.error("Failed to fetch packages:", error);
@@ -77,10 +76,7 @@ export const fetchPackages = async (): Promise<Package[]> => {
 // 2. Získanie značiek (podľa role prihláseného uźívateľa na BE)
 export const fetchBrands = async (): Promise<Brand[]> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await fetch(`${API_URL}/brands`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await apiFetch(`/brands`);
     return response.ok ? await response.json() : [];
   } catch (error) {
     console.error("Failed to fetch brands:", error);
@@ -90,27 +86,21 @@ export const fetchBrands = async (): Promise<Brand[]> => {
 
 // 3. Vytvorenie používateľa
 export const createUser = async (userData: any): Promise<void> => {
-  const token = localStorage.getItem("access_token");
-
   const payload = {
     ...userData,
     purchasedAt:
       userData.role === "creator" ? new Date().toISOString() : undefined,
   };
 
-  const response = await fetch(`${API_URL}/users`, {
+  const response = await apiFetch(`/users`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    // vyhodíme celý backend response
     throw data;
   }
 };
@@ -120,26 +110,19 @@ export const updateUser = async (
   userId: string,
   userData: any,
 ): Promise<void> => {
-  const token = localStorage.getItem("access_token");
-
   const payload = {
     ...userData,
-    // ak je creator, môžeš tu upraviť purchasedAt, alebo necháme backend riešiť
   };
 
-  const response = await fetch(`${API_URL}/users/${userId}`, {
+  const response = await apiFetch(`/users/${userId}`, {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    // vyhodíme backend error
     throw data;
   }
 };
@@ -150,19 +133,15 @@ export const fetchUsers = async (
   isArchived: boolean = false,
 ): Promise<UserTableData[]> => {
   try {
-    const token = localStorage.getItem("access_token");
-
     const baseEndpoint = isArchived ? "archived" : "";
-    const url = new URL(`${API_URL}/users/${baseEndpoint}`);
+    const params = new URLSearchParams();
+    if (country) params.append("country", country);
+    if (role) params.append("role", role);
+    const query = params.toString();
+    const url = `/users/${baseEndpoint}${query ? `?${query}` : ""}`;
 
-    if (country) url.searchParams.append("country", country);
-    if (role) url.searchParams.append("role", role);
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await apiFetch(url, {
+      headers: { "Content-Type": "application/json" },
     });
 
     if (!response.ok) {
@@ -207,6 +186,8 @@ export const fetchUsers = async (
           user.purchasedAt,
           user.package?.validityMonths,
         ),
+
+        ico: user.ico || "",
       };
     });
   } catch (error) {
@@ -217,12 +198,8 @@ export const fetchUsers = async (
 
 export const archiveUser = async (id: string): Promise<boolean> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await fetch(`${API_URL}/users/${id}`, {
+    const response = await apiFetch(`/users/${id}`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
     return response.ok;
   } catch (error) {
@@ -233,12 +210,8 @@ export const archiveUser = async (id: string): Promise<boolean> => {
 
 export const restoreUser = async (id: string): Promise<boolean> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await fetch(`${API_URL}/users/restore/${id}`, {
+    const response = await apiFetch(`/users/restore/${id}`, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
     return response.ok;
   } catch (error) {

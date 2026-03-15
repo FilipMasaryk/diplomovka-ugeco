@@ -6,6 +6,7 @@ import { InputField } from "../InputField/InputField";
 import { Button } from "../Button/Button";
 import { CustomSelect } from "../CustomSelectMenu/CustomSelect";
 import { Countries } from "../../../types/countryEnum";
+import { useAuth } from "../../../context/useAuth";
 import { BrandCategory } from "../../../types/brandCategories";
 import {
   fetchBrandPackages,
@@ -55,6 +56,8 @@ interface CreateBrandModalProps {
 export const CreateBrandModal: React.FC<CreateBrandModalProps> = React.memo(
   ({ isOpen, onClose, onSubmit }) => {
     const { t } = useTranslation();
+    const { user: authUser } = useAuth();
+    const isSubadmin = authUser?.role === "subadmin";
     const [formData, setFormData] = useState<BrandFormState>(initialFormState);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const { showToast } = useToast();
@@ -70,9 +73,13 @@ export const CreateBrandModal: React.FC<CreateBrandModalProps> = React.memo(
       }
     }, [isOpen]);
 
-    const countryOptions: SelectOption[] = Object.values(Countries).map(
-      (c) => ({ value: c, label: t(`countries.${c}`) }),
-    );
+    const countryOptions: SelectOption[] = (() => {
+      const all = Object.values(Countries);
+      const available = isSubadmin && authUser?.countries?.length
+        ? all.filter((c) => authUser.countries!.includes(c))
+        : all;
+      return available.map((c) => ({ value: c, label: t(`countries.${c}`) }));
+    })();
 
     const categoryOptions: SelectOption[] = Object.values(BrandCategory).map(
       (cat) => ({
@@ -106,10 +113,13 @@ export const CreateBrandModal: React.FC<CreateBrandModalProps> = React.memo(
       selected: SingleValue<SelectOption>,
       name: string,
     ) => {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: selected ? selected.value : "",
-      }));
+      setFormData((prev) => {
+        const newData = { ...prev, [name]: selected ? selected.value : "" };
+        if (name === "country") {
+          newData.mainContact = "";
+        }
+        return newData;
+      });
     };
 
     const handleMultiSelectChange = (
@@ -246,9 +256,11 @@ export const CreateBrandModal: React.FC<CreateBrandModalProps> = React.memo(
                 <CustomSelect
                   label={t("brandsPage.table.mainContact")}
                   options={userOptions}
-                  value={userOptions.find(
-                    (o) => o.value === formData.mainContact,
-                  )}
+                  value={
+                    userOptions.find(
+                      (o) => o.value === formData.mainContact,
+                    ) || null
+                  }
                   onChange={(val) =>
                     handleSingleSelectChange(val, "mainContact")
                   }

@@ -53,6 +53,18 @@ export class OffersController {
     @InjectModel(Brand.name) private readonly brandModel: Model<Brand>,
   ) {}
 
+  @Get('liked')
+  @Roles(UserRole.CREATOR)
+  async getLikedOffers(@Req() req) {
+    return this.offersService.getLikedOfferIds(req.user);
+  }
+
+  @Post(':id/like')
+  @Roles(UserRole.CREATOR)
+  async toggleLike(@Param('id') id: string, @Req() req) {
+    return this.offersService.toggleLike(id, req.user);
+  }
+
   @Get('filter')
   @Roles(UserRole.CREATOR)
   async getOffers(
@@ -89,15 +101,19 @@ export class OffersController {
   }
 
   @Get('stats')
-  @Roles(UserRole.ADMIN)
-  async getStats() {
-    return this.offersService.getStats();
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
+  async getStats(@Req() req) {
+    const countries =
+      req.user.role === UserRole.SUBADMIN ? req.user.countries : undefined;
+    return this.offersService.getStats(countries);
   }
 
   @Get('stats/monthly')
-  @Roles(UserRole.ADMIN)
-  async getMonthlyStats() {
-    return this.offersService.getMonthlyStats();
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
+  async getMonthlyStats(@Req() req) {
+    const countries =
+      req.user.role === UserRole.SUBADMIN ? req.user.countries : undefined;
+    return this.offersService.getMonthlyStats(7, countries);
   }
 
   @Post()

@@ -1,4 +1,4 @@
-import { API_URL } from "../../config";
+import { apiFetch } from "../apiFetch";
 
 interface PopulatedPackage {
   _id: string;
@@ -17,6 +17,7 @@ interface ApiBrand {
   _id: string;
   name: string;
   ico?: string;
+  dic?: string;
   address: string;
   city: string;
   zip: string;
@@ -26,9 +27,16 @@ interface ApiBrand {
   mainContact?: PopulatedContact | string | null;
   purchasedAt?: string;
   offersCount: number;
+  totalOffersMade?: number;
   offers?: string[];
   isArchived: boolean;
   logo?: string;
+  website?: string;
+  facebook?: string;
+  instagram?: string;
+  tiktok?: string;
+  pinterest?: string;
+  youtube?: string;
 }
 
 export interface BrandTableData {
@@ -48,6 +56,7 @@ export interface BrandTableData {
   expiration: string;
   activeOffers: number;
   totalOffers: number;
+  totalOffersMade: number;
 }
 
 const formatDate = (dateString?: string): string => {
@@ -63,54 +72,51 @@ const calculateExpiration = (purchasedAt?: string, months?: number): string => {
   return date.toLocaleDateString("sk-SK");
 };
 
+const mapBrandToTableData = (brand: ApiBrand): BrandTableData => {
+  const pkg =
+    brand.package && typeof brand.package === "object"
+      ? (brand.package as PopulatedPackage)
+      : null;
+
+  const contactObj =
+    brand.mainContact && typeof brand.mainContact === "object"
+      ? (brand.mainContact as PopulatedContact)
+      : null;
+
+  return {
+    id: brand._id,
+    name: brand.name,
+    ico: brand.ico || "-",
+    address: brand.address,
+    city: brand.city,
+    zip: brand.zip,
+    country: brand.country,
+    categories: brand.categories,
+    package: pkg?.name || "-",
+    packageId:
+      pkg?._id || (typeof brand.package === "string" ? brand.package : ""),
+    contact: contactObj?.email || "-",
+    contactId:
+      contactObj?._id ||
+      (typeof brand.mainContact === "string" ? brand.mainContact : ""),
+    purchased: formatDate(brand.purchasedAt),
+    expiration: calculateExpiration(brand.purchasedAt, pkg?.validityMonths),
+    activeOffers: brand.offers?.length ?? 0,
+    totalOffers: brand.offersCount ?? 0,
+    totalOffersMade: brand.totalOffersMade ?? 0,
+  };
+};
+
 export const fetchBrandsAdmin = async (): Promise<BrandTableData[]> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await fetch(`${API_URL}/brands`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await apiFetch(`/brands`, {
+      headers: { "Content-Type": "application/json" },
     });
 
     if (!response.ok) throw new Error("Failed to fetch brands");
 
     const data: ApiBrand[] = await response.json();
-
-    return data.map((brand) => {
-      const pkg =
-        brand.package && typeof brand.package === "object"
-          ? (brand.package as PopulatedPackage)
-          : null;
-
-      const contactObj =
-        brand.mainContact && typeof brand.mainContact === "object"
-          ? (brand.mainContact as PopulatedContact)
-          : null;
-
-      return {
-        id: brand._id,
-        name: brand.name,
-        ico: brand.ico || "-",
-        address: brand.address,
-        city: brand.city,
-        zip: brand.zip,
-        country: brand.country,
-        categories: brand.categories,
-        package: pkg?.name || "-",
-        packageId:
-          pkg?._id || (typeof brand.package === "string" ? brand.package : ""),
-        contact: contactObj?.email || "-",
-        contactId:
-          contactObj?._id ||
-          (typeof brand.mainContact === "string" ? brand.mainContact : ""),
-        purchased: formatDate(brand.purchasedAt),
-        expiration: calculateExpiration(brand.purchasedAt, pkg?.validityMonths),
-        activeOffers: brand.offers?.length ?? 0,
-        totalOffers: brand.offersCount ?? 0,
-      };
-    });
+    return data.map(mapBrandToTableData);
   } catch (error) {
     console.error("Failed to fetch brands:", error);
     return [];
@@ -119,75 +125,38 @@ export const fetchBrandsAdmin = async (): Promise<BrandTableData[]> => {
 
 export const fetchArchivedBrandsAdmin = async (): Promise<BrandTableData[]> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await fetch(`${API_URL}/brands/archived`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await apiFetch(`/brands/archived`, {
+      headers: { "Content-Type": "application/json" },
     });
 
     if (!response.ok) throw new Error("Failed to fetch archived brands");
 
     const data: ApiBrand[] = await response.json();
-
-    return data.map((brand) => {
-      const pkg =
-        brand.package && typeof brand.package === "object"
-          ? (brand.package as PopulatedPackage)
-          : null;
-
-      const contactObj =
-        brand.mainContact && typeof brand.mainContact === "object"
-          ? (brand.mainContact as PopulatedContact)
-          : null;
-
-      return {
-        id: brand._id,
-        name: brand.name,
-        ico: brand.ico || "-",
-        address: brand.address,
-        city: brand.city,
-        zip: brand.zip,
-        country: brand.country,
-        categories: brand.categories,
-        package: pkg?.name || "-",
-        packageId:
-          pkg?._id || (typeof brand.package === "string" ? brand.package : ""),
-        contact: contactObj?.email || "-",
-        contactId:
-          contactObj?._id ||
-          (typeof brand.mainContact === "string" ? brand.mainContact : ""),
-        purchased: formatDate(brand.purchasedAt),
-        expiration: calculateExpiration(brand.purchasedAt, pkg?.validityMonths),
-        activeOffers: brand.offers?.length ?? 0,
-        totalOffers: brand.offersCount ?? 0,
-      };
-    });
+    return data.map(mapBrandToTableData);
   } catch (error) {
     console.error("Failed to fetch archived brands:", error);
     return [];
   }
 };
 
-const cleanBrandPayload = (brandData: any): any => {
+const cleanBrandPayload = (brandData: any, isUpdate = false): any => {
   const payload = { ...brandData };
   if (!payload.package) delete payload.package;
   if (!payload.ico) delete payload.ico;
-  if (!payload.mainContact) delete payload.mainContact;
+  if (!payload.mainContact) {
+    if (isUpdate) {
+      payload.mainContact = null;
+    } else {
+      delete payload.mainContact;
+    }
+  }
   return payload;
 };
 
 export const createBrand = async (brandData: any): Promise<void> => {
-  const token = localStorage.getItem("access_token");
-
-  const response = await fetch(`${API_URL}/brands`, {
+  const response = await apiFetch(`/brands`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(cleanBrandPayload(brandData)),
   });
 
@@ -200,15 +169,10 @@ export const updateBrand = async (
   brandId: string,
   brandData: any,
 ): Promise<void> => {
-  const token = localStorage.getItem("access_token");
-
-  const response = await fetch(`${API_URL}/brands/${brandId}`, {
+  const response = await apiFetch(`/brands/${brandId}`, {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(cleanBrandPayload(brandData)),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(cleanBrandPayload(brandData, true)),
   });
 
   const data = await response.json();
@@ -218,10 +182,8 @@ export const updateBrand = async (
 
 export const archiveBrand = async (id: string): Promise<boolean> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await fetch(`${API_URL}/brands/${id}/archive`, {
+    const response = await apiFetch(`/brands/${id}/archive`, {
       method: "PATCH",
-      headers: { Authorization: `Bearer ${token}` },
     });
     return response.ok;
   } catch (error) {
@@ -232,10 +194,8 @@ export const archiveBrand = async (id: string): Promise<boolean> => {
 
 export const restoreBrand = async (id: string): Promise<boolean> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await fetch(`${API_URL}/brands/${id}/restore`, {
+    const response = await apiFetch(`/brands/${id}/restore`, {
       method: "PATCH",
-      headers: { Authorization: `Bearer ${token}` },
     });
     return response.ok;
   } catch (error) {
@@ -252,12 +212,20 @@ export interface ContactUser {
   countries?: string[];
 }
 
+export const fetchContactsByCountry = async (
+  country: string,
+): Promise<ContactUser[]> => {
+  try {
+    const response = await apiFetch(`/users/contacts/${country}`);
+    return response.ok ? await response.json() : [];
+  } catch {
+    return [];
+  }
+};
+
 export const fetchUsersForContact = async (): Promise<ContactUser[]> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await fetch(`${API_URL}/users`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await apiFetch(`/users`);
     return response.ok ? await response.json() : [];
   } catch (error) {
     console.error("Failed to fetch users for contact:", error);
@@ -275,10 +243,7 @@ export interface BrandSelectOption {
 
 export const fetchBrandsForSelect = async (): Promise<BrandSelectOption[]> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await fetch(`${API_URL}/brands`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await apiFetch(`/brands`);
     if (!response.ok) return [];
     const data: ApiBrand[] = await response.json();
     return data
@@ -312,12 +277,97 @@ export interface BrandPackage {
   type: string;
 }
 
+export interface BrandStats {
+  totalOffers: number;
+  activeOffers: number;
+}
+
+export const fetchBrandStats = async (
+  brandId: string,
+): Promise<BrandStats> => {
+  try {
+    const response = await apiFetch(`/brands/${brandId}/stats`);
+    if (!response.ok) return { totalOffers: 0, activeOffers: 0 };
+    return response.json();
+  } catch {
+    return { totalOffers: 0, activeOffers: 0 };
+  }
+};
+
+export interface BrandDetail {
+  _id: string;
+  name: string;
+  ico: string;
+  dic: string;
+  address: string;
+  city: string;
+  zip: string;
+  country: string;
+  categories: string[];
+  mainContact: string;
+  mainContactDisplay: string;
+  logo: string;
+  website: string;
+  facebook: string;
+  instagram: string;
+  tiktok: string;
+  pinterest: string;
+  youtube: string;
+}
+
+export const fetchBrandDetail = async (
+  brandId: string,
+): Promise<BrandDetail | null> => {
+  try {
+    const response = await apiFetch(`/brands/${brandId}`);
+    if (!response.ok) return null;
+    const brand: ApiBrand = await response.json();
+    const contact =
+      brand.mainContact && typeof brand.mainContact === "object"
+        ? (brand.mainContact as PopulatedContact)
+        : null;
+    return {
+      _id: brand._id,
+      name: brand.name,
+      ico: brand.ico || "",
+      dic: brand.dic || "",
+      address: brand.address,
+      city: brand.city,
+      zip: brand.zip,
+      country: brand.country,
+      categories: brand.categories,
+      mainContact: contact?._id || "",
+      mainContactDisplay: contact
+        ? `${contact.name ?? ""} ${contact.surName ?? ""}`.trim()
+        : "",
+      logo: brand.logo || "",
+      website: brand.website || "",
+      facebook: brand.facebook || "",
+      instagram: brand.instagram || "",
+      tiktok: brand.tiktok || "",
+      pinterest: brand.pinterest || "",
+      youtube: brand.youtube || "",
+    };
+  } catch {
+    return null;
+  }
+};
+
+export const updateBrandSettings = async (
+  brandId: string,
+  data: FormData,
+): Promise<void> => {
+  const response = await apiFetch(`/brands/settings/${brandId}`, {
+    method: "PATCH",
+    body: data,
+  });
+  const result = await response.json();
+  if (!response.ok) throw result;
+};
+
 export const fetchBrandPackages = async (): Promise<BrandPackage[]> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await fetch(`${API_URL}/packages`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await apiFetch(`/packages`);
     const all = response.ok ? await response.json() : [];
     return all.filter((p: BrandPackage) => p.type === "brand");
   } catch (error) {

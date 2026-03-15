@@ -76,15 +76,25 @@ export class BrandsController {
       return this.brandsService.findByCountries(user.countries ?? []);
     }
 
-    // BRAND_MANAGER
-    return this.brandsService.findByIds(user.brands);
+    // BRAND_MANAGER — look up fresh brands from DB, not stale JWT
+    return this.brandsService.findBrandsForManager(user.id);
   }
 
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
   @Get('archived')
-  findAllArchived() {
+  findAllArchived(@Req() req) {
+    if (req.user.role === UserRole.SUBADMIN) {
+      return this.brandsService.findArchivedByCountries(req.user.countries ?? []);
+    }
     return this.brandsService.findAllArchived();
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRole.BRAND_MANAGER)
+  @Get(':id/stats')
+  async getBrandStats(@Param('id') id: string, @Req() req) {
+    return this.brandsService.getBrandStats(id, req.user);
   }
 
   @UseGuards(AuthGuard, RolesGuard)
@@ -92,19 +102,6 @@ export class BrandsController {
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req) {
     return this.brandsService.findOneForUser(id, req.user);
-  }
-
-  // Mozno sa zmeni este podla toho ci brand manager moze updatovat/ktore polia
-  @Patch(':id')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
-  async updateByAdmin(
-    @Param('id') id: string,
-    @Req() req,
-    @Body(new ZodValidationPipe(updateBrandSchema))
-    updateBrandDto: UpdateBrandDto,
-  ) {
-    return this.brandsService.update(id, updateBrandDto, req.user);
   }
 
   @Patch('settings/:id')
@@ -139,18 +136,30 @@ export class BrandsController {
     return this.brandsService.updateForUser(id, updateBrandDto, req.user);
   }
 
+  @Patch(':id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
-  @Patch(':id/archive')
-  archive(@Param('id') id: string) {
-    return this.brandsService.archive(id);
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
+  async updateByAdmin(
+    @Param('id') id: string,
+    @Req() req,
+    @Body(new ZodValidationPipe(updateBrandSchema))
+    updateBrandDto: UpdateBrandDto,
+  ) {
+    return this.brandsService.update(id, updateBrandDto, req.user);
   }
 
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
+  @Patch(':id/archive')
+  archive(@Param('id') id: string, @Req() req) {
+    return this.brandsService.archive(id, req.user);
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
   @Patch(':id/restore')
-  restore(@Param('id') id: string) {
-    return this.brandsService.restore(id);
+  restore(@Param('id') id: string, @Req() req) {
+    return this.brandsService.restore(id, req.user);
   }
 
   @UseGuards(AuthGuard, RolesGuard)

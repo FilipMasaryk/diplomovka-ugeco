@@ -25,9 +25,7 @@ export const createOfferSchema = z
         if (!val) return [];
         return Array.isArray(val) ? val : [val];
       },
-      z
-        .array(z.enum(BrandCategory))
-        .min(1, 'At least one category is required'),
+      z.array(z.enum(BrandCategory)).default([]),
     ),
 
     activeFrom: z.preprocess(
@@ -50,7 +48,7 @@ export const createOfferSchema = z
           typeof v === 'string' ? v.toLowerCase() : v,
         );
       },
-      z.array(z.enum(Language)).min(1, 'At least one language is required'),
+      z.array(z.enum(Language)).default([]),
     ),
 
     targets: z.preprocess(
@@ -58,10 +56,10 @@ export const createOfferSchema = z
         if (!val) return [];
         return Array.isArray(val) ? val : [val];
       },
-      z.array(z.enum(OfferTarget)).min(1, 'At least one target is required'),
+      z.array(z.enum(OfferTarget)).default([]),
     ),
 
-    description: z.string().min(1, 'Description is required'),
+    description: z.string().optional().default(''),
 
     website: urlField,
     facebook: urlField,
@@ -90,6 +88,39 @@ export const createOfferSchema = z
     {
       message: 'Image is required for active offers',
       path: ['image'],
+    },
+  )
+  .refine(
+    (data) =>
+      data.status === OfferStatus.CONCEPT || data.categories.length > 0,
+    {
+      message: 'At least one category is required',
+      path: ['categories'],
+    },
+  )
+  .refine(
+    (data) =>
+      data.status === OfferStatus.CONCEPT || data.languages.length > 0,
+    {
+      message: 'At least one language is required',
+      path: ['languages'],
+    },
+  )
+  .refine(
+    (data) =>
+      data.status === OfferStatus.CONCEPT || data.targets.length > 0,
+    {
+      message: 'At least one target is required',
+      path: ['targets'],
+    },
+  )
+  .refine(
+    (data) =>
+      data.status === OfferStatus.CONCEPT ||
+      (data.description && data.description.length > 0),
+    {
+      message: 'Description is required',
+      path: ['description'],
     },
   );
 

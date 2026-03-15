@@ -26,7 +26,11 @@ import { OfferLanguage } from "../../types/offerLanguage";
 import { ConfirmModal } from "../../components/ui/ConfirmModal/ConfirmModal";
 import { useToast } from "../../context/useToast";
 
-export const OffersPage: React.FC = () => {
+interface OffersPageProps {
+  brandId?: string;
+}
+
+export const OffersPage: React.FC<OffersPageProps> = ({ brandId }) => {
   const { t } = useTranslation();
   const { showToast } = useToast();
   const navigate = useNavigate();
@@ -118,6 +122,7 @@ export const OffersPage: React.FC = () => {
   const filteredOffers = useMemo(() => {
     const search = searchTerm.toLowerCase();
     return offers.filter((o) => {
+      if (brandId && o.brandId !== brandId) return false;
       if (filterCategory && !o.categories.includes(filterCategory))
         return false;
       if (filterLanguage && !o.languages.includes(filterLanguage)) return false;
@@ -129,6 +134,7 @@ export const OffersPage: React.FC = () => {
   }, [
     offers,
     searchTerm,
+    brandId,
     filterCategory,
     filterLanguage,
     filterTarget,
@@ -319,7 +325,6 @@ export const OffersPage: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th>ID</th>
                 <th>{t("offersPage.table.name")}</th>
                 <th>{t("offersPage.table.brand")}</th>
                 <th>{t("offersPage.table.targets")}</th>
@@ -332,9 +337,8 @@ export const OffersPage: React.FC = () => {
             </thead>
             <tbody>
               {currentOffers.length > 0 ? (
-                currentOffers.map((offer, index) => (
+                currentOffers.map((offer) => (
                   <tr key={offer.id}>
-                    <td>{indexOfFirst + index + 1}</td>
                     <td
                       className="link"
                       onClick={() => navigate(`/offers/${offer.id}`)}
@@ -414,7 +418,7 @@ export const OffersPage: React.FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={9} className="no-data-text">
+                  <td colSpan={8} className="no-data-text">
                     {t("offersPage.noData")}
                   </td>
                 </tr>

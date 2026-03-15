@@ -30,7 +30,8 @@
     "required": "Toto pole je povinné"
   },
   "navbar": {
-    "logout": "Odhlásiť sa"
+    "logout": "Odhlásiť sa",
+    "noNews": "Žiadne novinky"
   },
   "roles": {
     "creator": "TVORCA",
@@ -55,6 +56,7 @@
     "myOffers": "Moje ponuky",
     "profile": "Profil",
     "managers": "Správcovia",
+    "brandSettings": "Nastavenia značky",
     "support": "Support",
     "packages": "Balíčky"
   },
@@ -65,7 +67,8 @@
     "countriesCount": "Počet krajín",
     "allCountries": "Všetky krajiny",
     "creatorsChartTitle": "Počet tvorcov",
-    "offersChartTitle": "Počet ponúk"
+    "offersChartTitle": "Počet ponúk",
+    "newsTitle": "Novinky"
   },
   "usersPage": {
     "title": "Užívateľské účty",
@@ -148,7 +151,8 @@
       "expiration": "Expirácia",
       "offersCount": "Ponuky",
       "activeOffers": "Aktívne ponuky",
-      "totalOffers": "Ponuky celkom",
+      "totalOffersMade": "Vytvorené ponuky",
+      "remainingOffers": "Zostávajúce ponuky",
       "contact": "Kontakt",
       "mainContact": "Hlavný kontakt"
     },
@@ -354,7 +358,10 @@
     "newPassword": "Nové heslo",
     "passwordConfirm": "Potvrdenie hesla",
     "saveBtn": "Uložiť",
-    "successMessage": "Zmeny boli úspešne uložené"
+    "successMessage": "Zmeny boli úspešne uložené",
+    "billingTitle": "Fakturačné údaje",
+    "ico": "IČO",
+    "dic": "DIČ"
   },
   "toasts": {
     "userCreated": "Užívateľ bol úspešne vytvorený",
@@ -372,6 +379,144 @@
     "offerUpdated": "Ponuka bola úspešne upravená",
     "offerArchived": "Ponuka bola archivovaná",
     "offerRestored": "Ponuka bola obnovená",
-    "offerDeleted": "Ponuka bola vymazaná"
+    "offerDeleted": "Ponuka bola vymazaná",
+    "newsCreated": "Novinka bola úspešne vytvorená",
+    "newsUpdated": "Novinka bola úspešne upravená",
+    "newsDeleted": "Novinka bola vymazaná",
+    "newsPublished": "Novinka bola publikovaná",
+    "managerCreated": "Správca bol úspešne pridaný",
+    "managerUpdated": "Správca bol úspešne upravený",
+    "managerAccessRemoved": "Prístup správcu bol odobratý"
+  },
+  "creatorOffersPage": {
+    "title": "Ponuky",
+    "filterCategory": "Kategória",
+    "filterLanguage": "Jazyk",
+    "filterTarget": "Pre koho",
+    "filterLike": "Páčik",
+    "filterCooperation": "Spolupráca",
+    "liked": "Páči sa mi",
+    "notLiked": "Nepáči sa mi",
+    "paid": "Platená",
+    "barter": "Barter",
+    "searchPlaceholder": "Vyhľadať",
+    "noData": "Nenašli sa žiadne ponuky"
+  },
+  "noBrandSelected": "Nemáte priradenú žiadnu značku. Kontaktujte administrátora.",
+  "brandSettingsPage": {
+    "title": "Nastavenia značky",
+    "brandName": "Názov značky",
+    "category": "Kategória",
+    "logo": "Logo",
+    "logoHint": "Formát: 400×400px, do 100Kb",
+    "mainContact": "Hlavný kontakt",
+    "website": "Webová stránka",
+    "facebook": "Facebook",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "pinterest": "Pinterest",
+    "youtube": "Youtube",
+    "billingTitle": "Fakturačné údaje",
+    "billingName": "Názov",
+    "ico": "IČO",
+    "dic": "DIČ",
+    "state": "Štát",
+    "city": "Mesto",
+    "address": "Adresa",
+    "zip": "PSČ",
+    "saveBtn": "Uložiť",
+    "saved": "Nastavenia značky boli uložené"
+  },
+  "managersPage": {
+    "title": "Správcovia",
+    "createBtn": "Vytvoriť správcu",
+    "createBtnSubmit": "Vytvoriť",
+    "updateBtnSubmit": "Uložiť zmeny",
+    "loading": "Načítavam správcov...",
+    "noData": "Nenašli sa žiadni správcovia",
+    "removeAccess": "Odobrať prístup",
+    "removeConfirm": "Naozaj chcete odobrať prístup správcovi {{name}} k tejto značke?",
+    "removeConfirmBtn": "Áno, odobrať",
+    "createModal": {
+      "title": "Vytvoriť správcu"
+    },
+    "updateModal": {
+      "title": "Upraviť správcu"
+    }
+  },
+  "profilePage": {
+    "emptyTitle": "Zatiaľ nemáte vyplnený profil",
+    "emptyDescription": "Po vyplnení profilu sa vám tu zobrazí náhľad",
+    "fillBtn": "Vyplniť profil",
+    "editBtn": "Upraviť profil",
+    "name": "Meno",
+    "languages": "Jazyk",
+    "categories": "Kategórie",
+    "creatingAs": "Tvorím ako/s",
+    "image": "Fotka",
+    "imageHint": "Formát: 200×100px, do 100Kb",
+    "about": "Niečo o mne",
+    "aboutPlaceholder": "Napíš niečo o sebe",
+    "charCount": "Počet znakov",
+    "portfolio": "Portfolio",
+    "instagram": "Instagram",
+    "pinterest": "Pinterest",
+    "facebook": "Facebook",
+    "tiktok": "TikTok",
+    "youtube": "Youtube",
+    "backBtn": "Späť",
+    "saveConceptBtn": "Uložiť koncept",
+    "publishBtn": "Publikovať",
+    "viewPortfolio": "Zobraziť portfólio",
+    "leaveTitle": "Ste si istí, že chcete odísť bez uloženia?",
+    "leaveConfirm": "Áno, odísť",
+    "leaveCancel": "Nie, pokračovať v úprave",
+    "chooseFile": "Vybrať súbor",
+    "noFile": "Nie je vybratý žiadny súbor",
+    "conceptSaved": "Koncept profilu bol uložený",
+    "profilePublished": "Profil bol publikovaný",
+    "profileUpdated": "Profil bol aktualizovaný"
+  },
+  "newsPage": {
+    "title": "Novinky",
+    "titleAdmin": "Novinky - Admin",
+    "titleCreator": "Novinky - Tvorca",
+    "titleBrand": "Novinky - Značka",
+    "createBtn": "Napísať novinku",
+    "saveDraft": "Uložiť koncept",
+    "publish": "Publikovať",
+    "loading": "Načítavam novinky...",
+    "noData": "Žiadne novinky",
+    "sectionDrafts": "Koncepty",
+    "sectionPublished": "Publikované",
+    "noTitle": "Bez názvu",
+    "statusDraft": "Koncept",
+    "statusPublished": "Publikované",
+    "deleteConfirm": "Naozaj chcete vymazať túto novinku?",
+    "deleteBtn": "Vymazať",
+    "createModal": {
+      "title": "Napísať novinku",
+      "editTitle": "Upraviť novinku"
+    },
+    "form": {
+      "title": "Nadpis",
+      "description": "Popis",
+      "descriptionMax": "Popis môže mať maximálne 2000 znakov",
+      "category": "Kategória novinky",
+      "selectCategory": "Vyber kategóriu",
+      "target": "Komu poslať novinku",
+      "targetAll": "Všetci",
+      "targetBrand": "Značka",
+      "targetCreator": "Tvorca",
+      "image": "Príloha (napr. screenshot)",
+      "imageRequired": "Obrázok je povinný",
+      "imageTooLarge": "Obrázok musí byť menší ako 5MB",
+      "categoryFix": "Opravená chyba v systéme",
+      "categoryFeature": "Nová featura",
+      "categoryBug": "Chyba v systéme",
+      "charCount": "Počet znakov",
+      "chooseFile": "Vybrať súbor",
+      "imageClick": "Kliknite pre nahratie obrázka"
+    }
   }
 }

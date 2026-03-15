@@ -57,6 +57,10 @@ export class User {
   @Prop()
   ico?: string;
 
+  //pre Creatora
+  @Prop()
+  dic?: string;
+
   //Pre Creatora
   @Prop()
   purchasedAt?: Date;
@@ -77,6 +81,16 @@ export class User {
 
   @Prop({ type: Types.ObjectId, ref: 'UserProfile' })
   profile?: Types.ObjectId;
+
+  @Prop()
+  lastSeenNewsAt?: Date;
+
+  @Prop({
+    type: [Types.ObjectId],
+    ref: 'Offer',
+    default: [],
+  })
+  likedOffers: Types.ObjectId[];
 
   //asi az pre profil
   /*

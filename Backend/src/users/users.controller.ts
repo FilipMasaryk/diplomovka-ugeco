@@ -47,6 +47,12 @@ export class UsersController {
   ) {}
 
   @UseGuards(AuthGuard)
+  @Get('me')
+  async getMe(@Req() req) {
+    return this.usersService.findOne(req.user.id);
+  }
+
+  @UseGuards(AuthGuard)
   @Roles(UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER, UserRole.CREATOR)
   @Patch('me')
   async updateMe(
@@ -86,19 +92,27 @@ export class UsersController {
   @UseGuards(AuthGuard, RolesGuard)
   @Get()
   @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
-  findAll(@Query('country') country?: string, @Query('role') role?: string) {
-    return this.usersService.findAll(country, role);
+  findAll(
+    @Req() req,
+    @Query('country') country?: string,
+    @Query('role') role?: string,
+  ) {
+    const allowedCountries =
+      req.user.role === UserRole.SUBADMIN ? req.user.countries : undefined;
+    return this.usersService.findAll(country, role, allowedCountries);
   }
 
   @UseGuards(AuthGuard, RolesGuard)
   @Get('archived') // URL bude: /users/archived
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
   getArchivedUsers(
+    @Req() req,
     @Query('country') country?: string,
     @Query('role') role?: string,
   ) {
-    // Tie parametre musíme poslať ďalej do servisu
-    return this.usersService.findArchived(country, role);
+    const allowedCountries =
+      req.user.role === UserRole.SUBADMIN ? req.user.countries : undefined;
+    return this.usersService.findArchived(country, role, allowedCountries);
   }
   @UseGuards(AuthGuard, RolesGuard)
   @Get(':id')
@@ -121,7 +135,7 @@ export class UsersController {
   //archivovanie pouzivatela
   @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
   async archive(@Param('id') id: string) {
     return this.usersService.archive(id);
   }
@@ -129,7 +143,7 @@ export class UsersController {
   //obnova archivovaneho pouzivatela
   @UseGuards(AuthGuard, RolesGuard)
   @Post('restore/:id')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
   restore(@Param('id') id: string) {
     return this.usersService.restore(id);
   }
@@ -188,5 +202,12 @@ export class UsersController {
   @Roles(UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER)
   async getBrandManagersByBrand(@Param('brandId') brandId: string) {
     return this.usersService.getBrandManagersByBrand(brandId);
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Get('contacts/:country')
+  @Roles(UserRole.BRAND_MANAGER)
+  async getContactsByCountry(@Param('country') country: string) {
+    return this.usersService.findContactsByCountry(country);
   }
 }

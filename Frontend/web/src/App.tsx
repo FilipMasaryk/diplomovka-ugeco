@@ -1,8 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Navbar } from "./components/ui/Navbar/Navbar";
 import { Login } from "./pages/Login/Login";
 import { AuthProvider } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
+import { BrandProvider } from "./context/BrandContext";
 import { useAuth } from "./context/useAuth";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
@@ -16,7 +18,28 @@ import { OfferDetailPage } from "./pages/OfferDetailPage/OfferDetailPage";
 import { PackagesPage } from "./pages/PackagesPage/PackagesPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage/ResetPasswordPage";
 import { SettingsPage } from "./pages/SettingsPage/SettingsPage";
+import { NewsPage } from "./pages/NewsPage/NewsPage";
+import { ManagersPage } from "./pages/ManagersPage/ManagersPage";
+import { BrandSettingsPage } from "./pages/BrandSettingsPage/BrandSettingsPage";
+import { CreatorOffersPage } from "./pages/CreatorOffersPage/CreatorOffersPage";
+import { ProfilePage } from "./pages/ProfilePage/ProfilePage";
+import { useBrand } from "./context/useBrand";
 import { UserRole } from "./types/userRoles";
+
+const BrandOffersPage = () => {
+  const { t } = useTranslation();
+  const { selectedBrand } = useBrand();
+  if (!selectedBrand) {
+    return (
+      <div className="users-page">
+        <div className="no-data-text" style={{ padding: "2rem", textAlign: "center" }}>
+          {t("noBrandSelected")}
+        </div>
+      </div>
+    );
+  }
+  return <OffersPage brandId={selectedBrand._id} />;
+};
 
 function AppContent() {
   const { user } = useAuth();
@@ -77,6 +100,54 @@ function AppContent() {
               }
             />
             <Route
+              path="/managers"
+              element={
+                <ProtectedRoute roles={[UserRole.BRAND_MANAGER]}>
+                  <ManagersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/my-offers"
+              element={
+                <ProtectedRoute roles={[UserRole.BRAND_MANAGER]}>
+                  <BrandOffersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/brand-settings"
+              element={
+                <ProtectedRoute roles={[UserRole.BRAND_MANAGER]}>
+                  <BrandSettingsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/creator-offers"
+              element={
+                <ProtectedRoute roles={[UserRole.CREATOR]}>
+                  <CreatorOffersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute roles={[UserRole.CREATOR]}>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/creator-offers/:id"
+              element={
+                <ProtectedRoute roles={[UserRole.CREATOR]}>
+                  <OfferDetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/offers"
               element={
                 <ProtectedRoute
@@ -115,6 +186,22 @@ function AppContent() {
               }
             />
             <Route
+              path="/news/:target"
+              element={
+                <ProtectedRoute roles={[UserRole.ADMIN, UserRole.SUBADMIN]}>
+                  <NewsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/news"
+              element={
+                <ProtectedRoute>
+                  <NewsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/offers/:id/edit"
               element={
                 <ProtectedRoute
@@ -135,9 +222,11 @@ function App() {
   return (
     <ToastProvider>
       <AuthProvider>
-        <BrowserRouter>
-          <AppContent />
-        </BrowserRouter>
+        <BrandProvider>
+          <BrowserRouter>
+            <AppContent />
+          </BrowserRouter>
+        </BrandProvider>
       </AuthProvider>
     </ToastProvider>
   );

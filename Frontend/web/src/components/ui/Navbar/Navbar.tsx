@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { FiBell, FiChevronDown, FiLogOut } from "react-icons/fi";
 import "./navbar.css";
 import avatarImg from "../../../images/test.jpg";
@@ -6,6 +7,12 @@ import { SK, CZ, PL, DE, HU, GB } from "country-flag-icons/react/3x2";
 import { useAuth } from "../../../context/useAuth";
 import i18n from "../../../translation";
 import { useTranslation } from "react-i18next";
+import {
+  fetchUnreadNewsCount,
+  fetchRecentNews,
+  markNewsSeen,
+  type NewsItem,
+} from "../../../../../shared/api/news/news";
 
 const languages = [
   { code: "SK", label: "SK", component: SK },
@@ -24,7 +31,13 @@ export const Navbar = () => {
   );
   const { user, logout } = useAuth();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const bellRef = useRef<HTMLDivElement>(null);
+
+  const [bellOpen, setBellOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [recentNews, setRecentNews] = useState<NewsItem[]>([]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -34,10 +47,36 @@ export const Navbar = () => {
       ) {
         setUserMenuOpen(false);
       }
+      if (
+        bellRef.current &&
+        !bellRef.current.contains(e.target as Node)
+      ) {
+        setBellOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    const loadCount = () => {
+      fetchUnreadNewsCount().then(setUnreadCount).catch(() => {});
+    };
+    loadCount();
+    const interval = setInterval(loadCount, 60000);
+    return () => clearInterval(interval);
+  }, [user]);
+
+  const handleBellClick = useCallback(async () => {
+    if (!bellOpen) {
+      const news = await fetchRecentNews();
+      setRecentNews(news);
+      await markNewsSeen();
+      setUnreadCount(0);
+    }
+    setBellOpen((prev) => !prev);
+  }, [bellOpen]);
 
   return (
     <nav className="navbar">
@@ -48,7 +87,35 @@ export const Navbar = () => {
       <div className="navbar-right">
         {user && (
           <>
-            <FiBell className="icon-btn" />
+            <div className="bell-container" ref={bellRef}>
+              <div className="bell-wrapper" onClick={handleBellClick}>
+                <FiBell className="icon-btn" />
+                {unreadCount > 0 && <span className="bell-dot" />}
+              </div>
+              {bellOpen && (
+                <div className="bell-dropdown">
+                  {recentNews.length === 0 ? (
+                    <div className="bell-empty">{t("navbar.noNews")}</div>
+                  ) : (
+                    recentNews.map((item) => (
+                      <div
+                        key={item._id}
+                        className="bell-item"
+                        onClick={() => {
+                          setBellOpen(false);
+                          navigate("/news");
+                        }}
+                      >
+                        <span className="bell-item-title">{item.title}</span>
+                        <span className="bell-item-date">
+                          {new Date(item.publishedAt || item.createdAt).toLocaleDateString("sk-SK")}
+                        </span>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
 
             <span className={`role-badge role-${user.role}`}>
               {t(`roles.${user.role}`)}

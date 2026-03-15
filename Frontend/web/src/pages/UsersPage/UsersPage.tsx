@@ -23,6 +23,7 @@ import {
 } from "../../../../shared/api/users/admin/users";
 import { Countries } from "../../types/countryEnum";
 import { UserRole } from "../../types/userRoles";
+import { useAuth } from "../../context/useAuth";
 import { ConfirmModal } from "../../components/ui/ConfirmModal/ConfirmModal";
 import {
   CreateUserModal,
@@ -35,6 +36,8 @@ import { useToast } from "../../context/useToast";
 export const UsersPage: React.FC = () => {
   const { t } = useTranslation();
   const { showToast } = useToast();
+  const { user: authUser } = useAuth();
+  const isSubadmin = authUser?.role === "subadmin";
   const [users, setUsers] = useState<UserTableData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -56,14 +59,20 @@ export const UsersPage: React.FC = () => {
   }>({ isOpen: false, userId: "", userName: "", type: "archive" });
 
   const countryOptions = useMemo(
-    () => [
-      { value: "", label: t("usersPage.selectCountry") },
-      ...Object.values(Countries).map((code) => ({
-        value: code,
-        label: t(`countries.${code}`),
-      })),
-    ],
-    [t],
+    () => {
+      const allCountries = Object.values(Countries);
+      const available = isSubadmin && authUser?.countries?.length
+        ? allCountries.filter((c) => authUser.countries!.includes(c))
+        : allCountries;
+      return [
+        { value: "", label: t("usersPage.selectCountry") },
+        ...available.map((code) => ({
+          value: code,
+          label: t(`countries.${code}`),
+        })),
+      ];
+    },
+    [t, isSubadmin, authUser?.countries],
   );
 
   const roleOptions = useMemo(
@@ -122,7 +131,7 @@ export const UsersPage: React.FC = () => {
 
       package: user.packageId || "",
 
-      ico: "",
+      ico: user.ico || "",
     });
 
     setIsUpdateModalOpen(true);
@@ -327,26 +336,36 @@ export const UsersPage: React.FC = () => {
                     <td>{user.purchased}</td>
                     <td>{user.expiration}</td>
                     <td className="actions">
-                      {showArchived ? (
-                        <div
-                          className="action-icon edit"
-                          onClick={() => openConfirm(user, "restore")}
-                          title={t("usersPage.restore")}
-                        >
-                          <FiUpload />
-                        </div>
-                      ) : (
-                        <>
-                          <FiEdit3
+                      {(() => {
+                        const canManage =
+                          !isSubadmin ||
+                          (user.role.toLowerCase() !== "admin" &&
+                            (!user.countryCodes?.length ||
+                              user.countryCodes.every((c: string) =>
+                                (authUser?.countries ?? []).includes(c),
+                              )));
+                        if (!canManage) return null;
+                        return showArchived ? (
+                          <div
                             className="action-icon edit"
-                            onClick={() => handleEditClick(user)}
-                          />
-                          <FiArchive
-                            className="action-icon delete"
-                            onClick={() => openConfirm(user, "archive")}
-                          />
-                        </>
-                      )}
+                            onClick={() => openConfirm(user, "restore")}
+                            title={t("usersPage.restore")}
+                          >
+                            <FiUpload />
+                          </div>
+                        ) : (
+                          <>
+                            <FiEdit3
+                              className="action-icon edit"
+                              onClick={() => handleEditClick(user)}
+                            />
+                            <FiArchive
+                              className="action-icon delete"
+                              onClick={() => openConfirm(user, "archive")}
+                            />
+                          </>
+                        );
+                      })()}
                     </td>
                   </tr>
                 ))

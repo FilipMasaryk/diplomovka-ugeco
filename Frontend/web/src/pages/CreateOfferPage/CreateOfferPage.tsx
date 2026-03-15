@@ -18,10 +18,12 @@ import {
 } from "../../../../shared/api/offers/offers";
 import {
   fetchBrandsForSelect,
+  fetchBrandDetail,
   type BrandSelectOption,
 } from "../../../../shared/api/brands/brands";
 import { API_URL } from "../../../../shared/config";
 import { useToast } from "../../context/useToast";
+import { useAuth } from "../../context/useAuth";
 
 interface FormState {
   name: string;
@@ -71,8 +73,10 @@ const toInputDate = (iso: string): string => {
 export const CreateOfferPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { id } = useParams<{ id?: string }>();
   const isEdit = Boolean(id);
+  const offersPath = user?.role === "brand_manager" ? "/my-offers" : "/offers";
 
   const [brands, setBrands] = useState<BrandSelectOption[]>([]);
   const [loadingOffer, setLoadingOffer] = useState(isEdit);
@@ -105,7 +109,7 @@ export const CreateOfferPage: React.FC = () => {
     if (!isEdit || !id) return;
     fetchOfferById(id).then((offer: ApiOffer | null) => {
       if (!offer) {
-        navigate("/offers");
+        navigate(offersPath);
         return;
       }
       const brandRef = offer.brand as PopulatedBrand | string;
@@ -130,6 +134,22 @@ export const CreateOfferPage: React.FC = () => {
       setLoadingOffer(false);
     });
   }, [id, isEdit, navigate]);
+
+  // Pre-fill social URLs from brand when brand changes (new offers only)
+  useEffect(() => {
+    if (isEdit || !form.brand) return;
+    fetchBrandDetail(form.brand).then((detail) => {
+      if (!detail) return;
+      setForm((p) => ({
+        ...p,
+        website: detail.website || p.website,
+        facebook: detail.facebook || p.facebook,
+        instagram: detail.instagram || p.instagram,
+        tiktok: detail.tiktok || p.tiktok,
+        pinterest: detail.pinterest || p.pinterest,
+      }));
+    });
+  }, [form.brand, isEdit]);
 
   const selectedBrand = brands.find((b) => b._id === form.brand) ?? null;
 
@@ -252,7 +272,7 @@ export const CreateOfferPage: React.FC = () => {
         await createOffer(fd);
         showToast(t("toasts.offerCreated"), "success");
       }
-      navigate("/offers");
+      navigate(offersPath);
     } catch (err: unknown) {
       if (err && typeof err === "object") {
         const e = err as Record<string, unknown>;
@@ -612,7 +632,7 @@ export const CreateOfferPage: React.FC = () => {
         <div className="offer-form-footer">
           <button
             className="offer-back-btn"
-            onClick={() => navigate("/offers")}
+            onClick={() => navigate(offersPath)}
             disabled={submitting}
           >
             <FiArrowLeft />

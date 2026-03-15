@@ -32,7 +32,18 @@ export const AuthProvider = ({ children }: any) => {
     if (storedToken) {
       loginUser(storedToken);
     }
-    setLoading(false); // ← signalizuje, že sa token načítal
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setToken(null);
+      setUser(null);
+      localStorage.removeItem("access_token");
+    };
+    window.addEventListener("auth:unauthorized", handleUnauthorized);
+    return () =>
+      window.removeEventListener("auth:unauthorized", handleUnauthorized);
   }, []);
 
   const loginUser = (token: string) => {

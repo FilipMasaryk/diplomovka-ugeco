@@ -14,7 +14,7 @@ export enum OfferStatus {
 
 @Schema({ timestamps: true })
 export class Offer {
-  @Prop({ required: true })
+  @Prop({ default: false })
   paidCooperation: boolean;
 
   @Prop({ required: true })
@@ -23,34 +23,34 @@ export class Offer {
   @Prop({
     type: [String],
     enum: BrandCategory,
-    required: true,
+    default: [],
   })
   categories: BrandCategory[];
 
-  @Prop({ required: true })
-  activeFrom: Date;
+  @Prop()
+  activeFrom?: Date;
 
-  @Prop({ required: true })
-  activeTo: Date;
+  @Prop()
+  activeTo?: Date;
 
-  @Prop({ required: true })
-  image: string;
+  @Prop()
+  image?: string;
 
   @Prop({
     type: [String],
     enum: Language,
-    required: true,
+    default: [],
   })
   languages: Language[];
 
   @Prop({
     type: [String],
     enum: OfferTarget,
-    required: true,
+    default: [],
   })
   targets: OfferTarget[];
 
-  @Prop({ required: true })
+  @Prop({ default: '' })
   description: string;
 
   @Prop()

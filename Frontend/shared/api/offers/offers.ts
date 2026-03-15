@@ -1,4 +1,4 @@
-import { API_URL } from "../../config";
+import { apiFetch } from "../apiFetch";
 
 export interface PopulatedBrand {
   _id: string;
@@ -6,6 +6,12 @@ export interface PopulatedBrand {
   country: string;
   logo?: string;
   mainContact?: { email: string; name?: string; surName?: string } | string;
+  website?: string;
+  facebook?: string;
+  instagram?: string;
+  tiktok?: string;
+  pinterest?: string;
+  youtube?: string;
 }
 
 export interface ApiOffer {
@@ -99,15 +105,87 @@ const mapToTableData = (offer: ApiOffer): OfferTableData => {
   };
 };
 
+export interface CreatorOfferCard {
+  id: string;
+  name: string;
+  image: string;
+  paidCooperation: boolean;
+  brandName: string;
+  brandLogo?: string;
+  categories: string[];
+  languages: string[];
+  targets: string[];
+}
+
+export const fetchOffersForCreator = async (filters: {
+  category?: string;
+  target?: string;
+  paidCooperation?: string;
+  language?: string;
+}): Promise<CreatorOfferCard[]> => {
+  try {
+    const params = new URLSearchParams();
+    if (filters.category) params.set("category", filters.category);
+    if (filters.target) params.set("target", filters.target);
+    if (filters.paidCooperation) params.set("paidCooperation", filters.paidCooperation);
+    if (filters.language) params.set("language", filters.language);
+    const qs = params.toString();
+    const url = `/offers/filter${qs ? `?${qs}` : ""}`;
+    const response = await apiFetch(url);
+    if (!response.ok) throw new Error("Failed to fetch offers");
+    const data: ApiOffer[] = await response.json();
+    return data.map((offer) => {
+      const brand = getBrand(offer);
+      return {
+        id: offer._id,
+        name: offer.name,
+        image: offer.image,
+        paidCooperation: offer.paidCooperation,
+        brandName: brand?.name ?? "-",
+        brandLogo: brand?.logo,
+        categories: offer.categories,
+        languages: offer.languages,
+        targets: offer.targets,
+      };
+    });
+  } catch (error) {
+    console.error("Failed to fetch creator offers:", error);
+    return [];
+  }
+};
+
+export const fetchLikedOfferIds = async (): Promise<string[]> => {
+  try {
+    const response = await apiFetch("/offers/liked");
+    if (!response.ok) throw new Error("Failed to fetch liked offers");
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to fetch liked offers:", error);
+    return [];
+  }
+};
+
+export const toggleOfferLike = async (
+  offerId: string,
+): Promise<{ liked: boolean } | null> => {
+  try {
+    const response = await apiFetch(`/offers/${offerId}/like`, {
+      method: "POST",
+    });
+    if (!response.ok) throw new Error("Failed to toggle like");
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to toggle like:", error);
+    return null;
+  }
+};
+
 export const fetchOffersAdmin = async (
   archived = false,
 ): Promise<OfferTableData[]> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const url = `${API_URL}/offers${archived ? "?archived=true" : ""}`;
-    const response = await fetch(url, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const url = `/offers${archived ? "?archived=true" : ""}`;
+    const response = await apiFetch(url);
     if (!response.ok) throw new Error("Failed to fetch offers");
     const data: ApiOffer[] = await response.json();
     return data.map(mapToTableData);
@@ -119,10 +197,7 @@ export const fetchOffersAdmin = async (
 
 export const fetchOfferById = async (id: string): Promise<ApiOffer | null> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await fetch(`${API_URL}/offers/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await apiFetch(`/offers/${id}`);
     if (!response.ok) throw new Error("Failed to fetch offer");
     return await response.json();
   } catch (error) {
@@ -132,10 +207,8 @@ export const fetchOfferById = async (id: string): Promise<ApiOffer | null> => {
 };
 
 export const createOffer = async (formData: FormData): Promise<ApiOffer> => {
-  const token = localStorage.getItem("access_token");
-  const response = await fetch(`${API_URL}/offers`, {
+  const response = await apiFetch(`/offers`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
     body: formData,
   });
   const data = await response.json();
@@ -147,10 +220,8 @@ export const updateOffer = async (
   id: string,
   formData: FormData,
 ): Promise<ApiOffer> => {
-  const token = localStorage.getItem("access_token");
-  const response = await fetch(`${API_URL}/offers/${id}`, {
+  const response = await apiFetch(`/offers/${id}`, {
     method: "PATCH",
-    headers: { Authorization: `Bearer ${token}` },
     body: formData,
   });
   const data = await response.json();
@@ -160,10 +231,8 @@ export const updateOffer = async (
 
 export const archiveOffer = async (id: string): Promise<boolean> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await fetch(`${API_URL}/offers/${id}/archive`, {
+    const response = await apiFetch(`/offers/${id}/archive`, {
       method: "PATCH",
-      headers: { Authorization: `Bearer ${token}` },
     });
     return response.ok;
   } catch {
@@ -173,10 +242,8 @@ export const archiveOffer = async (id: string): Promise<boolean> => {
 
 export const restoreOffer = async (id: string): Promise<boolean> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await fetch(`${API_URL}/offers/${id}/restore`, {
+    const response = await apiFetch(`/offers/${id}/restore`, {
       method: "PATCH",
-      headers: { Authorization: `Bearer ${token}` },
     });
     return response.ok;
   } catch {
@@ -186,10 +253,8 @@ export const restoreOffer = async (id: string): Promise<boolean> => {
 
 export const deleteOffer = async (id: string): Promise<boolean> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await fetch(`${API_URL}/offers/${id}`, {
+    const response = await apiFetch(`/offers/${id}`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
     });
     return response.ok;
   } catch {

@@ -28,7 +28,7 @@ export const updateOfferSchema = z
           if (val === undefined) return undefined;
           return Array.isArray(val) ? val : [val];
         },
-        z.array(z.enum(BrandCategory)).min(1),
+        z.array(z.enum(BrandCategory)),
       )
       .optional(),
 
@@ -53,7 +53,7 @@ export const updateOfferSchema = z
             typeof v === 'string' ? v.toLowerCase() : v,
           );
         },
-        z.array(z.enum(Language)).min(1),
+        z.array(z.enum(Language)),
       )
       .optional(),
 
@@ -63,7 +63,7 @@ export const updateOfferSchema = z
           if (val === undefined) return undefined;
           return Array.isArray(val) ? val : [val];
         },
-        z.array(z.enum(OfferTarget)).min(1),
+        z.array(z.enum(OfferTarget)),
       )
       .optional(),
 
@@ -85,6 +85,50 @@ export const updateOfferSchema = z
     {
       message: 'activeFrom must be before activeTo',
       path: ['activeTo'],
+    },
+  )
+  .refine(
+    (data) =>
+      !data.status ||
+      data.status === OfferStatus.CONCEPT ||
+      !data.categories ||
+      data.categories.length > 0,
+    {
+      message: 'At least one category is required',
+      path: ['categories'],
+    },
+  )
+  .refine(
+    (data) =>
+      !data.status ||
+      data.status === OfferStatus.CONCEPT ||
+      !data.languages ||
+      data.languages.length > 0,
+    {
+      message: 'At least one language is required',
+      path: ['languages'],
+    },
+  )
+  .refine(
+    (data) =>
+      !data.status ||
+      data.status === OfferStatus.CONCEPT ||
+      !data.targets ||
+      data.targets.length > 0,
+    {
+      message: 'At least one target is required',
+      path: ['targets'],
+    },
+  )
+  .refine(
+    (data) =>
+      !data.status ||
+      data.status === OfferStatus.CONCEPT ||
+      !data.description ||
+      data.description.length > 0,
+    {
+      message: 'Description is required',
+      path: ['description'],
     },
   );
 

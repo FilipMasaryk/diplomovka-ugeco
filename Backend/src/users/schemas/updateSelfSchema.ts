@@ -6,6 +6,7 @@ export const updateSelfSchema = z
     name: z.string().min(1, 'Name is required').optional(),
     surName: z.string().min(1, 'Surname is required').optional(),
     ico: z.string().optional(),
+    dic: z.string().optional(),
 
     email: z.string().email('Invalid email').optional(),
     emailConfirmation: z.string().email('Invalid email').optional(),

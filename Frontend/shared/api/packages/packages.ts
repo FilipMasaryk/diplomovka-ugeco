@@ -1,4 +1,4 @@
-import { API_URL } from "../../config";
+import { apiFetch } from "../apiFetch";
 
 export interface ApiPackage {
   _id: string;
@@ -19,12 +19,8 @@ export interface PackageTableData {
 
 export const fetchPackages = async (): Promise<PackageTableData[]> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await fetch(`${API_URL}/packages`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await apiFetch(`/packages`, {
+      headers: { "Content-Type": "application/json" },
     });
 
     if (!response.ok) throw new Error("Failed to fetch packages");
@@ -50,14 +46,9 @@ export const createPackage = async (packageData: {
   offersCount?: number;
   type: "creator" | "brand";
 }): Promise<void> => {
-  const token = localStorage.getItem("access_token");
-
-  const response = await fetch(`${API_URL}/packages`, {
+  const response = await apiFetch(`/packages`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(packageData),
   });
 
@@ -73,14 +64,9 @@ export const updatePackage = async (
     offersCount?: number;
   },
 ): Promise<void> => {
-  const token = localStorage.getItem("access_token");
-
-  const response = await fetch(`${API_URL}/packages/${id}`, {
+  const response = await apiFetch(`/packages/${id}`, {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(packageData),
   });
 
@@ -90,10 +76,8 @@ export const updatePackage = async (
 
 export const deletePackage = async (id: string): Promise<boolean> => {
   try {
-    const token = localStorage.getItem("access_token");
-    const response = await fetch(`${API_URL}/packages/${id}`, {
+    const response = await apiFetch(`/packages/${id}`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
     });
     return response.ok;
   } catch (error) {

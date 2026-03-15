@@ -1,1 +1,39 @@
 @import "../UsersPage/userspage.css";
+
+.brands-page table {
+  min-width: 1200px;
+}
+
+.brands-page table th,
+.brands-page table td {
+  width: auto;
+  padding: 14px 16px;
+}
+
+.brands-page table th {
+  white-space: normal;
+}
+
+.brands-page table td {
+  white-space: nowrap;
+}
+
+.brands-page table th:nth-child(1),
+.brands-page table td:nth-child(1) {
+  width: 160px;
+}
+
+.brands-page table th:nth-child(2),
+.brands-page table td:nth-child(2),
+.brands-page table th:nth-child(3),
+.brands-page table td:nth-child(3),
+.brands-page table th:nth-child(4),
+.brands-page table td:nth-child(4) {
+  width: 80px;
+  text-align: center;
+}
+
+.brands-page table th:nth-child(5),
+.brands-page table td:nth-child(5) {
+  width: 200px;
+}

@@ -3,42 +3,49 @@ import { Country } from '../../common/enums/countryEnum';
 import { BrandCategory } from '../../common/enums/brandCategoriesEnum';
 import { OfferTarget } from '../../common/enums/offerTargetEnum';
 
+const urlField = z.preprocess(
+  (val) => {
+    if (typeof val === 'string' && val && !val.match(/^https?:\/\//)) {
+      return `https://${val}`;
+    }
+    return val;
+  },
+  z.string().url().optional().or(z.literal('')),
+);
+
+const arrayPreprocess = (val: unknown) => {
+  if (!val) return [];
+  return Array.isArray(val) ? val : [val];
+};
+
+// Base schema — allows saving concepts with minimal data
 export const createUserProfileSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
+  name: z.string().optional().default(''),
 
   languages: z.preprocess(
-    (val) => {
-      if (!val) return [];
-      return Array.isArray(val) ? val : [val];
-    },
-    z.array(z.enum(Country)).min(1, 'At least one language is required'),
+    arrayPreprocess,
+    z.array(z.enum(Country)).default([]),
   ),
 
   categories: z.preprocess(
-    (val) => {
-      if (!val) return [];
-      return Array.isArray(val) ? val : [val];
-    },
-    z.array(z.enum(BrandCategory)).min(1, 'At least one category is required'),
+    arrayPreprocess,
+    z.array(z.enum(BrandCategory)).default([]),
   ),
 
   creatingAs: z.preprocess(
-    (val) => {
-      if (!val) return [];
-      return Array.isArray(val) ? val : [val];
-    },
-    z.array(z.enum(OfferTarget)).min(1, 'At least one creatingAs is required'),
+    arrayPreprocess,
+    z.array(z.enum(OfferTarget)).default([]),
   ),
 
-  about: z.string().min(1, 'About is required'),
-  portfolio: z.string().url('Portfolio must be a valid URL'),
-  image: z.string().min(1, 'Image is required'),
+  about: z.string().optional().default(''),
+  portfolio: urlField,
+  image: z.string().optional().default(''),
 
-  facebook: z.string().url('Facebook link must be a valid URL').optional(),
-  instagram: z.string().url('Instagram link must be a valid URL').optional(),
-  tiktok: z.string().url('TikTok link must be a valid URL').optional(),
-  pinterest: z.string().url('Pinterest link must be a valid URL').optional(),
-  youtube: z.string().url('YouTube link must be a valid URL').optional(),
+  facebook: urlField,
+  instagram: urlField,
+  tiktok: urlField,
+  pinterest: urlField,
+  youtube: urlField,
 
   published: z.preprocess((val) => {
     if (val === 'true') return true;
@@ -48,3 +55,20 @@ export const createUserProfileSchema = z.object({
 });
 
 export type CreateUserProfileDto = z.infer<typeof createUserProfileSchema>;
+
+// Stricter validation for publishing — ensures all required fields are filled
+export function validateForPublish(dto: CreateUserProfileDto): string[] {
+  const errors: string[] = [];
+  if (!dto.name || !dto.name.trim()) errors.push('Name is required');
+  if (!dto.languages || dto.languages.length === 0)
+    errors.push('At least one language is required');
+  if (!dto.categories || dto.categories.length === 0)
+    errors.push('At least one category is required');
+  if (!dto.creatingAs || dto.creatingAs.length === 0)
+    errors.push('At least one creatingAs is required');
+  if (!dto.about || !dto.about.trim()) errors.push('About is required');
+  if (!dto.portfolio || !dto.portfolio.trim())
+    errors.push('Portfolio is required');
+  if (!dto.image || !dto.image.trim()) errors.push('Image is required');
+  return errors;
+}

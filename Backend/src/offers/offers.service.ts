@@ -11,6 +11,7 @@ import { Brand } from '../brands/schemas/brandSchema';
 import { User, UserDocument } from '../users/schemas/userSchema';
 import { CreateOfferDto } from './schemas/createOfferDto';
 import { UserRole } from 'src/common/enums/userRoleEnum';
+import { Country } from 'src/common/enums/countryEnum';
 import { UpdateOfferDto } from './schemas/updateOfferDto';
 import * as fs from 'fs';
 import path from 'path';
@@ -32,6 +33,20 @@ export class OffersService {
     private readonly userModel: Model<UserDocument>,
   ) {}
 
+  /** Fetch fresh brand IDs from DB instead of stale JWT */
+  private async getFreshBrandIds(user: User): Promise<string[]> {
+    const userId = (user as any)._id ?? (user as any).id;
+    const freshUser = await this.userModel.findById(userId).lean();
+    return (freshUser?.brands || []).map((b) => b.toString());
+  }
+
+  /** Fetch fresh countries from DB instead of stale JWT */
+  private async getFreshCountries(user: User): Promise<string[]> {
+    const userId = (user as any)._id ?? (user as any).id;
+    const freshUser = await this.userModel.findById(userId).lean();
+    return freshUser?.countries || [];
+  }
+
   async create(createOfferDto: CreateOfferDto, user: User): Promise<Offer> {
     const brand = await this.brandModel
       .findById(createOfferDto.brand)
@@ -49,11 +64,11 @@ export class OffersService {
       );
     }
 
-    if (
-      user.role === UserRole.BRAND_MANAGER &&
-      !user.brands?.includes(brand._id)
-    ) {
-      throw new ForbiddenException('You cannot create offers for this brand');
+    if (user.role === UserRole.BRAND_MANAGER) {
+      const freshBrandIds = await this.getFreshBrandIds(user);
+      if (!freshBrandIds.includes(brand._id.toString())) {
+        throw new ForbiddenException('You cannot create offers for this brand');
+      }
     }
 
     const isConcept = createOfferDto.status === OfferStatus.CONCEPT;
@@ -84,7 +99,7 @@ export class OffersService {
 
     if (!isConcept) {
       await this.brandModel.findByIdAndUpdate(brand._id, {
-        $inc: { offersCount: -1 },
+        $inc: { offersCount: -1, totalOffersMade: 1 },
         $push: { offers: offer._id },
       });
     }
@@ -105,10 +120,11 @@ export class OffersService {
     }
 
     if (user.role === UserRole.SUBADMIN) {
-      const allowedBrandIds = await this.brandModel.find({
+      const allowedBrands = await this.brandModel.find({
         country: { $in: user.countries },
         isArchived: false,
       });
+      const allowedBrandIds = allowedBrands.map((b) => b._id);
 
       return this.offerModel
         .find({
@@ -120,9 +136,13 @@ export class OffersService {
     }
 
     if (user.role === UserRole.BRAND_MANAGER) {
+      const freshBrandIds = await this.getFreshBrandIds(user);
+      const brandObjectIds = freshBrandIds.map(
+        (b) => new mongoose.Types.ObjectId(b),
+      );
       return this.offerModel
         .find({
-          brand: { $in: user.brands },
+          brand: { $in: brandObjectIds },
           isArchived: archived,
         })
         .populate('brand')
@@ -148,7 +168,8 @@ export class OffersService {
     }
 
     if (user.role === UserRole.SUBADMIN || user.role === UserRole.CREATOR) {
-      if (!user.countries?.includes(brand.country)) {
+      const countries = await this.getFreshCountries(user);
+      if (!countries.includes(brand.country)) {
         throw new ForbiddenException(
           'You cannot access offers for this brand (country mismatch)',
         );
@@ -156,7 +177,8 @@ export class OffersService {
     }
 
     if (user.role === UserRole.BRAND_MANAGER) {
-      if (!user.brands?.some((b) => b.toString() === brand._id.toString())) {
+      const freshBrandIds = await this.getFreshBrandIds(user);
+      if (!freshBrandIds.includes(brand._id.toString())) {
         throw new ForbiddenException('You cannot access offers for this brand');
       }
     }
@@ -192,11 +214,11 @@ export class OffersService {
       );
     }
 
-    if (
-      user.role === UserRole.BRAND_MANAGER &&
-      !user.brands?.includes(brand._id)
-    ) {
-      throw new ForbiddenException('You cannot update offers for this brand');
+    if (user.role === UserRole.BRAND_MANAGER) {
+      const freshBrandIds = await this.getFreshBrandIds(user);
+      if (!freshBrandIds.includes(brand._id.toString())) {
+        throw new ForbiddenException('You cannot update offers for this brand');
+      }
     }
 
     if (updateOfferDto.image && offer.image) {
@@ -219,6 +241,7 @@ export class OffersService {
     if (isPublishing) {
       await this.brandModel.findByIdAndUpdate(brand._id, {
         $addToSet: { offers: offer._id },
+        $inc: { offersCount: -1, totalOffersMade: 1 },
       });
     }
 
@@ -250,7 +273,8 @@ export class OffersService {
     }
 
     if (user.role === UserRole.BRAND_MANAGER) {
-      if (!user.brands?.some((b) => b.toString() === brand._id.toString())) {
+      const freshBrandIds = await this.getFreshBrandIds(user);
+      if (!freshBrandIds.includes(brand._id.toString())) {
         throw new ForbiddenException(
           'You cannot archive offers for this brand',
         );
@@ -290,7 +314,8 @@ export class OffersService {
     }
 
     if (user.role === UserRole.BRAND_MANAGER) {
-      if (!user.brands?.some((b) => b.toString() === brand._id.toString())) {
+      const freshBrandIds = await this.getFreshBrandIds(user);
+      if (!freshBrandIds.includes(brand._id.toString())) {
         throw new ForbiddenException(
           'You cannot restore offers for this brand',
         );
@@ -333,16 +358,58 @@ export class OffersService {
         );
       }
 
-      if (
-        user.role === UserRole.BRAND_MANAGER &&
-        !user.brands?.some((b) => b.toString() === brand._id.toString())
-      ) {
-        throw new ForbiddenException('You cannot delete offers for this brand');
+      if (user.role === UserRole.BRAND_MANAGER) {
+        const freshBrandIds = await this.getFreshBrandIds(user);
+        if (!freshBrandIds.includes(brand._id.toString())) {
+          throw new ForbiddenException('You cannot delete offers for this brand');
+        }
       }
     }
 
     await this.offerModel.findByIdAndDelete(id);
     return { deleted: true };
+  }
+
+  async getLikedOfferIds(user: User): Promise<string[]> {
+    const userId = (user as any)._id ?? (user as any).id;
+    const freshUser = await this.userModel.findById(userId).lean();
+    return (freshUser?.likedOffers || []).map((id) => id.toString());
+  }
+
+  async toggleLike(
+    offerId: string,
+    user: User,
+  ): Promise<{ liked: boolean }> {
+    if (!mongoose.Types.ObjectId.isValid(offerId)) {
+      throw new BadRequestException('Invalid offer ID');
+    }
+
+    const offer = await this.offerModel.findById(offerId);
+    if (!offer) {
+      throw new NotFoundException('Offer not found');
+    }
+
+    const userId = (user as any)._id ?? (user as any).id;
+    const freshUser = await this.userModel.findById(userId);
+    if (!freshUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    const alreadyLiked = freshUser.likedOffers.some(
+      (id) => id.toString() === offerId,
+    );
+
+    if (alreadyLiked) {
+      await this.userModel.findByIdAndUpdate(userId, {
+        $pull: { likedOffers: new mongoose.Types.ObjectId(offerId) },
+      });
+      return { liked: false };
+    } else {
+      await this.userModel.findByIdAndUpdate(userId, {
+        $addToSet: { likedOffers: new mongoose.Types.ObjectId(offerId) },
+      });
+      return { liked: true };
+    }
   }
 
   async findAllForCreator(
@@ -354,15 +421,20 @@ export class OffersService {
       languages?: string[];
     },
   ): Promise<Offer[]> {
+    const countries = await this.getFreshCountries(user);
     const allowedBrands = await this.brandModel
-      .find({ country: { $in: user.countries }, isArchived: false })
+      .find({ country: { $in: countries }, isArchived: false })
       .select('_id');
 
     const brandIds = allowedBrands.map((b) => b._id);
 
+    const now = new Date();
     const findQuery: any = {
       brand: { $in: brandIds },
       isArchived: false,
+      status: 'active',
+      activeFrom: { $lte: now },
+      activeTo: { $gte: now },
     };
 
     if (filters.category) {
@@ -381,34 +453,54 @@ export class OffersService {
       findQuery.languages = { $in: filters.languages };
     }
 
-    return this.offerModel.find(findQuery).populate('brand').exec();
+    return this.offerModel
+      .find(findQuery)
+      .populate('brand')
+      .sort({ createdAt: -1 })
+      .exec();
   }
 
-  async getStats() {
+  async getStats(countries?: string[]) {
     const now = new Date();
 
+    // If countries filter provided (subadmin), find brand IDs in those countries
+    let brandFilter: Record<string, unknown> | undefined;
+    if (countries?.length) {
+      const brandIds = await this.brandModel
+        .find({ country: { $in: countries } })
+        .distinct('_id');
+      brandFilter = { brand: { $in: brandIds } };
+    }
+
+    const offerQuery = { ...brandFilter, isArchived: false };
+    const activeOfferQuery = {
+      ...offerQuery,
+      activeFrom: { $lte: now },
+      activeTo: { $gte: now },
+    };
+
+    const creatorQuery: Record<string, unknown> = {
+      role: UserRole.CREATOR,
+    };
+    if (countries?.length) {
+      creatorQuery.countries = { $in: countries };
+    }
+
     const [totalOffers, activeOffers, creatorsCount] = await Promise.all([
-      this.offerModel.countDocuments(),
-
-      this.offerModel.countDocuments({
-        activeFrom: { $lte: now },
-        activeTo: { $gte: now },
-        isArchived: false,
-      }),
-
-      this.userModel.countDocuments({
-        role: UserRole.CREATOR,
-      }),
+      this.offerModel.countDocuments(offerQuery),
+      this.offerModel.countDocuments(activeOfferQuery),
+      this.userModel.countDocuments(creatorQuery),
     ]);
 
     return {
       totalOffers,
       activeOffers,
       creatorsCount,
+      countriesCount: countries?.length || Object.keys(Country).length,
     };
   }
 
-  async getMonthlyStats(months = 7) {
+  async getMonthlyStats(months = 7, countries?: string[]) {
     const now = new Date();
     const startDate = new Date(
       now.getFullYear(),
@@ -424,14 +516,28 @@ export class OffersService {
       );
     }
 
+    // Build match filters for subadmin country restriction
+    const creatorMatch: Record<string, unknown> = {
+      role: UserRole.CREATOR,
+      createdAt: { $gte: startDate },
+    };
+    if (countries?.length) {
+      creatorMatch.countries = { $in: countries };
+    }
+
+    const offerMatch: Record<string, unknown> = {
+      createdAt: { $gte: startDate },
+    };
+    if (countries?.length) {
+      const brandIds = await this.brandModel
+        .find({ country: { $in: countries } })
+        .distinct('_id');
+      offerMatch.brand = { $in: brandIds };
+    }
+
     const [creatorsAgg, offersAgg] = await Promise.all([
       this.userModel.aggregate([
-        {
-          $match: {
-            role: UserRole.CREATOR,
-            createdAt: { $gte: startDate },
-          },
-        },
+        { $match: creatorMatch },
         {
           $group: {
             _id: { $dateToString: { format: '%Y-%m', date: '$createdAt' } },
@@ -440,11 +546,7 @@ export class OffersService {
         },
       ]),
       this.offerModel.aggregate([
-        {
-          $match: {
-            createdAt: { $gte: startDate },
-          },
-        },
+        { $match: offerMatch },
         {
           $group: {
             _id: { $dateToString: { format: '%Y-%m', date: '$createdAt' } },

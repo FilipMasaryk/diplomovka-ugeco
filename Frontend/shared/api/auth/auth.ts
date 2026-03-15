@@ -1,5 +1,6 @@
 import { type LoginPayload } from "../../../web/src/pages/Login/schemas/loginValidation";
 import { API_URL } from "../../config";
+import { apiFetch } from "../apiFetch";
 
 export async function login(payload: LoginPayload) {
   const response = await fetch(`${API_URL}/auth/login`, {
@@ -55,6 +56,15 @@ export async function resetPassword(
   return data;
 }
 
+export async function fetchMe() {
+  const response = await apiFetch(`/users/me`);
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch user");
+  }
+  return data;
+}
+
 export async function updateProfile(data: {
   name?: string;
   surName?: string;
@@ -62,23 +72,24 @@ export async function updateProfile(data: {
   emailConfirmation?: string;
   password?: string;
   passwordConfirmation?: string;
+  ico?: string;
+  dic?: string;
 }) {
-  const token = localStorage.getItem("access_token");
-  const response = await fetch(`${API_URL}/users/me`, {
+  const response = await apiFetch(`/users/me`, {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
 
   const responseData = await response.json();
 
   if (!response.ok) {
-    const msg = Array.isArray(responseData.message)
-      ? responseData.message.join(", ")
+    const firstMsg = Array.isArray(responseData.message)
+      ? responseData.message[0]
       : responseData.message;
+    const msg = typeof firstMsg === "string" && firstMsg.includes(":")
+      ? firstMsg.split(":").slice(1).join(":").trim()
+      : firstMsg;
     throw new Error(msg || "Failed to update profile");
   }
 

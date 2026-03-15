@@ -15,7 +15,12 @@ interface ChartCardProps {
   data: { name: string; value: number }[];
 }
 
-export const ChartCard = ({ title, subtitle, footer, data }: ChartCardProps) => {
+export const ChartCard = ({
+  title,
+  subtitle,
+  footer,
+  data,
+}: ChartCardProps) => {
   return (
     <div className="chart-card">
       <p className="chart-card-title">{title}</p>
@@ -28,7 +33,13 @@ export const ChartCard = ({ title, subtitle, footer, data }: ChartCardProps) => 
               dataKey="name"
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 13, fill: "#181818", opacity: 0.55 }}
+              tick={{
+                fontFamily: "Inter",
+                fontWeight: 400,
+                fontSize: 12,
+                fill: "#181818",
+                opacity: 0.55,
+              }}
             />
             <YAxis hide />
             <Tooltip
@@ -36,6 +47,7 @@ export const ChartCard = ({ title, subtitle, footer, data }: ChartCardProps) => 
                 borderRadius: 8,
                 border: "1px solid #e5eaf0",
                 fontSize: 13,
+                fontFamily: "Inter",
               }}
             />
             <Line

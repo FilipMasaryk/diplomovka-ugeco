@@ -1,18 +1,15 @@
-import { API_URL } from "../../config";
+import { apiFetch } from "../apiFetch";
 
 export interface OffersStats {
   totalOffers: number;
   activeOffers: number;
   creatorsCount: number;
+  countriesCount: number;
 }
 
-export const getOffersStats = async (token: string): Promise<OffersStats> => {
-  const response = await fetch(`${API_URL}/offers/stats`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+export const getOffersStats = async (_token?: string): Promise<OffersStats> => {
+  const response = await apiFetch(`/offers/stats`, {
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!response.ok) {
@@ -33,14 +30,10 @@ export interface MonthlyStats {
 }
 
 export const getMonthlyStats = async (
-  token: string,
+  _token?: string,
 ): Promise<MonthlyStats> => {
-  const response = await fetch(`${API_URL}/offers/stats/monthly`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+  const response = await apiFetch(`/offers/stats/monthly`, {
+    headers: { "Content-Type": "application/json" },
   });
 
   if (!response.ok) {

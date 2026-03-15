@@ -32,6 +32,13 @@ export class UsersService {
     private emailService: EmailService,
   ) {}
 
+  /** Fetch fresh brand IDs from DB instead of stale JWT */
+  private async getFreshBrandIds(user: User): Promise<string[]> {
+    const userId = (user as any)._id ?? (user as any).id;
+    const freshUser = await this.userModel.findById(userId).lean();
+    return (freshUser?.brands || []).map((b) => b.toString());
+  }
+
   async create(createUserDto: CreateUserDto, currentUser: User): Promise<User> {
     const existingUser = await this.userModel.findOne({
       email: createUserDto.email,
@@ -233,7 +240,11 @@ export class UsersService {
   }
 
   //vrati len nearchivovanych pouzivatelov
-  async findAll(country?: string, role?: string): Promise<User[]> {
+  async findAll(
+    country?: string,
+    role?: string,
+    allowedCountries?: string[],
+  ): Promise<User[]> {
     const query: any = { isArchived: false };
     if (role) {
       query.role = role;
@@ -241,6 +252,8 @@ export class UsersService {
 
     if (country) {
       query.countries = country;
+    } else if (allowedCountries?.length) {
+      query.countries = { $in: allowedCountries };
     }
 
     return this.userModel
@@ -274,7 +287,7 @@ export class UsersService {
     return this.userModel.findOne({ email }).exec();
   }
 
-  async findArchived(country?: string, role?: string): Promise<User[]> {
+  async findArchived(country?: string, role?: string, allowedCountries?: string[]): Promise<User[]> {
     const query: any = { isArchived: true };
 
     if (role) {
@@ -283,6 +296,8 @@ export class UsersService {
 
     if (country) {
       query.countries = country;
+    } else if (allowedCountries?.length) {
+      query.countries = { $in: allowedCountries };
     }
 
     return this.userModel
@@ -359,14 +374,15 @@ export class UsersService {
 
     // Subadmin kontrola či priraduje len take znacky ktore su sucastou krajiny ktoru priraduje
     if (currentUser.role === UserRole.SUBADMIN && updateUserDto.brands) {
-      if (user.countries && user.countries.length > 0) {
+      const effectiveCountries = updateUserDto.countries ?? user.countries ?? [];
+      if (effectiveCountries.length > 0) {
         const brands = await this.brandModel.find({
           _id: { $in: updateUserDto.brands },
           isArchived: false,
         });
 
         const invalidBrandsByCountry = brands
-          .filter((brand) => !user.countries!.includes(brand.country))
+          .filter((brand) => !effectiveCountries.includes(brand.country))
           .map((b) => b._id.toString());
 
         if (invalidBrandsByCountry.length > 0) {
@@ -507,6 +523,7 @@ export class UsersService {
     if (dto.name) user.name = dto.name;
     if (dto.surName) user.surName = dto.surName;
     if (dto.ico !== undefined) user.ico = dto.ico;
+    if (dto.dic !== undefined) user.dic = dto.dic;
     if (dto.email) user.email = dto.email;
 
     if (dto.password) {
@@ -556,21 +573,20 @@ export class UsersService {
       );
     }
 
-    if (
-      currentUser.role === UserRole.BRAND_MANAGER &&
-      (!currentUser.brands ||
-        !currentUser.brands.some((b) => b.toString() === brand._id.toString()))
-    ) {
-      throw new ForbiddenException(
-        'You cannot assign managers to a brand you do not manage',
-      );
+    if (currentUser.role === UserRole.BRAND_MANAGER) {
+      const freshBrandIds = await this.getFreshBrandIds(currentUser);
+      if (!freshBrandIds.includes(brand._id.toString())) {
+        throw new ForbiddenException(
+          'You cannot assign managers to a brand you do not manage',
+        );
+      }
     }
 
     let user = await this.userModel.findOne({ email: dto.email });
     if (user) {
-      if (user.role === UserRole.CREATOR) {
+      if (user.role !== UserRole.BRAND_MANAGER) {
         throw new ForbiddenException(
-          'Cannot assign brands or modify a user with role CREATOR',
+          'This email belongs to a user that is not a brand manager',
         );
       }
       if (!user.brands) user.brands = [];
@@ -675,7 +691,8 @@ export class UsersService {
         );
       }
     } else if (currentUser.role === UserRole.BRAND_MANAGER) {
-      if (!currentUser.brands?.some((b) => b.toString() === brandId)) {
+      const freshBrandIds = await this.getFreshBrandIds(currentUser);
+      if (!freshBrandIds.includes(brandId)) {
         throw new ForbiddenException(
           'You cannot remove access from a brand you do not manage',
         );
@@ -732,11 +749,23 @@ export class UsersService {
       .find({
         role: UserRole.BRAND_MANAGER,
         isArchived: false,
-        brands: brandObjectId,
+        brands: { $in: [brandObjectId, brandId] },
       })
       .select('-password')
+      .populate('brands')
       .exec();
 
     return managers;
+  }
+
+  async findContactsByCountry(country: string): Promise<User[]> {
+    return this.userModel
+      .find({
+        countries: country,
+        role: UserRole.BRAND_MANAGER,
+        isArchived: false,
+      })
+      .select('name surName email')
+      .exec();
   }
 }

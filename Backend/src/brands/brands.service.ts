@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Brand } from './schemas/brandSchema';
+import { Offer, OfferStatus } from '../offers/schemas/offerSchema';
 import { Package, PackageType } from 'src/packages/schemas/packageSchema';
 import { User, UserDocument } from 'src/users/schemas/userSchema';
 import mongoose, { Model, Types } from 'mongoose';
@@ -27,6 +28,9 @@ export class BrandsService {
 
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
+
+    @InjectModel(Offer.name)
+    private readonly offerModel: Model<Offer>,
   ) {}
 
   async create(createBrandDto: CreateBrandDto, user: User): Promise<Brand> {
@@ -114,6 +118,14 @@ export class BrandsService {
       .exec();
   }
 
+  async findArchivedByCountries(countries: string[]): Promise<Brand[]> {
+    return this.brandModel
+      .find({ isArchived: true, country: { $in: countries } })
+      .populate('package', 'name validityMonths')
+      .populate('mainContact', 'email name surName')
+      .exec();
+  }
+
   async findOne(id: string): Promise<Brand> {
     const brand = await this.brandModel.findOne({
       _id: id,
@@ -127,6 +139,21 @@ export class BrandsService {
     return this.brandModel
       .find({
         _id: { $in: ids },
+        isArchived: false,
+      })
+      .populate('package', 'name validityMonths')
+      .populate('mainContact', 'email name surName')
+      .exec();
+  }
+
+  async findBrandsForManager(userId: string): Promise<Brand[]> {
+    const user = await this.userModel.findById(userId).lean();
+    if (!user || !user.brands || user.brands.length === 0) {
+      return [];
+    }
+    return this.brandModel
+      .find({
+        _id: { $in: user.brands },
         isArchived: false,
       })
       .populate('package', 'name validityMonths')
@@ -150,10 +177,13 @@ export class BrandsService {
   }
 
   async findOneForUser(id: string, user: User): Promise<Brand> {
-    const brand = await this.brandModel.findOne({
-      _id: id,
-      isArchived: false,
-    });
+    const brand = await this.brandModel
+      .findOne({
+        _id: id,
+        isArchived: false,
+      })
+      .populate('package', 'name validityMonths')
+      .populate('mainContact', 'email name surName');
 
     if (!brand) {
       throw new NotFoundException('Brand not found');
@@ -174,7 +204,9 @@ export class BrandsService {
     }
 
     if (user.role === UserRole.BRAND_MANAGER) {
-      const brandIds = user.brands.map((b) => b.toString());
+      const userId = (user as any)._id ?? (user as any).id;
+      const freshUser = await this.userModel.findById(userId).lean();
+      const brandIds = (freshUser?.brands || []).map((b) => b.toString());
       if (!brandIds.includes(brand._id.toString())) {
         throw new ForbiddenException('You do not have access to this brand');
       }
@@ -284,9 +316,10 @@ export class BrandsService {
     });
     if (!brand) throw new NotFoundException('Brand not found');
 
-    if (
-      !user.brands?.map((id) => id.toString()).includes(brand._id.toString())
-    ) {
+    const userId = (user as any)._id ?? (user as any).id;
+    const freshUser = await this.userModel.findById(userId).lean();
+    const freshBrandIds = (freshUser?.brands || []).map((b) => b.toString());
+    if (!freshBrandIds.includes(brand._id.toString())) {
       throw new ForbiddenException('You do not have access to this brand');
     }
 
@@ -328,45 +361,81 @@ export class BrandsService {
     return brand.save();
   }
 
-  async archive(id: string): Promise<Brand> {
+  async archive(id: string, user?: User): Promise<Brand> {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Invalid brand ID');
     }
 
-    const brand = await this.brandModel.findByIdAndUpdate(
-      id,
-      { isArchived: true },
-      { new: true },
-    );
-
+    const brand = await this.brandModel.findById(id);
     if (!brand) {
       throw new NotFoundException('Brand not found');
     }
 
-    return brand;
+    if (
+      user?.role === UserRole.SUBADMIN &&
+      !user.countries?.includes(brand.country)
+    ) {
+      throw new ForbiddenException(
+        'You cannot archive a brand outside your countries',
+      );
+    }
+
+    brand.isArchived = true;
+    return brand.save();
   }
 
-  async restore(id: string): Promise<Brand> {
+  async restore(id: string, user?: User): Promise<Brand> {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Invalid brand ID');
     }
 
-    const brand = await this.brandModel.findByIdAndUpdate(
-      id,
-      { isArchived: false },
-      { new: true },
-    );
-
+    const brand = await this.brandModel.findById(id);
     if (!brand) {
       throw new NotFoundException('Brand not found');
     }
 
-    return brand;
+    if (
+      user?.role === UserRole.SUBADMIN &&
+      !user.countries?.includes(brand.country)
+    ) {
+      throw new ForbiddenException(
+        'You cannot restore a brand outside your countries',
+      );
+    }
+
+    brand.isArchived = false;
+    return brand.save();
   }
 
   async remove(id: string): Promise<void> {
     const brand = await this.brandModel.findByIdAndDelete(id);
     if (!brand) throw new NotFoundException('Brand not found');
+  }
+
+  async getBrandStats(
+    brandId: string,
+    user: User,
+  ): Promise<{ totalOffers: number; activeOffers: number }> {
+    await this.findOneForUser(brandId, user);
+
+    const brandObjectId = new mongoose.Types.ObjectId(brandId);
+    const now = new Date();
+
+    const [totalOffers, activeOffers] = await Promise.all([
+      this.offerModel.countDocuments({
+        brand: brandObjectId,
+        isArchived: false,
+      }),
+      this.offerModel.countDocuments({
+        brand: brandObjectId,
+        status: OfferStatus.ACTIVE,
+        isArchived: false,
+        activeFrom: { $lte: now },
+        activeTo: { $gte: now },
+      }),
+    ]);
+
+    return { totalOffers, activeOffers };
   }
 
   private async validateMainContact(

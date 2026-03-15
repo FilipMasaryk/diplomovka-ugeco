@@ -71,10 +71,8 @@ export class UserProfileService {
     return updatedProfile;
   }
 
-  async findByUser(userId: string): Promise<UserProfile> {
+  async findByUser(userId: string): Promise<UserProfile | null> {
     const userObjectId = new Types.ObjectId(userId);
-    const profile = await this.profileModel.findOne({ user: userObjectId });
-    if (!profile) throw new NotFoundException('Profile not found');
-    return profile;
+    return this.profileModel.findOne({ user: userObjectId });
   }
 }
