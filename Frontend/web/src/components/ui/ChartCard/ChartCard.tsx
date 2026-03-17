@@ -49,6 +49,7 @@ export const ChartCard = ({
                 fontSize: 13,
                 fontFamily: "Inter",
               }}
+              isAnimationActive={false}
             />
             <Line
               type="monotone"

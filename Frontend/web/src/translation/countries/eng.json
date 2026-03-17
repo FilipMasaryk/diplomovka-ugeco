@@ -68,7 +68,8 @@
     "allCountries": "All countries",
     "creatorsChartTitle": "Creators count",
     "offersChartTitle": "Offers count",
-    "newsTitle": "News overview"
+    "newsTitle": "News overview",
+    "remainingOffers": "Remaining offers"
   },
   "usersPage": {
     "title": "User Accounts",
@@ -361,7 +362,12 @@
     "successMessage": "Changes saved successfully",
     "billingTitle": "Billing information",
     "ico": "Company ID",
-    "dic": "Tax ID"
+    "dic": "Tax ID",
+    "profilePicture": "Profile picture",
+    "changeAvatar": "Change photo",
+    "avatarUpdated": "Profile picture has been updated",
+    "deleteAvatar": "Remove photo",
+    "avatarDeleted": "Profile picture has been removed"
   },
   "toasts": {
     "userCreated": "User created successfully",
@@ -514,5 +520,22 @@
       "chooseFile": "Choose file",
       "imageClick": "Click to upload image"
     }
+  },
+  "statsPage": {
+    "title": "Statistics",
+    "totalUsers": "Total users",
+    "creatorsCount": "Creators",
+    "brandsCount": "Brands",
+    "totalOffers": "Total offers",
+    "activeOffers": "Active offers",
+    "countriesCount": "Countries",
+    "archivedUsers": "Archived users",
+    "assignedPackages": "Assigned packages",
+    "usersChart": "User registrations",
+    "creatorsChart": "Creator registrations",
+    "offersChart": "Offers count",
+    "rolesPie": "Account types",
+    "categoriesPie": "Offer categories",
+    "countriesPie": "Brand countries"
   }
 }

@@ -68,7 +68,8 @@
     "allCountries": "Wszystkie kraje",
     "creatorsChartTitle": "Liczba twórców",
     "offersChartTitle": "Liczba ofert",
-    "newsTitle": "Przegląd nowości"
+    "newsTitle": "Przegląd nowości",
+    "remainingOffers": "Pozostałe oferty"
   },
   "usersPage": {
     "title": "Konta użytkowników",
@@ -361,7 +362,12 @@
     "successMessage": "Zmiany zostały zapisane",
     "billingTitle": "Dane rozliczeniowe",
     "ico": "NIP",
-    "dic": "REGON"
+    "dic": "REGON",
+    "profilePicture": "Zdjęcie profilowe",
+    "changeAvatar": "Zmień zdjęcie",
+    "avatarUpdated": "Zdjęcie profilowe zostało zaktualizowane",
+    "deleteAvatar": "Usuń zdjęcie",
+    "avatarDeleted": "Zdjęcie profilowe zostało usunięte"
   },
   "toasts": {
     "userCreated": "Użytkownik został pomyślnie utworzony",
@@ -514,5 +520,22 @@
       "chooseFile": "Wybierz plik",
       "imageClick": "Kliknij aby przesłać obraz"
     }
+  },
+  "statsPage": {
+    "title": "Statystyki",
+    "totalUsers": "Łącznie użytkowników",
+    "creatorsCount": "Twórcy",
+    "brandsCount": "Marki",
+    "totalOffers": "Łącznie ofert",
+    "activeOffers": "Aktywne oferty",
+    "countriesCount": "Kraje",
+    "archivedUsers": "Zarchiwizowani użytkownicy",
+    "assignedPackages": "Przypisane pakiety",
+    "usersChart": "Rejestracje użytkowników",
+    "creatorsChart": "Rejestracje twórców",
+    "offersChart": "Liczba ofert",
+    "rolesPie": "Typy kont",
+    "categoriesPie": "Kategorie ofert",
+    "countriesPie": "Kraje marek"
   }
 }

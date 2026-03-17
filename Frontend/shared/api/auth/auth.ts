@@ -65,6 +65,40 @@ export async function fetchMe() {
   return data;
 }
 
+export async function uploadAvatar(file: File): Promise<{
+  avatar: string;
+  access_token: string;
+}> {
+  const formData = new FormData();
+  formData.append("avatar", file);
+
+  const response = await apiFetch(`/users/me/avatar`, {
+    method: "PATCH",
+    body: formData,
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to upload avatar");
+  }
+  return data;
+}
+
+export async function deleteAvatar(): Promise<{
+  avatar: string | null;
+  access_token: string;
+}> {
+  const response = await apiFetch(`/users/me/avatar`, {
+    method: "DELETE",
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to delete avatar");
+  }
+  return data;
+}
+
 export async function updateProfile(data: {
   name?: string;
   surName?: string;

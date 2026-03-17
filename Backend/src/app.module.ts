@@ -12,6 +12,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UserProfileModule } from './user-profile/user-profile.module';
 import { NewsModule } from './news/news.module';
+import { StatsModule } from './stats/stats.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { NewsModule } from './news/news.module';
     OffersModule,
     UserProfileModule,
     NewsModule,
+    StatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

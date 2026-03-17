@@ -18,7 +18,6 @@ import {
 } from "react-icons/fi";
 import "./menubar.css";
 import type { UserRole } from "../../../types/userRoles";
-import avatarImg from "../../../images/test.jpg";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useBrand } from "../../../context/useBrand";
 
@@ -95,7 +94,9 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
             className={`brand-selector-box ${brandSelectorOpen ? "active" : ""} ${isCollapsed ? "collapsed-box" : ""}`}
             onClick={() => setBrandSelectorOpen(!brandSelectorOpen)}
           >
-            <div className={`brand-selector-content ${isCollapsed ? "collapsed-content" : ""}`}>
+            <div
+              className={`brand-selector-content ${isCollapsed ? "collapsed-content" : ""}`}
+            >
               <div className="brand-icon-wrapper">
                 {selectedBrand.logo ? (
                   <img
@@ -120,7 +121,9 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
             </div>
 
             {brandSelectorOpen && brands.length > 1 && (
-              <div className={`brand-dropdown ${isCollapsed ? "collapsed-dropdown" : ""}`}>
+              <div
+                className={`brand-dropdown ${isCollapsed ? "collapsed-dropdown" : ""}`}
+              >
                 {brands
                   .filter((b) => b._id !== selectedBrand._id)
                   .map((brand) => (
@@ -147,7 +150,9 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
                           </div>
                         )}
                       </div>
-                      {!isCollapsed && <span className="brand-name">{brand.name}</span>}
+                      {!isCollapsed && (
+                        <span className="brand-name">{brand.name}</span>
+                      )}
                     </div>
                   ))}
               </div>

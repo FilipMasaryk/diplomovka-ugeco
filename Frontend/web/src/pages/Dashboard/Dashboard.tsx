@@ -144,6 +144,11 @@ export const Dashboard = () => {
               <div className="stat-value">{brandStats.activeOffers}</div>
               <div className="stat-footer">{selectedBrand?.name}</div>
             </div>
+            <div className="stat-card">
+              <div className="stat-header">{t("dashboard.remainingOffers")}</div>
+              <div className="stat-value">{brandStats.remainingOffers}</div>
+              <div className="stat-footer">{selectedBrand?.name}</div>
+            </div>
           </div>
         )}
         <h1 className="dashboard-title">{t("dashboard.newsTitle")}</h1>

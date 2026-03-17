@@ -24,6 +24,8 @@ import {
 import { API_URL } from "../../../../shared/config";
 import { useToast } from "../../context/useToast";
 import { useAuth } from "../../context/useAuth";
+import { useBrand } from "../../context/useBrand";
+
 
 interface FormState {
   name: string;
@@ -74,9 +76,11 @@ export const CreateOfferPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { selectedBrand: contextBrand, refreshBrands } = useBrand();
   const { id } = useParams<{ id?: string }>();
   const isEdit = Boolean(id);
-  const offersPath = user?.role === "brand_manager" ? "/my-offers" : "/offers";
+  const isBrandManager = user?.role === "brand_manager";
+  const offersPath = isBrandManager ? "/my-offers" : "/offers";
 
   const [brands, setBrands] = useState<BrandSelectOption[]>([]);
   const [loadingOffer, setLoadingOffer] = useState(isEdit);
@@ -104,6 +108,13 @@ export const CreateOfferPage: React.FC = () => {
   useEffect(() => {
     fetchBrandsForSelect().then(setBrands);
   }, []);
+
+  // Auto-set brand for brand_manager from menubar selection
+  useEffect(() => {
+    if (isBrandManager && contextBrand && !isEdit) {
+      setForm((p) => ({ ...p, brand: contextBrand._id }));
+    }
+  }, [isBrandManager, contextBrand, isEdit]);
 
   useEffect(() => {
     if (!isEdit || !id) return;
@@ -255,12 +266,12 @@ export const CreateOfferPage: React.FC = () => {
       form.languages.forEach((l) => fd.append("languages", l));
       form.targets.forEach((tgt) => fd.append("targets", tgt));
       fd.append("description", form.description);
-      if (form.contact) fd.append("contact", form.contact);
-      if (form.website) fd.append("website", form.website);
-      if (form.facebook) fd.append("facebook", form.facebook);
-      if (form.instagram) fd.append("instagram", form.instagram);
-      if (form.tiktok) fd.append("tiktok", form.tiktok);
-      if (form.pinterest) fd.append("pinterest", form.pinterest);
+      fd.append("contact", form.contact);
+      fd.append("website", form.website);
+      fd.append("facebook", form.facebook);
+      fd.append("instagram", form.instagram);
+      fd.append("tiktok", form.tiktok);
+      fd.append("pinterest", form.pinterest);
       if (image) fd.append("image", image);
       if (brandLogo) fd.append("brandLogo", brandLogo);
 
@@ -271,6 +282,9 @@ export const CreateOfferPage: React.FC = () => {
       } else {
         await createOffer(fd);
         showToast(t("toasts.offerCreated"), "success");
+      }
+      if (brandLogo) {
+        await refreshBrands();
       }
       navigate(offersPath);
     } catch (err: unknown) {
@@ -392,10 +406,10 @@ export const CreateOfferPage: React.FC = () => {
                 required
                 options={brandOptions}
                 value={brandOptions.find((o) => o.value === form.brand) ?? null}
-                onChange={(val) => !isEdit && setField("brand", val?.value ?? "")}
+                onChange={(val) => !isEdit && !isBrandManager && setField("brand", val?.value ?? "")}
                 placeholder={t("createOfferPage.brand")}
                 error={errors.brand}
-                isDisabled={isEdit}
+                isDisabled={isEdit || isBrandManager}
               />
             </div>
 

@@ -68,7 +68,8 @@
     "allCountries": "Minden ország",
     "creatorsChartTitle": "Alkotók száma",
     "offersChartTitle": "Ajánlatok száma",
-    "newsTitle": "Újdonságok áttekintése"
+    "newsTitle": "Újdonságok áttekintése",
+    "remainingOffers": "Fennmaradó ajánlatok"
   },
   "usersPage": {
     "title": "Felhasználói fiókok",
@@ -361,7 +362,12 @@
     "successMessage": "A változtatások sikeresen mentve",
     "billingTitle": "Számlázási adatok",
     "ico": "Cégazonosító",
-    "dic": "Adóazonosító"
+    "dic": "Adóazonosító",
+    "profilePicture": "Profilkép",
+    "changeAvatar": "Fotó módosítása",
+    "avatarUpdated": "A profilkép frissítve lett",
+    "deleteAvatar": "Fotó eltávolítása",
+    "avatarDeleted": "A profilkép eltávolítva"
   },
   "toasts": {
     "userCreated": "Felhasználó sikeresen létrehozva",
@@ -514,5 +520,22 @@
       "chooseFile": "Fájl kiválasztása",
       "imageClick": "Kattintson a kép feltöltéséhez"
     }
+  },
+  "statsPage": {
+    "title": "Statisztikák",
+    "totalUsers": "Összes felhasználó",
+    "creatorsCount": "Alkotók",
+    "brandsCount": "Márkák",
+    "totalOffers": "Összes ajánlat",
+    "activeOffers": "Aktív ajánlatok",
+    "countriesCount": "Országok",
+    "archivedUsers": "Archivált felhasználók",
+    "assignedPackages": "Hozzárendelt csomagok",
+    "usersChart": "Felhasználói regisztrációk",
+    "creatorsChart": "Alkotói regisztrációk",
+    "offersChart": "Ajánlatok száma",
+    "rolesPie": "Fióktípusok",
+    "categoriesPie": "Ajánlat kategóriák",
+    "countriesPie": "Márkák országai"
   }
 }

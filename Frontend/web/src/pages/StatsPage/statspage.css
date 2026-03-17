@@ -1,0 +1,85 @@
+@import "../../styles/colors.css";
+
+.stats-page {
+  width: 100%;
+  padding: 40px 50px;
+  box-sizing: border-box;
+  background-color: white;
+}
+
+.stats-page-title {
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  font-size: 48px;
+  line-height: 100%;
+  margin: 0 0 30px;
+}
+
+.stats-cards-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  margin-bottom: 30px;
+}
+
+.stats-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.stats-pie-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.pie-card {
+  background-color: var(--color-background-elements);
+  border-radius: 12px;
+  padding: 24px 28px;
+  border: 1px solid #e5eaf0;
+  box-shadow: 0px 1px 3px 0px #0000001a;
+}
+
+.pie-card-title {
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--color-text);
+  margin: 0 0 4px;
+  text-align: center;
+}
+
+.pie-card-body {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.pie-card-footer {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--color-text);
+  opacity: 0.7;
+  margin-top: 8px;
+  text-align: center;
+}
+
+@media (max-width: 1100px) {
+  .stats-pie-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .stats-page {
+    padding: 24px;
+  }
+
+  .stats-page-title {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+}

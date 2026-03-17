@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiBell, FiChevronDown, FiLogOut } from "react-icons/fi";
 import "./navbar.css";
-import avatarImg from "../../../images/test.jpg";
+import defaultAvatar from "../../../images/No_Image_Available.jpg";
 import { SK, CZ, PL, DE, HU, GB } from "country-flag-icons/react/3x2";
 import { useAuth } from "../../../context/useAuth";
 import i18n from "../../../translation";
@@ -47,10 +47,7 @@ export const Navbar = () => {
       ) {
         setUserMenuOpen(false);
       }
-      if (
-        bellRef.current &&
-        !bellRef.current.contains(e.target as Node)
-      ) {
+      if (bellRef.current && !bellRef.current.contains(e.target as Node)) {
         setBellOpen(false);
       }
     };
@@ -61,7 +58,9 @@ export const Navbar = () => {
   useEffect(() => {
     if (!user) return;
     const loadCount = () => {
-      fetchUnreadNewsCount().then(setUnreadCount).catch(() => {});
+      fetchUnreadNewsCount()
+        .then(setUnreadCount)
+        .catch(() => {});
     };
     loadCount();
     const interval = setInterval(loadCount, 60000);
@@ -108,7 +107,9 @@ export const Navbar = () => {
                       >
                         <span className="bell-item-title">{item.title}</span>
                         <span className="bell-item-date">
-                          {new Date(item.publishedAt || item.createdAt).toLocaleDateString("sk-SK")}
+                          {new Date(
+                            item.publishedAt || item.createdAt,
+                          ).toLocaleDateString("sk-SK")}
                         </span>
                       </div>
                     ))
@@ -126,7 +127,15 @@ export const Navbar = () => {
                 className="user"
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
               >
-                <img src={avatarImg} alt="avatar" className="avatar" />
+                <img
+                  src={
+                    user.avatar
+                      ? `http://localhost:3000${user.avatar}`
+                      : defaultAvatar
+                  }
+                  alt="avatar"
+                  className="avatar"
+                />
                 <span className="username">
                   {user.name} {user.surName}
                 </span>

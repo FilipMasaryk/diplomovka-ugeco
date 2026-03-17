@@ -38,6 +38,7 @@ export class AuthService {
       role: user.role,
       countries: user.countries ?? [],
       brands: user.brands ?? [],
+      avatar: user.avatar ?? null,
     };
 
     const expiresIn = rememberMe ? '30d' : '1h';

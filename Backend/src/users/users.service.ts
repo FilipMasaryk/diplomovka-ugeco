@@ -536,6 +536,31 @@ export class UsersService {
     return userWithoutPassword as User;
   }
 
+  async updateAvatar(userId: string, avatarPath: string | null): Promise<User> {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+
+    // Delete old avatar file if it exists
+    if (user.avatar) {
+      const oldPath = require('path').join(
+        process.cwd(),
+        'src',
+        user.avatar.replace(/^\//, ''),
+      );
+      if (require('fs').existsSync(oldPath)) {
+        require('fs').unlinkSync(oldPath);
+      }
+    }
+
+    user.avatar = avatarPath ?? undefined;
+    await user.save();
+
+    const { password, ...userWithoutPassword } = user.toObject();
+    return userWithoutPassword as User;
+  }
+
   async getLoggedInUser(id: number): Promise<User> {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException('User ID is not a valid ObjectId');

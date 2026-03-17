@@ -83,6 +83,9 @@ export class User {
   profile?: Types.ObjectId;
 
   @Prop()
+  avatar?: string;
+
+  @Prop()
   lastSeenNewsAt?: Date;
 
   @Prop({

@@ -10,9 +10,30 @@
   UseGuards,
   Req,
   Query,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import * as path from 'path';
+import * as fs from 'fs';
+import type { Multer } from 'multer';
 import { UsersService } from './users.service';
 import { JwtService } from '@nestjs/jwt';
+
+const avatarStorage = diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(process.cwd(), 'src/uploads/avatars');
+    if (!fs.existsSync(uploadPath))
+      fs.mkdirSync(uploadPath, { recursive: true });
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const name = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+    cb(null, name);
+  },
+});
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import {
   createUserSchema,
@@ -70,6 +91,7 @@ export class UsersController {
       role: user.role,
       countries: user.countries ?? [],
       brands: user.brands ?? [],
+      avatar: user.avatar ?? null,
     };
 
     const access_token = await this.jwtService.signAsync(payload, {
@@ -77,6 +99,64 @@ export class UsersController {
     });
 
     return { ...user, access_token };
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch('me/avatar')
+  @UseInterceptors(
+    FileInterceptor('avatar', {
+      storage: avatarStorage,
+      limits: { fileSize: 2 * 1024 * 1024 },
+    }),
+  )
+  async uploadAvatar(
+    @Req() req,
+    @UploadedFile() file: Multer.File,
+  ) {
+    const user = await this.usersService.updateAvatar(
+      req.user.id,
+      file ? `/uploads/avatars/${file.filename}` : null,
+    );
+
+    const payload = {
+      id: user._id,
+      name: user.name,
+      surName: user.surName,
+      email: user.email,
+      role: user.role,
+      countries: user.countries ?? [],
+      brands: user.brands ?? [],
+      avatar: user.avatar ?? null,
+    };
+
+    const access_token = await this.jwtService.signAsync(payload, {
+      expiresIn: '1h',
+    });
+
+    return { avatar: user.avatar, access_token };
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('me/avatar')
+  async deleteAvatar(@Req() req) {
+    const user = await this.usersService.updateAvatar(req.user.id, null);
+
+    const payload = {
+      id: user._id,
+      name: user.name,
+      surName: user.surName,
+      email: user.email,
+      role: user.role,
+      countries: user.countries ?? [],
+      brands: user.brands ?? [],
+      avatar: user.avatar ?? null,
+    };
+
+    const access_token = await this.jwtService.signAsync(payload, {
+      expiresIn: '1h',
+    });
+
+    return { avatar: null, access_token };
   }
 
   @UseGuards(AuthGuard, RolesGuard)

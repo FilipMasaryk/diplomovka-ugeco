@@ -280,6 +280,7 @@ export interface BrandPackage {
 export interface BrandStats {
   totalOffers: number;
   activeOffers: number;
+  remainingOffers: number;
 }
 
 export const fetchBrandStats = async (
@@ -287,10 +288,10 @@ export const fetchBrandStats = async (
 ): Promise<BrandStats> => {
   try {
     const response = await apiFetch(`/brands/${brandId}/stats`);
-    if (!response.ok) return { totalOffers: 0, activeOffers: 0 };
+    if (!response.ok) return { totalOffers: 0, activeOffers: 0, remainingOffers: 0 };
     return response.json();
   } catch {
-    return { totalOffers: 0, activeOffers: 0 };
+    return { totalOffers: 0, activeOffers: 0, remainingOffers: 0 };
   }
 };
 

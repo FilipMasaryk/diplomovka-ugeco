@@ -32,7 +32,7 @@
 }
 
 .brand-stats-grid {
-  grid-template-columns: repeat(2, 280px);
+  grid-template-columns: repeat(3, 280px);
   margin-bottom: 30px;
 }
 

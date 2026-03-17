@@ -415,8 +415,8 @@ export class BrandsService {
   async getBrandStats(
     brandId: string,
     user: User,
-  ): Promise<{ totalOffers: number; activeOffers: number }> {
-    await this.findOneForUser(brandId, user);
+  ): Promise<{ totalOffers: number; activeOffers: number; remainingOffers: number }> {
+    const brand = await this.findOneForUser(brandId, user);
 
     const brandObjectId = new mongoose.Types.ObjectId(brandId);
     const now = new Date();
@@ -435,7 +435,7 @@ export class BrandsService {
       }),
     ]);
 
-    return { totalOffers, activeOffers };
+    return { totalOffers, activeOffers, remainingOffers: brand.offersCount ?? 0 };
   }
 
   private async validateMainContact(

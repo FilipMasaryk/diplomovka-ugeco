@@ -68,7 +68,8 @@
     "allCountries": "Všetky krajiny",
     "creatorsChartTitle": "Počet tvorcov",
     "offersChartTitle": "Počet ponúk",
-    "newsTitle": "Novinky"
+    "newsTitle": "Novinky",
+    "remainingOffers": "Zostávajúce ponuky"
   },
   "usersPage": {
     "title": "Užívateľské účty",
@@ -361,7 +362,12 @@
     "successMessage": "Zmeny boli úspešne uložené",
     "billingTitle": "Fakturačné údaje",
     "ico": "IČO",
-    "dic": "DIČ"
+    "dic": "DIČ",
+    "profilePicture": "Profilová fotka",
+    "changeAvatar": "Zmeniť fotku",
+    "avatarUpdated": "Profilová fotka bola aktualizovaná",
+    "deleteAvatar": "Odstrániť fotku",
+    "avatarDeleted": "Profilová fotka bola odstránená"
   },
   "toasts": {
     "userCreated": "Užívateľ bol úspešne vytvorený",
@@ -518,5 +524,22 @@
       "chooseFile": "Vybrať súbor",
       "imageClick": "Kliknite pre nahratie obrázka"
     }
+  },
+  "statsPage": {
+    "title": "Štatistiky",
+    "totalUsers": "Počet užívateľov",
+    "creatorsCount": "Počet tvorcov",
+    "brandsCount": "Počet značiek",
+    "totalOffers": "Počet ponúk",
+    "activeOffers": "Aktívne ponuky",
+    "countriesCount": "Počet krajín",
+    "archivedUsers": "Archivovaní užívatelia",
+    "assignedPackages": "Priradené balíčky",
+    "usersChart": "Registrácie užívateľov",
+    "creatorsChart": "Registrácie tvorcov",
+    "offersChart": "Počet ponúk",
+    "rolesPie": "Typ účtov",
+    "categoriesPie": "Kategórie ponúk",
+    "countriesPie": "Krajiny značiek"
   }
 }

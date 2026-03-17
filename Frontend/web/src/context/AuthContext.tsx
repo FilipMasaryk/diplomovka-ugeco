@@ -10,6 +10,7 @@ interface User {
   role: UserRole;
   countries: string[];
   brands: string[];
+  avatar: string | null;
 }
 
 interface AuthContextType {

@@ -68,7 +68,8 @@
     "allCountries": "Alle Länder",
     "creatorsChartTitle": "Anzahl der Ersteller",
     "offersChartTitle": "Anzahl der Angebote",
-    "newsTitle": "Neuigkeiten"
+    "newsTitle": "Neuigkeiten",
+    "remainingOffers": "Verbleibende Angebote"
   },
   "usersPage": {
     "title": "Benutzerkonten",
@@ -361,7 +362,12 @@
     "successMessage": "Änderungen erfolgreich gespeichert",
     "billingTitle": "Rechnungsdaten",
     "ico": "Unternehmens-ID",
-    "dic": "Steuer-ID"
+    "dic": "Steuer-ID",
+    "profilePicture": "Profilbild",
+    "changeAvatar": "Foto ändern",
+    "avatarUpdated": "Profilbild wurde aktualisiert",
+    "deleteAvatar": "Foto entfernen",
+    "avatarDeleted": "Profilbild wurde entfernt"
   },
   "toasts": {
     "userCreated": "Benutzer erfolgreich erstellt",
@@ -514,5 +520,22 @@
       "chooseFile": "Datei wählen",
       "imageClick": "Klicken Sie zum Hochladen eines Bildes"
     }
+  },
+  "statsPage": {
+    "title": "Statistiken",
+    "totalUsers": "Benutzer gesamt",
+    "creatorsCount": "Ersteller",
+    "brandsCount": "Marken",
+    "totalOffers": "Angebote gesamt",
+    "activeOffers": "Aktive Angebote",
+    "countriesCount": "Länder",
+    "archivedUsers": "Archivierte Benutzer",
+    "assignedPackages": "Zugewiesene Pakete",
+    "usersChart": "Benutzerregistrierungen",
+    "creatorsChart": "Ersteller-Registrierungen",
+    "offersChart": "Anzahl der Angebote",
+    "rolesPie": "Kontotypen",
+    "categoriesPie": "Angebotskategorien",
+    "countriesPie": "Markenländer"
   }
 }

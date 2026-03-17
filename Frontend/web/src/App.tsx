@@ -23,6 +23,7 @@ import { ManagersPage } from "./pages/ManagersPage/ManagersPage";
 import { BrandSettingsPage } from "./pages/BrandSettingsPage/BrandSettingsPage";
 import { CreatorOffersPage } from "./pages/CreatorOffersPage/CreatorOffersPage";
 import { ProfilePage } from "./pages/ProfilePage/ProfilePage";
+import { StatsPage } from "./pages/StatsPage/StatsPage";
 import { useBrand } from "./context/useBrand";
 import { UserRole } from "./types/userRoles";
 
@@ -174,6 +175,14 @@ function AppContent() {
                   roles={[UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER]}
                 >
                   <OfferDetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/stats"
+              element={
+                <ProtectedRoute roles={[UserRole.ADMIN, UserRole.SUBADMIN]}>
+                  <StatsPage />
                 </ProtectedRoute>
               }
             />
