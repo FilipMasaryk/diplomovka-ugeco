@@ -57,10 +57,11 @@ export class UserProfileController {
     try {
       const dto: CreateUserProfileDto = createUserProfileSchema.parse(body);
 
-      // Only enforce strict validation when publishing
       if (dto.published) {
         if (!file && !dto.image) {
-          throw new BadRequestException('Image file is required for publishing');
+          throw new BadRequestException(
+            'Image file is required for publishing',
+          );
         }
         const publishErrors = validateForPublish(dto);
         if (publishErrors.length > 0) {
@@ -95,12 +96,10 @@ export class UserProfileController {
     try {
       const dto = createUserProfileSchema.partial().parse(body);
 
-      // Don't let empty defaults overwrite existing image
       if (!file && (!dto.image || dto.image === '')) {
         delete dto.image;
       }
 
-      // Only enforce strict validation when publishing
       if (dto.published) {
         const existing = await this.profilesService.findByUser(req.user.id);
         const existingObj = existing

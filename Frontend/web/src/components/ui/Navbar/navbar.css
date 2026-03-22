@@ -118,6 +118,17 @@
   border-radius: 50%;
 }
 
+.avatar-initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #9ca3af;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
 .lang {
   display: flex;
   align-items: center;

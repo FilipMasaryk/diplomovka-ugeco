@@ -17,6 +17,7 @@ import {
 } from "../../../../shared/api/brands/brands";
 import { ChartCard } from "../../components/ui/ChartCard/ChartCard";
 import { FiCheckCircle, FiBell, FiAlertTriangle } from "react-icons/fi";
+import { API_URL } from "../../../../shared/config";
 import "./dashboard.css";
 
 interface Stats {
@@ -171,7 +172,7 @@ export const Dashboard = () => {
                 )}
                 {item.image && (
                   <img
-                    src={`http://localhost:3000${item.image}`}
+                    src={`${API_URL}${item.image}`}
                     alt={item.title}
                     className="news-card-image"
                   />

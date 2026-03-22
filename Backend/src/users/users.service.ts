@@ -32,7 +32,6 @@ export class UsersService {
     private emailService: EmailService,
   ) {}
 
-  /** Fetch fresh brand IDs from DB instead of stale JWT */
   private async getFreshBrandIds(user: User): Promise<string[]> {
     const userId = (user as any)._id ?? (user as any).id;
     const freshUser = await this.userModel.findById(userId).lean();
@@ -287,7 +286,11 @@ export class UsersService {
     return this.userModel.findOne({ email }).exec();
   }
 
-  async findArchived(country?: string, role?: string, allowedCountries?: string[]): Promise<User[]> {
+  async findArchived(
+    country?: string,
+    role?: string,
+    allowedCountries?: string[],
+  ): Promise<User[]> {
     const query: any = { isArchived: true };
 
     if (role) {
@@ -374,7 +377,8 @@ export class UsersService {
 
     // Subadmin kontrola či priraduje len take znacky ktore su sucastou krajiny ktoru priraduje
     if (currentUser.role === UserRole.SUBADMIN && updateUserDto.brands) {
-      const effectiveCountries = updateUserDto.countries ?? user.countries ?? [];
+      const effectiveCountries =
+        updateUserDto.countries ?? user.countries ?? [];
       if (effectiveCountries.length > 0) {
         const brands = await this.brandModel.find({
           _id: { $in: updateUserDto.brands },
@@ -510,21 +514,10 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException(`User with ID ${userId} not found`);
     }
-    if (dto.email) {
-      const emailExists = await this.userModel.findOne({
-        email: dto.email,
-        _id: { $ne: userId },
-      });
-
-      if (emailExists) {
-        throw new BadRequestException('Email already in use');
-      }
-    }
     if (dto.name) user.name = dto.name;
     if (dto.surName) user.surName = dto.surName;
     if (dto.ico !== undefined) user.ico = dto.ico;
     if (dto.dic !== undefined) user.dic = dto.dic;
-    if (dto.email) user.email = dto.email;
 
     if (dto.password) {
       user.password = await bcrypt.hash(dto.password, 10);

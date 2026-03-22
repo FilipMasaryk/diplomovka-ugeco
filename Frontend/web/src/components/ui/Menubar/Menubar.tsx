@@ -20,6 +20,7 @@ import "./menubar.css";
 import type { UserRole } from "../../../types/userRoles";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useBrand } from "../../../context/useBrand";
+import { API_URL } from "../../../../../shared/config";
 
 interface MenubarProps {
   role: UserRole;
@@ -100,7 +101,7 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
               <div className="brand-icon-wrapper">
                 {selectedBrand.logo ? (
                   <img
-                    src={`http://localhost:3000${selectedBrand.logo}`}
+                    src={`${API_URL}${selectedBrand.logo}`}
                     alt={selectedBrand.name}
                     className="brand-img"
                   />
@@ -140,7 +141,7 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
                       <div className="brand-icon-wrapper">
                         {brand.logo ? (
                           <img
-                            src={`http://localhost:3000${brand.logo}`}
+                            src={`${API_URL}${brand.logo}`}
                             alt={brand.name}
                             className="brand-img"
                           />

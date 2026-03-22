@@ -18,7 +18,6 @@ const arrayPreprocess = (val: unknown) => {
   return Array.isArray(val) ? val : [val];
 };
 
-// Base schema — allows saving concepts with minimal data
 export const createUserProfileSchema = z.object({
   name: z.string().optional().default(''),
 
@@ -56,7 +55,6 @@ export const createUserProfileSchema = z.object({
 
 export type CreateUserProfileDto = z.infer<typeof createUserProfileSchema>;
 
-// Stricter validation for publishing — ensures all required fields are filled
 export function validateForPublish(dto: CreateUserProfileDto): string[] {
   const errors: string[] = [];
   if (!dto.name || !dto.name.trim()) errors.push('Name is required');

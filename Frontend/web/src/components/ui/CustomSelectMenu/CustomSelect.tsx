@@ -97,12 +97,12 @@ export const CustomSelect = <IsMulti extends boolean = false>({
     }),
     multiValue: (base) => ({
       ...base,
-      backgroundColor: "#e6f9f7",
+      backgroundColor: "#f0f0f0",
       borderRadius: "4px",
     }),
     multiValueLabel: (base) => ({
       ...base,
-      color: "var(--color-primary)",
+      color: "#181818",
       fontWeight: "600",
     }),
   };

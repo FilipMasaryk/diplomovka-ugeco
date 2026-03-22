@@ -10,6 +10,7 @@ import type { NewsItem } from "../../../../../shared/api/news/news";
 import type { SingleValue } from "react-select";
 import "../CreateUserModal/createUserModal.css";
 import "../../../pages/CreateOfferPage/createoffer.css";
+import { API_URL } from "../../../../../shared/config";
 import "./createNewsModal.css";
 
 interface SelectOption {
@@ -275,7 +276,7 @@ export const CreateNewsModal: React.FC<CreateNewsModalProps> = ({
                 src={
                   imagePreview.startsWith("blob:")
                     ? imagePreview
-                    : `http://localhost:3000${imagePreview}`
+                    : `${API_URL}${imagePreview}`
                 }
                 alt="preview"
                 className="news-image-preview"

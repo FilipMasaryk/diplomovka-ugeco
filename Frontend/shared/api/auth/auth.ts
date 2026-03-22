@@ -102,8 +102,6 @@ export async function deleteAvatar(): Promise<{
 export async function updateProfile(data: {
   name?: string;
   surName?: string;
-  email?: string;
-  emailConfirmation?: string;
   password?: string;
   passwordConfirmation?: string;
   ico?: string;

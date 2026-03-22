@@ -74,6 +74,7 @@ export class OffersController {
     @Query('paidCooperation') paidCooperation?: string,
     @Query('language') language?: string | string[],
   ) {
+    //ak je pole neha ako pole, ak neni pole prevedie ho na pole, ak neni vobec zadane tak z toho bude prazdne pole
     const targetsArray = Array.isArray(target)
       ? target
       : target

@@ -123,6 +123,21 @@ export const BrandSettingsPage: React.FC = () => {
     if (!brand.name.trim()) errs.name = "errors.required";
     if (brand.categories.length === 0) errs.categories = "errors.required";
     if (!brand.logo && !logoFile) errs.logo = "errors.required";
+
+    const urlFields = ["website", "facebook", "instagram", "tiktok", "pinterest", "youtube"] as const;
+    for (const key of urlFields) {
+      const val = brand[key];
+      if (val) {
+        try {
+          const urlToCheck = val.match(/^https?:\/\//) ? val : `https://${val}`;
+          const url = new URL(urlToCheck);
+          if (!url.hostname.includes(".")) throw new Error();
+        } catch {
+          errs[key] = "errors.invalidUrl";
+        }
+      }
+    }
+
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
       return;
@@ -253,7 +268,12 @@ export const BrandSettingsPage: React.FC = () => {
               name={field}
               placeholder="URL"
               value={brand[field]}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                if (errors[field]) setErrors((p) => ({ ...p, [field]: "" }));
+              }}
+              hasError={!!errors[field]}
+              errorMessage={errors[field] ? t(errors[field]) : ""}
             />
           ))}
         </div>

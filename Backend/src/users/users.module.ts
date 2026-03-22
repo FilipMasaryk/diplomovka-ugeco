@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/userSchema';
 import { AuthModule } from 'src/auth/auth.module';
 import { EmailService } from './email.service';
+import { UsersSeederService } from './users-seeder.service';
 import { Package, PackageSchema } from 'src/packages/schemas/packageSchema';
 import { Brand, BrandSchema } from 'src/brands/schemas/brandSchema';
 import {
@@ -23,7 +24,7 @@ import {
     forwardRef(() => AuthModule),
   ],
   controllers: [UsersController],
-  providers: [UsersService, EmailService],
+  providers: [UsersService, EmailService, UsersSeederService],
   exports: [UsersService, MongooseModule],
 })
 export class UsersModule {}

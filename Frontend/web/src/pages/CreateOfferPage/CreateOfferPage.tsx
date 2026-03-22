@@ -5,7 +5,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./createoffer.css";
 import { CustomSelect } from "../../components/ui/CustomSelectMenu/CustomSelect";
-import { FiArrowLeft } from "react-icons/fi";
 import { BrandCategory } from "../../types/brandCategories";
 import { OfferTarget } from "../../types/offerTarget";
 import { OfferLanguage } from "../../types/offerLanguage";
@@ -63,10 +62,17 @@ const EMPTY_FORM: FormState = {
   pinterest: "",
 };
 
+const toLocalDate = (d: Date): string => {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+};
+
 const toInputDate = (iso: string): string => {
   if (!iso) return "";
   try {
-    return new Date(iso).toISOString().split("T")[0];
+    return toLocalDate(new Date(iso));
   } catch {
     return "";
   }
@@ -212,8 +218,8 @@ export const CreateOfferPage: React.FC = () => {
   const isValidUrl = (value: string): boolean => {
     try {
       const urlToCheck = value.match(/^https?:\/\//) ? value : `https://${value}`;
-      new URL(urlToCheck);
-      return true;
+      const url = new URL(urlToCheck);
+      return url.hostname.includes(".");
     } catch {
       return false;
     }
@@ -381,7 +387,7 @@ export const CreateOfferPage: React.FC = () => {
               <DatePicker
                 selected={form.activeFrom ? new Date(form.activeFrom) : null}
                 onChange={(date: Date | null) => {
-                  const val = date ? date.toISOString().split("T")[0] : "";
+                  const val = date ? toLocalDate(date) : "";
                   setField("activeFrom", val);
                   if (val && form.activeTo && val > form.activeTo) {
                     setField("activeTo", "");
@@ -422,7 +428,7 @@ export const CreateOfferPage: React.FC = () => {
               <DatePicker
                 selected={form.activeTo ? new Date(form.activeTo) : null}
                 onChange={(date: Date | null) =>
-                  setField("activeTo", date ? date.toISOString().split("T")[0] : "")
+                  setField("activeTo", date ? toLocalDate(date) : "")
                 }
                 dateFormat="dd.MM.yyyy"
                 placeholderText={t("createOfferPage.activeTo")}
@@ -557,50 +563,53 @@ export const CreateOfferPage: React.FC = () => {
           </div>
         </div>
 
-        {/* ── Languages (full width) ── */}
-        <div className="offer-full-row">
-          <label className="offer-label">
-            {t("createOfferPage.languages")}{" "}
-            <span className="required-star">*</span>
-          </label>
-          <div className="offer-checkboxes-grid">
-            {Object.values(OfferLanguage).map((lang) => (
-              <label key={lang} className="offer-checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={form.languages.includes(lang)}
-                  onChange={() => toggleCheckbox("languages", lang)}
-                />
-                {t(`languages.${lang}`, { defaultValue: lang.toUpperCase() })}
-              </label>
-            ))}
+        {/* ── Languages + Targets side by side ── */}
+        <div className="offer-form-grid">
+          <div className="offer-full-row">
+            <label className="offer-label">
+              {t("createOfferPage.languages")}{" "}
+              <span className="required-star">*</span>
+            </label>
+            <div className="offer-checkboxes-grid">
+              {Object.values(OfferLanguage).map((lang) => (
+                <label key={lang} className="offer-checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={form.languages.includes(lang)}
+                    onChange={() => toggleCheckbox("languages", lang)}
+                  />
+                  <span className="custom-checkbox" />
+                  {t(`languages.${lang}`, { defaultValue: lang.toUpperCase() })}
+                </label>
+              ))}
+            </div>
+            {errors.languages && (
+              <span className="offer-field-error">{errors.languages}</span>
+            )}
           </div>
-          {errors.languages && (
-            <span className="offer-field-error">{errors.languages}</span>
-          )}
-        </div>
 
-        {/* ── Targets (full width) ── */}
-        <div className="offer-full-row">
-          <label className="offer-label">
-            {t("createOfferPage.targets")}{" "}
-            <span className="required-star">*</span>
-          </label>
-          <div className="offer-checkboxes-grid">
-            {Object.values(OfferTarget).map((tgt) => (
-              <label key={tgt} className="offer-checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={form.targets.includes(tgt)}
-                  onChange={() => toggleCheckbox("targets", tgt)}
-                />
-                {t(`targets.${tgt}`, { defaultValue: tgt })}
-              </label>
-            ))}
+          <div className="offer-full-row">
+            <label className="offer-label">
+              {t("createOfferPage.targets")}{" "}
+              <span className="required-star">*</span>
+            </label>
+            <div className="offer-checkboxes-grid">
+              {Object.values(OfferTarget).map((tgt) => (
+                <label key={tgt} className="offer-checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={form.targets.includes(tgt)}
+                    onChange={() => toggleCheckbox("targets", tgt)}
+                  />
+                  <span className="custom-checkbox" />
+                  {t(`targets.${tgt}`, { defaultValue: tgt })}
+                </label>
+              ))}
+            </div>
+            {errors.targets && (
+              <span className="offer-field-error">{errors.targets}</span>
+            )}
           </div>
-          {errors.targets && (
-            <span className="offer-field-error">{errors.targets}</span>
-          )}
         </div>
 
         {/* ── Description (full width) ── */}
@@ -649,7 +658,6 @@ export const CreateOfferPage: React.FC = () => {
             onClick={() => navigate(offersPath)}
             disabled={submitting}
           >
-            <FiArrowLeft />
             {t("createOfferPage.backBtn")}
           </button>
           <button

@@ -43,8 +43,6 @@ export const getMonthlyStats = async (
   return response.json();
 };
 
-// ── Stats page endpoints ──
-
 export interface OverviewStats {
   totalUsers: number;
   creatorsCount: number;
@@ -101,9 +99,7 @@ export const getStatsRoles = async (): Promise<RoleDistribution[]> => {
   return response.json();
 };
 
-export const getStatsCategories = async (): Promise<
-  CategoryDistribution[]
-> => {
+export const getStatsCategories = async (): Promise<CategoryDistribution[]> => {
   const response = await apiFetch(`/stats/categories`, {
     headers: { "Content-Type": "application/json" },
   });
@@ -111,9 +107,7 @@ export const getStatsCategories = async (): Promise<
   return response.json();
 };
 
-export const getStatsCountries = async (): Promise<
-  CountryDistribution[]
-> => {
+export const getStatsCountries = async (): Promise<CountryDistribution[]> => {
   const response = await apiFetch(`/stats/countries`, {
     headers: { "Content-Type": "application/json" },
   });

@@ -33,14 +33,12 @@ export class OffersService {
     private readonly userModel: Model<UserDocument>,
   ) {}
 
-  /** Fetch fresh brand IDs from DB instead of stale JWT */
   private async getFreshBrandIds(user: User): Promise<string[]> {
     const userId = (user as any)._id ?? (user as any).id;
     const freshUser = await this.userModel.findById(userId).lean();
     return (freshUser?.brands || []).map((b) => b.toString());
   }
 
-  /** Fetch fresh countries from DB instead of stale JWT */
   private async getFreshCountries(user: User): Promise<string[]> {
     const userId = (user as any)._id ?? (user as any).id;
     const freshUser = await this.userModel.findById(userId).lean();
@@ -87,7 +85,7 @@ export class OffersService {
         }
       }
 
-      if (brand.offersCount <= 0) {
+      if (!brand.offersCount || brand.offersCount <= 0) {
         throw new BadRequestException('Brand does not have remaining offers');
       }
     }
@@ -233,12 +231,15 @@ export class OffersService {
       }
     }
 
-    // When publishing a concept, add offer to brand (but don't deduct offersCount — that only happens on create)
     const isPublishing =
       offer.status === OfferStatus.CONCEPT &&
       updateOfferDto.status === OfferStatus.ACTIVE;
 
     if (isPublishing) {
+      if (!brand.offersCount || brand.offersCount <= 0) {
+        throw new BadRequestException('Brand does not have remaining offers');
+      }
+
       await this.brandModel.findByIdAndUpdate(brand._id, {
         $addToSet: { offers: offer._id },
         $inc: { offersCount: -1, totalOffersMade: 1 },
@@ -361,7 +362,9 @@ export class OffersService {
       if (user.role === UserRole.BRAND_MANAGER) {
         const freshBrandIds = await this.getFreshBrandIds(user);
         if (!freshBrandIds.includes(brand._id.toString())) {
-          throw new ForbiddenException('You cannot delete offers for this brand');
+          throw new ForbiddenException(
+            'You cannot delete offers for this brand',
+          );
         }
       }
     }
@@ -376,10 +379,7 @@ export class OffersService {
     return (freshUser?.likedOffers || []).map((id) => id.toString());
   }
 
-  async toggleLike(
-    offerId: string,
-    user: User,
-  ): Promise<{ liked: boolean }> {
+  async toggleLike(offerId: string, user: User): Promise<{ liked: boolean }> {
     if (!mongoose.Types.ObjectId.isValid(offerId)) {
       throw new BadRequestException('Invalid offer ID');
     }
@@ -463,7 +463,6 @@ export class OffersService {
   async getStats(countries?: string[]) {
     const now = new Date();
 
-    // If countries filter provided (subadmin), find brand IDs in those countries
     let brandFilter: Record<string, unknown> | undefined;
     if (countries?.length) {
       const brandIds = await this.brandModel
@@ -516,7 +515,6 @@ export class OffersService {
       );
     }
 
-    // Build match filters for subadmin country restriction
     const creatorMatch: Record<string, unknown> = {
       role: UserRole.CREATOR,
       createdAt: { $gte: startDate },

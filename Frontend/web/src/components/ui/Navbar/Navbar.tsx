@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiBell, FiChevronDown, FiLogOut } from "react-icons/fi";
 import "./navbar.css";
-import defaultAvatar from "../../../images/No_Image_Available.jpg";
 import { SK, CZ, PL, DE, HU, GB } from "country-flag-icons/react/3x2";
 import { useAuth } from "../../../context/useAuth";
 import i18n from "../../../translation";
@@ -13,6 +12,7 @@ import {
   markNewsSeen,
   type NewsItem,
 } from "../../../../../shared/api/news/news";
+import { API_URL } from "../../../../../shared/config";
 
 const languages = [
   { code: "SK", label: "SK", component: SK },
@@ -127,15 +127,18 @@ export const Navbar = () => {
                 className="user"
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
               >
-                <img
-                  src={
-                    user.avatar
-                      ? `http://localhost:3000${user.avatar}`
-                      : defaultAvatar
-                  }
-                  alt="avatar"
-                  className="avatar"
-                />
+                {user.avatar ? (
+                  <img
+                    src={`${API_URL}${user.avatar}`}
+                    alt="avatar"
+                    className="avatar"
+                  />
+                ) : (
+                  <div className="avatar avatar-initials">
+                    {user.name.charAt(0)}
+                    {user.surName.charAt(0)}
+                  </div>
+                )}
                 <span className="username">
                   {user.name} {user.surName}
                 </span>

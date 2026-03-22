@@ -52,7 +52,7 @@ export class NewsController {
   constructor(private readonly newsService: NewsService) {}
 
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
   @Post()
   @UseInterceptors(
     FileInterceptor('image', {
@@ -107,7 +107,7 @@ export class NewsController {
   }
 
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
   @Patch(':id')
   @UseInterceptors(
     FileInterceptor('image', {
@@ -125,7 +125,7 @@ export class NewsController {
   }
 
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.newsService.remove(id);

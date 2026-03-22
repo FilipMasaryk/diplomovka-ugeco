@@ -213,8 +213,9 @@ export const ProfilePage: React.FC = () => {
 
   const isValidUrl = (value: string): boolean => {
     try {
-      new URL(value.match(/^https?:\/\//) ? value : `https://${value}`);
-      return true;
+      const urlToCheck = value.match(/^https?:\/\//) ? value : `https://${value}`;
+      const url = new URL(urlToCheck);
+      return url.hostname.includes(".");
     } catch {
       return false;
     }
@@ -367,27 +368,29 @@ export const ProfilePage: React.FC = () => {
                 className="profile-view-image"
               />
             )}
-            <h2 className="profile-view-name">{profile.name}</h2>
+            <div className="profile-view-header-info">
+              <h2 className="profile-view-name">{profile.name}</h2>
+              <div className="profile-view-categories">
+                {profile.categories.map((cat) => (
+                  <span
+                    key={cat}
+                    className="profile-category-badge"
+                    style={{
+                      borderColor: CATEGORY_COLORS[cat] || "#6B7280",
+                      color: CATEGORY_COLORS[cat] || "#6B7280",
+                    }}
+                  >
+                    {t(`categories.${cat}`, { defaultValue: cat })}
+                  </span>
+                ))}
+              </div>
+              {langDisplay && (
+                <p className="profile-view-lang">
+                  {t("profilePage.languages")}: {langDisplay}
+                </p>
+              )}
+            </div>
           </div>
-          <div className="profile-view-categories">
-            {profile.categories.map((cat) => (
-              <span
-                key={cat}
-                className="profile-category-badge"
-                style={{
-                  borderColor: CATEGORY_COLORS[cat] || "#6B7280",
-                  color: CATEGORY_COLORS[cat] || "#6B7280",
-                }}
-              >
-                {t(`categories.${cat}`, { defaultValue: cat })}
-              </span>
-            ))}
-          </div>
-          {langDisplay && (
-            <p className="profile-view-lang">
-              {t("profilePage.languages")}: {langDisplay}
-            </p>
-          )}
           {profile.about && <p className="profile-view-about">{profile.about}</p>}
           <div className="profile-view-footer">
             {profile.portfolio && (
@@ -419,6 +422,7 @@ export const ProfilePage: React.FC = () => {
     <div className="profile-page">
       <div className="profile-edit-layout">
         {/* Left side: preview card */}
+        <div className="profile-preview-card-wrapper">
         <div className="profile-preview-card">
           <div className="profile-preview-header">
             {profileImageSrc ? (
@@ -426,9 +430,9 @@ export const ProfilePage: React.FC = () => {
             ) : (
               <div className="profile-preview-image-placeholder" />
             )}
-            <h3 className="profile-preview-name">{form.name || t("profilePage.name")}</h3>
-          </div>
-          <div className="profile-preview-categories">
+            <div className="profile-preview-header-info">
+              <h3 className="profile-preview-name">{form.name || t("profilePage.name")}</h3>
+              <div className="profile-preview-categories">
             {form.categories.map((cat) => (
               <span
                 key={cat}
@@ -441,13 +445,15 @@ export const ProfilePage: React.FC = () => {
                 {t(`categories.${cat}`, { defaultValue: cat })}
               </span>
             ))}
+              </div>
+              {form.languages.length > 0 && (
+                <p className="profile-preview-lang">
+                  {t("profilePage.languages")}:{" "}
+                  {form.languages.map((l) => t(`countries.${l}`, { defaultValue: l }).toLowerCase()).join(", ")}
+                </p>
+              )}
+            </div>
           </div>
-          {form.languages.length > 0 && (
-            <p className="profile-preview-lang">
-              {t("profilePage.languages")}:{" "}
-              {form.languages.map((l) => t(`countries.${l}`, { defaultValue: l }).toLowerCase()).join(", ")}
-            </p>
-          )}
           {form.about && <p className="profile-preview-about">{form.about}</p>}
           <div className="profile-preview-footer">
             {form.portfolio && (
@@ -463,6 +469,7 @@ export const ProfilePage: React.FC = () => {
               pinterest={form.pinterest}
             />
           </div>
+        </div>
         </div>
 
         {/* Right side: form */}
@@ -493,6 +500,7 @@ export const ProfilePage: React.FC = () => {
                         checked={form.languages.includes(lang)}
                         onChange={() => toggleCheckbox("languages", lang)}
                       />
+                      <span className="custom-checkbox" />
                       {t(`countries.${lang}`, { defaultValue: lang })}
                     </label>
                   ))}
@@ -512,6 +520,7 @@ export const ProfilePage: React.FC = () => {
                         checked={form.creatingAs.includes(tgt)}
                         onChange={() => toggleCheckbox("creatingAs", tgt)}
                       />
+                      <span className="custom-checkbox" />
                       {t(`targets.${tgt}`, { defaultValue: tgt })}
                     </label>
                   ))}
@@ -532,6 +541,7 @@ export const ProfilePage: React.FC = () => {
                       checked={form.categories.includes(cat)}
                       onChange={() => toggleCheckbox("categories", cat)}
                     />
+                    <span className="custom-checkbox" />
                     {t(`categories.${cat}`, { defaultValue: cat })}
                   </label>
                 ))}
@@ -565,7 +575,9 @@ export const ProfilePage: React.FC = () => {
             />
             {errors.image && <span className="profile-field-error">{errors.image}</span>}
           </div>
+        </div>
 
+        <div className="profile-below-card">
           {/* About */}
           <div className="profile-field">
             <label className="profile-label">
@@ -632,7 +644,7 @@ export const ProfilePage: React.FC = () => {
               {t("profilePage.publishBtn")}
             </button>
           </div>
-        </div>
+      </div>
       </div>
 
       {/* Leave confirmation modal */}

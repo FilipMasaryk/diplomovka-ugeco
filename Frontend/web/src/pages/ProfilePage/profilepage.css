@@ -80,19 +80,21 @@
 
 /* ── View card (published profile) ── */
 .profile-view-card {
-  max-width: 480px;
+  width: 430px;
   background: white;
   border-radius: 12px;
   border: 1px solid #e5eaf0;
-  padding: 32px;
+  box-shadow: 0px 1px 3px 0px #0000001a;
+  padding: 32px 32px 32px 20px;
+  box-sizing: border-box;
   margin-top: 60px;
 }
 
 .profile-view-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .profile-view-image {
@@ -103,9 +105,18 @@
   flex-shrink: 0;
 }
 
+.profile-view-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+
 .profile-view-name {
-  font-weight: 700;
-  font-size: 22px;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.6%;
   color: #181818;
   margin: 0;
 }
@@ -116,7 +127,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 0;
 }
 
 .profile-category-badge {
@@ -141,7 +152,7 @@
   font-size: 14px;
   color: #181818;
   line-height: 1.6;
-  margin: 0 0 24px;
+  margin: 8px 0 24px;
 }
 
 .profile-view-footer {
@@ -152,7 +163,7 @@
 
 .profile-portfolio-btn {
   display: inline-block;
-  background: #F97316;
+  background: #f97316;
   color: white;
   text-decoration: none;
   border-radius: 8px;
@@ -169,7 +180,7 @@
 
 .profile-portfolio-btn-preview {
   display: inline-block;
-  background: #F97316;
+  background: #f97316;
   color: white;
   border-radius: 8px;
   font-family: "Inter", sans-serif;
@@ -198,7 +209,7 @@
 }
 
 .social-icon.instagram {
-  color: #E4405F;
+  color: #e4405f;
 }
 
 .social-icon.tiktok {
@@ -206,53 +217,62 @@
 }
 
 .social-icon.youtube {
-  color: #FF0000;
+  color: #ff0000;
 }
 
 .social-icon.facebook {
-  color: #1877F2;
+  color: #1877f2;
 }
 
 .social-icon.pinterest {
-  color: #E60023;
+  color: #e60023;
 }
 
 /* ── Edit layout ── */
 .profile-edit-layout {
   display: grid;
-  grid-template-columns: 440px 1fr;
-  gap: 28px;
+  grid-template-columns: 430px 1fr;
+  column-gap: 100px;
+  row-gap: 0;
   align-items: flex-start;
 }
 
 /* ── Preview card (left side in edit mode) ── */
+.profile-preview-card-wrapper {
+  grid-row: 1 / -1;
+  align-self: start;
+}
+
 .profile-preview-card {
+  width: 430px;
   background: white;
   border-radius: 12px;
   border: 1px solid #e5eaf0;
-  padding: 24px;
+  box-shadow: 0px 1px 3px 0px #0000001a;
+  padding: 32px 32px 32px 20px;
+  box-sizing: border-box;
   position: sticky;
   top: 24px;
 }
 
 .profile-preview-header {
   display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 14px;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
 .profile-preview-image {
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   border-radius: 10px;
   object-fit: cover;
   flex-shrink: 0;
 }
 
 .profile-preview-image-placeholder {
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   border-radius: 10px;
   background: #f4f4f5;
   border: 1px dashed #d4d4d8;
@@ -262,35 +282,49 @@
   justify-content: center;
 }
 
+.profile-preview-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+
 .profile-preview-name {
-  font-weight: 700;
-  font-size: 18px;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.6%;
   color: #181818;
   margin: 0;
 }
 
 .profile-preview-lang {
-  font-size: 12px;
+  font-size: 13px;
   color: #71717a;
-  margin: 0 0 12px;
+  margin: 0 0 16px;
 }
 
 .profile-preview-about {
-  font-size: 13px;
+  font-size: 14px;
   color: #181818;
-  line-height: 1.5;
-  margin: 0 0 20px;
+  line-height: 1.6;
+  margin: 8px 0 24px;
 }
 
 .profile-preview-footer {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
 /* ── Form section (right side) ── */
 .profile-form-section {
   min-width: 0;
+}
+
+.profile-below-card {
+  grid-column: 1 / -1;
+  margin-top: 24px;
 }
 
 .profile-form-grid {
@@ -367,11 +401,9 @@
 .profile-checkbox-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
   margin-top: 4px;
-  border: 1px solid var(--color-border-elements);
-  border-radius: 6px;
-  padding: 8px 12px;
+  padding: 0;
   max-height: 220px;
   overflow-y: auto;
 }
@@ -388,10 +420,37 @@
 }
 
 .profile-checkbox-label input[type="checkbox"] {
+  display: none;
+}
+
+.profile-checkbox-label .custom-checkbox {
   width: 16px;
   height: 16px;
-  accent-color: var(--color-primary);
-  cursor: pointer;
+  border-radius: 4px;
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.profile-checkbox-label input[type="checkbox"]:checked + .custom-checkbox {
+  background: #181818;
+  border-color: #181818;
+}
+
+.profile-checkbox-label
+  input[type="checkbox"]:checked
+  + .custom-checkbox::after {
+  content: "";
+  width: 5px;
+  height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-top: -2px;
 }
 
 /* ── File input ── */
@@ -492,7 +551,7 @@
 .profile-form-footer {
   display: flex;
   justify-content: flex-end;
-  align-items: center;
+  align-items: stretch;
   gap: 12px;
   padding-top: 16px;
   margin-top: 8px;
@@ -501,16 +560,16 @@
 .profile-back-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
   background: #181818;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   cursor: pointer;
   font-family: "Inter", sans-serif;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 14px;
   color: white;
-  padding: 10px 24px;
+  padding: 8px 22px;
   transition: background 0.2s;
 }
 
@@ -519,31 +578,32 @@
 }
 
 .profile-concept-btn {
-  border: 1.5px solid var(--color-primary);
+  border: 1px solid #71717a;
   background: white;
-  color: var(--color-primary);
-  border-radius: 6px;
+  color: #71717a;
+  border-radius: 5px;
   font-family: "Inter", sans-serif;
   font-weight: 600;
   font-size: 15px;
-  padding: 10px 24px;
+  line-height: 20px;
+  padding: 8px 16px;
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .profile-concept-btn:hover {
-  background: #f0fdf9;
+  background: #f4f4f5;
 }
 
 .profile-publish-btn {
   background: var(--color-primary);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   font-family: "Inter", sans-serif;
   font-weight: 600;
-  font-size: 15px;
-  padding: 10px 24px;
+  font-size: 14px;
+  padding: 8px 24px;
   cursor: pointer;
   transition: background 0.2s;
 }

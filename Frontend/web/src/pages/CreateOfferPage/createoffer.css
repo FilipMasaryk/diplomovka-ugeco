@@ -419,16 +419,16 @@
 }
 
 .offer-checkboxes-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 28px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px 16px;
   margin-top: 4px;
 }
 
 .offer-checkbox-label {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-family: "Inter", sans-serif;
   font-size: 14px;
   color: #181818;
@@ -437,18 +437,50 @@
 }
 
 .offer-checkbox-label input[type="checkbox"] {
+  display: none;
+}
+
+.custom-checkbox {
   width: 16px;
   height: 16px;
-  accent-color: var(--color-primary);
-  cursor: pointer;
+  border-radius: 4px;
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.offer-checkbox-label input[type="checkbox"]:checked + .custom-checkbox {
+  background: #181818;
+  border-color: #181818;
+}
+
+.offer-checkbox-label input[type="checkbox"]:checked + .custom-checkbox::after {
+  content: "";
+  width: 5px;
+  height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-top: -2px;
 }
 
 /* ── Social URL inputs ── */
 .offer-url-field {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 16px;
+}
+
+.offer-url-field .offer-field-error {
+  width: 100%;
+  margin-top: -8px;
+  padding-left: 156px;
 }
 
 .offer-url-label {
@@ -475,6 +507,10 @@
   transition: border-color 0.2s;
 }
 
+.offer-url-input.has-error {
+  border-color: var(--color-error);
+}
+
 .offer-url-input:focus {
   border-color: var(--color-primary);
 }
@@ -494,7 +530,7 @@
 .offer-form-footer {
   display: flex;
   justify-content: flex-end;
-  align-items: center;
+  align-items: stretch;
   gap: 12px;
   padding-top: 24px;
   border-top: 1px solid #e5eaf0;
@@ -504,49 +540,50 @@
 .offer-back-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: none;
-  border: 1.5px solid #181818;
-  border-radius: 6px;
+  justify-content: center;
+  background: #181818;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
   font-family: "Inter", sans-serif;
   font-weight: 600;
-  font-size: 15px;
-  color: #181818;
-  padding: 9px 18px;
+  font-size: 14px;
+  color: #fff;
+  padding: 8px 22px;
   transition: background 0.2s;
 }
 
 .offer-back-btn:hover {
-  background: #f4f4f5;
+  background: #2d2d2d;
 }
 
 .offer-concept-btn {
-  border: 1.5px solid var(--color-primary);
+  border: 1px solid #71717A;
   background: white;
-  color: var(--color-primary);
-  border-radius: 6px;
+  color: #71717A;
+  border-radius: 5px;
   font-family: "Inter", sans-serif;
   font-weight: 600;
   font-size: 15px;
-  padding: 9px 20px;
+  line-height: 20px;
+  padding: 8px 16px;
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .offer-concept-btn:hover {
-  background: #f0fdf9;
+  background: #f4f4f5;
 }
 
 .offer-publish-btn {
   background: var(--color-primary);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   font-family: "Inter", sans-serif;
   font-weight: 600;
-  font-size: 15px;
-  padding: 9px 24px;
+  font-size: 14px;
+  padding: 8px 24px;
   cursor: pointer;
   transition: background 0.2s;
 }
@@ -563,6 +600,12 @@
 }
 
 /* ── Responsive ── */
+@media (max-width: 1250px) {
+  .offer-checkboxes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 900px) {
   .create-offer-page {
     padding: 24px 16px;

@@ -33,6 +33,17 @@
   opacity: 0.75;
 }
 
+.settings-avatar-initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #9ca3af;
+  color: #fff;
+  font-size: 28px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
 .settings-avatar-info {
   display: flex;
   flex-direction: column;

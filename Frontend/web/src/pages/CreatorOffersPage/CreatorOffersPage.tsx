@@ -11,6 +11,7 @@ import {
 import { BrandCategory } from "../../types/brandCategories";
 import { OfferLanguage } from "../../types/offerLanguage";
 import { OfferTarget } from "../../types/offerTarget";
+import { API_URL } from "../../../../shared/config";
 import "./creatorofferspage.css";
 
 const CATEGORIES = Object.values(BrandCategory);
@@ -256,7 +257,7 @@ export const CreatorOffersPage: React.FC = () => {
                 <div className="creator-offer-card-image-wrap">
                   {offer.image ? (
                     <img
-                      src={`http://localhost:3000${offer.image}`}
+                      src={`${API_URL}${offer.image}`}
                       alt={offer.name}
                       className="creator-offer-card-image"
                     />
@@ -285,7 +286,7 @@ export const CreatorOffersPage: React.FC = () => {
                     <span className="creator-offer-card-name">{offer.name}</span>
                     {offer.brandLogo && (
                       <img
-                        src={`http://localhost:3000${offer.brandLogo}`}
+                        src={`${API_URL}${offer.brandLogo}`}
                         alt={offer.brandName}
                         className="creator-offer-brand-logo"
                       />

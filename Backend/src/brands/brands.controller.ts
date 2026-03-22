@@ -76,7 +76,6 @@ export class BrandsController {
       return this.brandsService.findByCountries(user.countries ?? []);
     }
 
-    // BRAND_MANAGER — look up fresh brands from DB, not stale JWT
     return this.brandsService.findBrandsForManager(user.id);
   }
 
@@ -85,7 +84,9 @@ export class BrandsController {
   @Get('archived')
   findAllArchived(@Req() req) {
     if (req.user.role === UserRole.SUBADMIN) {
-      return this.brandsService.findArchivedByCountries(req.user.countries ?? []);
+      return this.brandsService.findArchivedByCountries(
+        req.user.countries ?? [],
+      );
     }
     return this.brandsService.findAllArchived();
   }

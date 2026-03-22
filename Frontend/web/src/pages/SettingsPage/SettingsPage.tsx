@@ -10,7 +10,7 @@ import {
   uploadAvatar,
   deleteAvatar,
 } from "../../../../shared/api/auth/auth";
-import defaultAvatar from "../../images/No_Image_Available.jpg";
+import { API_URL } from "../../../../shared/config";
 import "./settings.css";
 
 export const SettingsPage = () => {
@@ -23,8 +23,6 @@ export const SettingsPage = () => {
   const [surName, setSurName] = useState(user?.surName ?? "");
   const [ico, setIco] = useState("");
   const [dic, setDic] = useState("");
-  const [email, setEmail] = useState(user?.email ?? "");
-  const [emailConfirmation, setEmailConfirmation] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -47,8 +45,8 @@ export const SettingsPage = () => {
   const currentAvatarSrc = avatarPreview
     ? avatarPreview
     : user?.avatar
-      ? `http://localhost:3000${user.avatar}`
-      : defaultAvatar;
+      ? `${API_URL}${user.avatar}`
+      : null;
 
   const handleDeleteAvatar = async () => {
     setUploadingAvatar(true);
@@ -90,9 +88,6 @@ export const SettingsPage = () => {
     const errs: Record<string, string> = {};
     if (!name.trim()) errs.name = t("errors.required");
     if (!surName.trim()) errs.surName = t("errors.required");
-    if (email && !emailConfirmation)
-      errs.emailConfirmation = t("errors.required");
-    if (!email && emailConfirmation) errs.email = t("errors.required");
     if (password && !passwordConfirmation)
       errs.passwordConfirmation = t("errors.required");
     if (!password && passwordConfirmation) errs.password = t("errors.required");
@@ -119,10 +114,6 @@ export const SettingsPage = () => {
       payload.dic = dic;
     }
 
-    if (email || emailConfirmation) {
-      payload.email = email;
-      payload.emailConfirmation = emailConfirmation;
-    }
     if (password || passwordConfirmation) {
       payload.password = password;
       payload.passwordConfirmation = passwordConfirmation;
@@ -134,11 +125,6 @@ export const SettingsPage = () => {
         loginUser(updated.access_token);
       }
       showToast(t("settingsPage.successMessage"), "success");
-      if (updated.access_token) {
-        const decoded: any = JSON.parse(atob(updated.access_token.split(".")[1]));
-        setEmail(decoded.email ?? "");
-      }
-      setEmailConfirmation("");
       setPassword("");
       setPasswordConfirmation("");
     } catch (err: any) {
@@ -153,12 +139,22 @@ export const SettingsPage = () => {
       <h1>{t("settingsPage.title")}</h1>
 
       <div className="settings-avatar-section">
-        <img
-          src={currentAvatarSrc}
-          alt="avatar"
-          className="settings-avatar-img"
-          onClick={() => fileInputRef.current?.click()}
-        />
+        {currentAvatarSrc ? (
+          <img
+            src={currentAvatarSrc}
+            alt="avatar"
+            className="settings-avatar-img"
+            onClick={() => fileInputRef.current?.click()}
+          />
+        ) : (
+          <div
+            className="settings-avatar-img settings-avatar-initials"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            {user?.name.charAt(0)}
+            {user?.surName.charAt(0)}
+          </div>
+        )}
         <div className="settings-avatar-info">
           <span className="settings-avatar-label">
             {t("settingsPage.profilePicture")}
@@ -218,6 +214,13 @@ export const SettingsPage = () => {
           hasError={!!errors.surName}
           errorMessage={errors.surName}
         />
+        <InputField
+          label="E-mail"
+          type="email"
+          value={user?.email ?? ""}
+          onChange={() => {}}
+          disabled
+        />
       </div>
 
       {isCreator && (
@@ -241,37 +244,6 @@ export const SettingsPage = () => {
           </div>
         </>
       )}
-
-      <h2 className="settings-section-title">
-        {t("settingsPage.newEmailTitle")}
-      </h2>
-      <div className="settings-grid">
-        <InputField
-          label={t("settingsPage.newEmail")}
-          type="email"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            if (errors.email) setErrors((p) => ({ ...p, email: "" }));
-          }}
-          placeholder={t("settingsPage.newEmailPlaceholder")}
-          hasError={!!errors.email}
-          errorMessage={errors.email}
-        />
-        <InputField
-          label={t("settingsPage.emailConfirm")}
-          type="email"
-          value={emailConfirmation}
-          onChange={(e) => {
-            setEmailConfirmation(e.target.value);
-            if (errors.emailConfirmation)
-              setErrors((p) => ({ ...p, emailConfirmation: "" }));
-          }}
-          placeholder={t("settingsPage.newEmailPlaceholder")}
-          hasError={!!errors.emailConfirmation}
-          errorMessage={errors.emailConfirmation}
-        />
-      </div>
 
       <h2 className="settings-section-title">
         {t("settingsPage.newPasswordTitle")}

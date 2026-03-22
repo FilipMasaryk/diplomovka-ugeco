@@ -25,6 +25,7 @@ import {
 } from "../../../../shared/api/news/news";
 import { useAuth } from "../../context/useAuth";
 import { useToast } from "../../context/useToast";
+import { API_URL } from "../../../../shared/config";
 import "./newspage.css";
 
 const targetMap: Record<string, string> = {
@@ -157,7 +158,7 @@ export const NewsPage: React.FC = () => {
       )}
       {item.image && (
         <img
-          src={`http://localhost:3000${item.image}`}
+          src={`${API_URL}${item.image}`}
           alt={item.title}
           className="news-card-image"
         />

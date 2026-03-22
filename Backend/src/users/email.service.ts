@@ -18,7 +18,8 @@ export class EmailService {
   }
 
   async sendInitEmail(to: string, initToken: string) {
-    const initUrl = `http://localhost:5173/initialize-password/${initToken}`;
+    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const initUrl = `${baseUrl}/initialize-password/${initToken}`;
     try {
       await this.transporter.sendMail({
         from: `"Ugeco" <ugecotest@outlook.com>`,
@@ -30,7 +31,7 @@ export class EmailService {
           <a href="${initUrl}">${initUrl}</a>
         `,
       });
-      console.log(`Init email sent to ${to}`);
+      // email sent successfully
     } catch (err) {
       console.error('Failed to send init email:', err);
       throw new BadRequestException('Could not send welcome email');
@@ -38,7 +39,8 @@ export class EmailService {
   }
 
   async sendResetEmail(to: string, resetToken: string) {
-    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const resetUrl = `${baseUrl}/reset-password/${resetToken}`;
     try {
       await this.transporter.sendMail({
         from: `"Ugeco" <ugecotest@outlook.com>`,
@@ -50,7 +52,7 @@ export class EmailService {
           <a href="${resetUrl}">${resetUrl}</a>
         `,
       });
-      console.log(`Password reset email sent to ${to}`);
+      // email sent successfully
     } catch (err) {
       console.error('Failed to send password reset email:', err);
       throw new BadRequestException('Could not send password reset email');
