@@ -11,8 +11,6 @@ import {
   FiBell,
   FiSmile,
   FiSliders,
-  FiChevronLeft,
-  FiMenu,
   FiSidebar,
   FiPackage,
 } from "react-icons/fi";

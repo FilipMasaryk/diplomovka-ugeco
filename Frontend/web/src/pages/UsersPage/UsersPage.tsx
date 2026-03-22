@@ -17,8 +17,6 @@ import {
   restoreUser,
   type UserTableData,
   createUser,
-  fetchPackages,
-  fetchBrands,
   updateUser,
 } from "../../../../shared/api/users/admin/users";
 import { Countries } from "../../types/countryEnum";
@@ -29,7 +27,6 @@ import {
   CreateUserModal,
   type FormState,
 } from "../../components/ui/CreateUserModal/CreateUserModal";
-import { createUserSchema } from "./schemas/createUserSchema";
 import { UpdateUserModal } from "../../components/ui/CreateUserModal/UpdateUserModal";
 import { useToast } from "../../context/useToast";
 

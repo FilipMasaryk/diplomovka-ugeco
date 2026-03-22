@@ -12,7 +12,6 @@ import {
 import { Button } from "../../components/ui/Button/Button";
 import {
   CreateNewsModal,
-  type NewsFormState,
 } from "../../components/ui/CreateNewsModal/CreateNewsModal";
 import { ConfirmModal } from "../../components/ui/ConfirmModal/ConfirmModal";
 import {

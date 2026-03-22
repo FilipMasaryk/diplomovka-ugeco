@@ -1,4 +1,3 @@
-import React from "react";
 import Select, {
   type GroupBase,
   type Props as SelectProps,
@@ -63,7 +62,7 @@ export const CustomSelect = <IsMulti extends boolean = false>({
     indicatorSeparator: () => ({
       display: "none",
     }),
-    dropdownIndicator: (base, state) => ({
+    dropdownIndicator: (base, _state) => ({
       ...base,
       color: "var(--color-secondary)",
       padding: "0 8px",

@@ -177,7 +177,7 @@ export const UpdateUserModal: React.FC<UpdateUserModalProps> = React.memo(
       // 2. Príprava payloadu (odstránenie hesla a nekonzistentných dát podľa role)
       const { password, ...rest } = formData;
       const cleanPayload = Object.fromEntries(
-        Object.entries(rest).filter(([key, value]) => {
+        Object.entries(rest).filter(([key, _value]) => {
           if (
             formData.role === UserRole.ADMIN ||
             formData.role === UserRole.SUBADMIN

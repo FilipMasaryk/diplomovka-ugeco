@@ -24,12 +24,10 @@ import {
 import { UpdateManagerModal } from "../../components/ui/CreateManagerModal/UpdateManagerModal";
 import { useBrand } from "../../context/useBrand";
 import { useToast } from "../../context/useToast";
-import { useAuth } from "../../context/useAuth";
 
 export const ManagersPage: React.FC = () => {
   const { t } = useTranslation();
   const { showToast } = useToast();
-  const { user: authUser } = useAuth();
   const { selectedBrand } = useBrand();
   const [managers, setManagers] = useState<ManagerTableData[]>([]);
   const [loading, setLoading] = useState(true);
