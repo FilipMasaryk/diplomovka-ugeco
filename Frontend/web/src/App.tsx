@@ -33,7 +33,10 @@ const BrandOffersPage = () => {
   if (!selectedBrand) {
     return (
       <div className="users-page">
-        <div className="no-data-text" style={{ padding: "2rem", textAlign: "center" }}>
+        <div
+          className="no-data-text"
+          style={{ padding: "2rem", textAlign: "center" }}
+        >
           {t("noBrandSelected")}
         </div>
       </div>
@@ -44,6 +47,9 @@ const BrandOffersPage = () => {
 
 function AppContent() {
   const { user } = useAuth();
+
+  console.log(import.meta.env.VITE_API_URL);
+  console.log(import.meta.env);
 
   return (
     <div className="app-container">
@@ -152,7 +158,11 @@ function AppContent() {
               path="/offers"
               element={
                 <ProtectedRoute
-                  roles={[UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER]}
+                  roles={[
+                    UserRole.ADMIN,
+                    UserRole.SUBADMIN,
+                    UserRole.BRAND_MANAGER,
+                  ]}
                 >
                   <OffersPage />
                 </ProtectedRoute>
@@ -162,7 +172,11 @@ function AppContent() {
               path="/offers/new"
               element={
                 <ProtectedRoute
-                  roles={[UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER]}
+                  roles={[
+                    UserRole.ADMIN,
+                    UserRole.SUBADMIN,
+                    UserRole.BRAND_MANAGER,
+                  ]}
                 >
                   <CreateOfferPage />
                 </ProtectedRoute>
@@ -172,7 +186,11 @@ function AppContent() {
               path="/offers/:id"
               element={
                 <ProtectedRoute
-                  roles={[UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER]}
+                  roles={[
+                    UserRole.ADMIN,
+                    UserRole.SUBADMIN,
+                    UserRole.BRAND_MANAGER,
+                  ]}
                 >
                   <OfferDetailPage />
                 </ProtectedRoute>
@@ -214,7 +232,11 @@ function AppContent() {
               path="/offers/:id/edit"
               element={
                 <ProtectedRoute
-                  roles={[UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER]}
+                  roles={[
+                    UserRole.ADMIN,
+                    UserRole.SUBADMIN,
+                    UserRole.BRAND_MANAGER,
+                  ]}
                 >
                   <CreateOfferPage />
                 </ProtectedRoute>

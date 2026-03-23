@@ -1,0 +1,56 @@
+name: ugeco-prod
+
+services:
+  proxy:
+    restart: always
+    depends_on:
+      - fe
+      - be
+    image: "ugeco-proxy:v1.0"
+    ports:
+      - "${PROXY_PORT:-3079}:80"
+  fe:
+    restart: always
+    image: "ugeco-frontend:v1.0"
+    environment:
+      #VITE_API_URL: http://localhost:3079
+      VITE_API_URL: /api
+  be:
+    restart: unless-stopped
+    image: "ugeco-api:v1.0"
+    depends_on:
+      - mongo_prod
+    volumes:
+      - ./volumes/uploads:/app/uploads
+    environment:
+      MONGO_URI: mongodb://mongo_prod:27017/ugecoDB
+      PORT: 5000
+      JWT_SECRET: ${JWT_SECRET}
+      FRONTEND_URL: ${FRONTEND_URL}
+      SENDINBLUE_EMAIL: ${SENDINBLUE_EMAIL}
+      SENDINBLUE_API_KEY: ${SENDINBLUE_API_KEY}
+      SEED_ADMIN_1_EMAIL: ${SEED_ADMIN_1_EMAIL}
+      SEED_ADMIN_1_PASSWORD: ${SEED_ADMIN_1_PASSWORD}
+      SEED_ADMIN_1_NAME: ${SEED_ADMIN_1_NAME}
+      SEED_ADMIN_1_SURNAME: ${SEED_ADMIN_1_SURNAME}
+      SEED_ADMIN_2_EMAIL: ${SEED_ADMIN_2_EMAIL}
+      SEED_ADMIN_2_PASSWORD: ${SEED_ADMIN_2_PASSWORD}
+      SEED_ADMIN_2_NAME: ${SEED_ADMIN_2_NAME}
+      SEED_ADMIN_2_SURNAME: ${SEED_ADMIN_2_SURNAME}
+      SEED_ADMIN_3_EMAIL: ${SEED_ADMIN_3_EMAIL}
+      SEED_ADMIN_3_PASSWORD: ${SEED_ADMIN_3_PASSWORD}
+      SEED_ADMIN_3_NAME: ${SEED_ADMIN_3_NAME}
+      SEED_ADMIN_3_SURNAME: ${SEED_ADMIN_3_SURNAME}
+
+  mongo_prod:
+    image: "mongo"
+    command: mongod --logpath /dev/null
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE:-api}
+    volumes:
+      - ./volumes/mongoApi:/data/db
+
+# docker build -t ugeco-frontend:v1.0 -f apps/fe/Dockerfile .
+# docker build -t ugeco-api:v1.0 -f apps/be/Dockerfile .
+# docker build -t ugeco-proxy:v1.0 apps/nginx/
