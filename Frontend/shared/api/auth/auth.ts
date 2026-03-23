@@ -4,9 +4,7 @@ import { apiFetch } from "../apiFetch";
 type LoginPayload = { email: string; password: string; rememberMe?: boolean };
 
 export async function login(payload: LoginPayload) {
-  console.log(`${API_URL}/auth/login`);
-  //const response = await fetch(`${API_URL}/auth/login`, {
-  const response = await fetch(`/api/auth/login`, {
+  const response = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

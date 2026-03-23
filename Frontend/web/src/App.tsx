@@ -48,9 +48,6 @@ const BrandOffersPage = () => {
 function AppContent() {
   const { user } = useAuth();
 
-  console.log(import.meta.env.VITE_API_URL);
-  console.log(import.meta.env);
-
   return (
     <div className="app-container">
       <Navbar />

@@ -12,9 +12,6 @@ services:
   fe:
     restart: always
     image: "ugeco-frontend:v1.0"
-    environment:
-      #VITE_API_URL: http://localhost:3079
-      VITE_API_URL: /api
   be:
     restart: unless-stopped
     image: "ugeco-api:v1.0"

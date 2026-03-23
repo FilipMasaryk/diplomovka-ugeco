@@ -12,6 +12,9 @@ RUN pnpm install --no-frozen-lockfile
 COPY Frontend/web .
 COPY Frontend/shared ../shared
 
+ARG VITE_API_URL=/api
+ENV VITE_API_URL=${VITE_API_URL}
+
 RUN pnpm run build
 
 FROM nginx
