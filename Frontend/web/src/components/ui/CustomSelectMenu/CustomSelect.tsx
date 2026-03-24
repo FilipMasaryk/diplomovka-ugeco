@@ -3,7 +3,7 @@ import Select, {
   type Props as SelectProps,
   type StylesConfig,
 } from "react-select";
-import "./CustomSelect.css";
+import "./customSelect.css";
 
 interface SelectOption {
   value: string;
@@ -38,13 +38,19 @@ export const CustomSelect = <IsMulti extends boolean = false>({
             ? "var(--color-primary)"
             : "var(--color-border-elements)"
       }`,
-      backgroundColor: state.isDisabled ? "#f4f4f5" : "var(--color-background-elements)",
+      backgroundColor: state.isDisabled
+        ? "#f4f4f5"
+        : "var(--color-background-elements)",
       fontFamily: '"Inter", sans-serif',
       fontSize: "14px",
       boxShadow: "none",
       transition: "border-color 0.2s ease",
       "&:hover": {
-        borderColor: error ? "var(--color-error)" : state.isDisabled ? "var(--color-border-elements)" : "#181818",
+        borderColor: error
+          ? "var(--color-error)"
+          : state.isDisabled
+            ? "var(--color-border-elements)"
+            : "#181818",
       },
       outline: "none",
       cursor: state.isDisabled ? "not-allowed" : "default",

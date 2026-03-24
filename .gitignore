@@ -2,3 +2,4 @@
 envs
 volumes
 .env
+scripts/images
