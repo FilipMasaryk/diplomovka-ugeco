@@ -1,6 +1,7 @@
-import { type LoginPayload } from "../../../web/src/pages/Login/schemas/loginValidation";
 import { API_URL } from "../../config";
 import { apiFetch } from "../apiFetch";
+
+type LoginPayload = { email: string; password: string; rememberMe?: boolean };
 
 export async function login(payload: LoginPayload) {
   const response = await fetch(`${API_URL}/auth/login`, {
@@ -119,12 +120,12 @@ export async function updateProfile(data: {
     const firstMsg = Array.isArray(responseData.message)
       ? responseData.message[0]
       : responseData.message;
-    const msg = typeof firstMsg === "string" && firstMsg.includes(":")
-      ? firstMsg.split(":").slice(1).join(":").trim()
-      : firstMsg;
+    const msg =
+      typeof firstMsg === "string" && firstMsg.includes(":")
+        ? firstMsg.split(":").slice(1).join(":").trim()
+        : firstMsg;
     throw new Error(msg || "Failed to update profile");
   }
 
   return responseData;
 }
-
