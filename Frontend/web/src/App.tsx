@@ -33,7 +33,10 @@ const BrandOffersPage = () => {
   if (!selectedBrand) {
     return (
       <div className="users-page">
-        <div className="no-data-text" style={{ padding: "2rem", textAlign: "center" }}>
+        <div
+          className="no-data-text"
+          style={{ padding: "2rem", textAlign: "center" }}
+        >
           {t("noBrandSelected")}
         </div>
       </div>
@@ -152,7 +155,11 @@ function AppContent() {
               path="/offers"
               element={
                 <ProtectedRoute
-                  roles={[UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER]}
+                  roles={[
+                    UserRole.ADMIN,
+                    UserRole.SUBADMIN,
+                    UserRole.BRAND_MANAGER,
+                  ]}
                 >
                   <OffersPage />
                 </ProtectedRoute>
@@ -162,7 +169,11 @@ function AppContent() {
               path="/offers/new"
               element={
                 <ProtectedRoute
-                  roles={[UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER]}
+                  roles={[
+                    UserRole.ADMIN,
+                    UserRole.SUBADMIN,
+                    UserRole.BRAND_MANAGER,
+                  ]}
                 >
                   <CreateOfferPage />
                 </ProtectedRoute>
@@ -172,7 +183,11 @@ function AppContent() {
               path="/offers/:id"
               element={
                 <ProtectedRoute
-                  roles={[UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER]}
+                  roles={[
+                    UserRole.ADMIN,
+                    UserRole.SUBADMIN,
+                    UserRole.BRAND_MANAGER,
+                  ]}
                 >
                   <OfferDetailPage />
                 </ProtectedRoute>
@@ -214,7 +229,11 @@ function AppContent() {
               path="/offers/:id/edit"
               element={
                 <ProtectedRoute
-                  roles={[UserRole.ADMIN, UserRole.SUBADMIN, UserRole.BRAND_MANAGER]}
+                  roles={[
+                    UserRole.ADMIN,
+                    UserRole.SUBADMIN,
+                    UserRole.BRAND_MANAGER,
+                  ]}
                 >
                   <CreateOfferPage />
                 </ProtectedRoute>

@@ -1,5 +1,5 @@
 import React from "react";
-import "./ConfirmModal.css";
+import "./confirmModal.css";
 import { Button } from "../Button/Button";
 
 interface ConfirmModalProps {

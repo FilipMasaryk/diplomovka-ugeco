@@ -1,0 +1,12 @@
+services:
+  mongo:
+    image: "mongo"
+    command: mongod --logpath /dev/null
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_DATABASE=ugecoDB
+    volumes:
+      - ./volumes/backups:/backup:ro
+      - ./volumes/backend:/data/db
+    ports:
+      - "127.0.0.1:27017:27017"
