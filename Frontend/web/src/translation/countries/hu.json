@@ -414,7 +414,7 @@
     "brandName": "Márkanév",
     "category": "Kategória",
     "logo": "Logó",
-    "logoHint": "Formátum: 400×400px, max 100Kb",
+    "logoHint": "Formátum: max 100×100px, max 100Kb",
     "mainContact": "Fő kapcsolattartó",
     "website": "Weboldal",
     "facebook": "Facebook",

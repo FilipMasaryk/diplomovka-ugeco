@@ -199,16 +199,39 @@ export const ProfilePage: React.FC = () => {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
-    setImage(file);
-    setIsDirty(true);
-    if (errors.image) setErrors((p) => ({ ...p, image: "" }));
-    if (file) {
+    if (!file) {
+      setImage(null);
+      setImagePreview(null);
+      return;
+    }
+
+    if (file.size > 100 * 1024) {
+      setErrors((p) => ({ ...p, image: "Maximálna veľkosť je 100KB" }));
+      e.target.value = "";
+      return;
+    }
+
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(img.src);
+      if (img.width > 200 || img.height > 100) {
+        setErrors((p) => ({ ...p, image: "Maximálny rozmer je 200×100px" }));
+        e.target.value = "";
+        return;
+      }
+      setImage(file);
+      setIsDirty(true);
+      if (errors.image) setErrors((p) => ({ ...p, image: "" }));
       const reader = new FileReader();
       reader.onload = (ev) => setImagePreview(ev.target?.result as string);
       reader.readAsDataURL(file);
-    } else {
-      setImagePreview(null);
-    }
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(img.src);
+      setErrors((p) => ({ ...p, image: "Neplatný formát obrázka" }));
+      e.target.value = "";
+    };
+    img.src = URL.createObjectURL(file);
   };
 
   const isValidUrl = (value: string): boolean => {

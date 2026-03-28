@@ -414,7 +414,7 @@
     "brandName": "Názov značky",
     "category": "Kategória",
     "logo": "Logo",
-    "logoHint": "Formát: 400×400px, do 100Kb",
+    "logoHint": "Formát: max 100×100px, do 100Kb",
     "mainContact": "Hlavný kontakt",
     "website": "Webová stránka",
     "facebook": "Facebook",

@@ -414,7 +414,7 @@
     "brandName": "Markenname",
     "category": "Kategorie",
     "logo": "Logo",
-    "logoHint": "Format: 400×400px, bis 100Kb",
+    "logoHint": "Format: max 100×100px, bis 100Kb",
     "mainContact": "Hauptkontakt",
     "website": "Webseite",
     "facebook": "Facebook",

@@ -238,6 +238,16 @@ export default function ProfileScreen() {
     });
     if (!result.canceled && result.assets[0]) {
       const asset = result.assets[0];
+
+      if (asset.fileSize && asset.fileSize > 100 * 1024) {
+        setErrors((p) => ({ ...p, image: "Maximálna veľkosť je 100KB" }));
+        return;
+      }
+      if (asset.width && asset.height && (asset.width > 200 || asset.height > 100)) {
+        setErrors((p) => ({ ...p, image: "Maximálny rozmer je 200×100px" }));
+        return;
+      }
+
       setImage(asset);
       setImagePreview(asset.uri);
       setIsDirty(true);

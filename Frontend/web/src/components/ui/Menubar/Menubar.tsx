@@ -205,7 +205,7 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
                 <FiPackage className="menu-icon" />,
               )}
             {renderMenuItem(
-              "stats",
+              "/stats",
               t("menubar.stats"),
               <FiBarChart2 className="menu-icon" />,
             )}

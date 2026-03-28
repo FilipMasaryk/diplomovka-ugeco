@@ -109,10 +109,32 @@ export const BrandSettingsPage: React.FC = () => {
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (!file) return;
+
+    if (file.size > 100 * 1024) {
+      setErrors((p) => ({ ...p, logo: "Maximálna veľkosť je 100KB" }));
+      e.target.value = "";
+      return;
+    }
+
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(img.src);
+      if (img.width > 100 || img.height > 100) {
+        setErrors((p) => ({ ...p, logo: "Maximálny rozmer je 100×100px" }));
+        e.target.value = "";
+        return;
+      }
       setLogoFile(file);
       setLogoPreview(URL.createObjectURL(file));
-    }
+      setErrors((p) => ({ ...p, logo: "" }));
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(img.src);
+      setErrors((p) => ({ ...p, logo: "Neplatný formát obrázka" }));
+      e.target.value = "";
+    };
+    img.src = URL.createObjectURL(file);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

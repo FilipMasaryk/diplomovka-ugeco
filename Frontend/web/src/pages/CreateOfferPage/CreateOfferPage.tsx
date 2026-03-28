@@ -25,7 +25,6 @@ import { useToast } from "../../context/useToast";
 import { useAuth } from "../../context/useAuth";
 import { useBrand } from "../../context/useBrand";
 
-
 interface FormState {
   name: string;
   brand: string;
@@ -188,8 +187,44 @@ export const CreateOfferPage: React.FC = () => {
     if (errors[key]) setErrors((p) => ({ ...p, [key]: "" }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const validateImage = (
+    file: File,
+    maxWidth: number,
+    maxHeight: number,
+    maxSizeKB: number,
+  ): Promise<string | null> => {
+    return new Promise((resolve) => {
+      if (file.size > maxSizeKB * 1024) {
+        resolve(`Maximálna veľkosť je ${maxSizeKB}KB`);
+        return;
+      }
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(img.src);
+        if (img.width > maxWidth || img.height > maxHeight) {
+          resolve(`Maximálny rozmer je ${maxWidth}×${maxHeight}px`);
+        } else {
+          resolve(null);
+        }
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(img.src);
+        resolve("Neplatný formát obrázka");
+      };
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
+    if (file) {
+      const error = await validateImage(file, 400, 400, 500);
+      if (error) {
+        setErrors((p) => ({ ...p, image: error }));
+        e.target.value = "";
+        return;
+      }
+    }
     setImage(file);
     setIsDirty(true);
     if (errors.image) setErrors((p) => ({ ...p, image: "" }));
@@ -202,10 +237,21 @@ export const CreateOfferPage: React.FC = () => {
     }
   };
 
-  const handleBrandLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBrandLogoChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = e.target.files?.[0] ?? null;
+    if (file) {
+      const error = await validateImage(file, 100, 100, 100);
+      if (error) {
+        setErrors((p) => ({ ...p, brandLogo: error }));
+        e.target.value = "";
+        return;
+      }
+    }
     setBrandLogo(file);
     setIsDirty(true);
+    if (errors.brandLogo) setErrors((p) => ({ ...p, brandLogo: "" }));
     if (file) {
       const reader = new FileReader();
       reader.onload = (ev) => setBrandLogoPreview(ev.target?.result as string);
@@ -217,7 +263,9 @@ export const CreateOfferPage: React.FC = () => {
 
   const isValidUrl = (value: string): boolean => {
     try {
-      const urlToCheck = value.match(/^https?:\/\//) ? value : `https://${value}`;
+      const urlToCheck = value.match(/^https?:\/\//)
+        ? value
+        : `https://${value}`;
       const url = new URL(urlToCheck);
       return url.hostname.includes(".");
     } catch {
@@ -296,8 +344,9 @@ export const CreateOfferPage: React.FC = () => {
     } catch (err: unknown) {
       if (err && typeof err === "object") {
         const e = err as Record<string, unknown>;
-        const msg =
-          Array.isArray(e.message) ? e.message.join(", ") : String(e.message ?? "");
+        const msg = Array.isArray(e.message)
+          ? e.message.join(", ")
+          : String(e.message ?? "");
         showToast(msg || JSON.stringify(err), "error");
       } else {
         showToast(String(err), "error");
@@ -412,7 +461,11 @@ export const CreateOfferPage: React.FC = () => {
                 required
                 options={brandOptions}
                 value={brandOptions.find((o) => o.value === form.brand) ?? null}
-                onChange={(val) => !isEdit && !isBrandManager && setField("brand", val?.value ?? "")}
+                onChange={(val) =>
+                  !isEdit &&
+                  !isBrandManager &&
+                  setField("brand", val?.value ?? "")
+                }
                 placeholder={t("createOfferPage.brand")}
                 error={errors.brand}
                 isDisabled={isEdit || isBrandManager}
@@ -434,7 +487,9 @@ export const CreateOfferPage: React.FC = () => {
                 placeholderText={t("createOfferPage.activeTo")}
                 className={`offer-input ${errors.activeTo ? "has-error" : ""}`}
                 wrapperClassName="datepicker-wrapper"
-                minDate={form.activeFrom ? new Date(form.activeFrom) : undefined}
+                minDate={
+                  form.activeFrom ? new Date(form.activeFrom) : undefined
+                }
               />
               {errors.activeTo && (
                 <span className="offer-field-error">{errors.activeTo}</span>
@@ -444,23 +499,39 @@ export const CreateOfferPage: React.FC = () => {
         </div>
 
         {/* ── Brand logo upload (full width, small preview) ── */}
-        <div className="offer-field offer-full-row">
-          <label className="offer-label">
-            {t("createOfferPage.brandLogo")}
-          </label>
+        <div className="offer-full-row">
           <div className="image-upload-row">
-            <div
-              className="image-file-input-wrap"
-              onClick={() => logoInputRef.current?.click()}
-            >
-              <span className="file-choose-btn">
-                {t("createOfferPage.chooseFile")}
-              </span>
-              <span className="file-name">
-                {brandLogo?.name ?? t("createOfferPage.imageClick")}
-              </span>
+            <div className="image-input-col">
+              <label className="offer-label">
+                {t("createOfferPage.brandLogo")}
+                <span className="offer-label-spacer" />
+                <span className="offer-label-hint">
+                  Formát: max 100×100px, do 100Kb
+                </span>
+              </label>
+              <div
+                className={`image-file-input-wrap ${errors.brandLogo ? "has-error" : ""}`}
+                onClick={() => logoInputRef.current?.click()}
+              >
+                <span className="file-choose-btn">
+                  {t("createOfferPage.chooseFile")}
+                </span>
+                <span className="file-name">
+                  {brandLogo?.name ?? t("createOfferPage.imageClick")}
+                </span>
+              </div>
+              <input
+                ref={logoInputRef}
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleBrandLogoChange}
+              />
+              {errors.brandLogo && (
+                <span className="offer-field-error">{errors.brandLogo}</span>
+              )}
             </div>
-            {(brandLogoPreview || selectedBrand?.logo) ? (
+            {brandLogoPreview || selectedBrand?.logo ? (
               <img
                 src={brandLogoPreview ?? `${API_URL}${selectedBrand?.logo}`}
                 alt="brand logo"
@@ -470,13 +541,6 @@ export const CreateOfferPage: React.FC = () => {
               <div className="image-preview-placeholder logo-preview-placeholder" />
             )}
           </div>
-          <input
-            ref={logoInputRef}
-            type="file"
-            accept="image/*"
-            style={{ display: "none" }}
-            onChange={handleBrandLogoChange}
-          />
         </div>
 
         {/* ── Image upload (full width, bigger preview) ── */}
@@ -488,7 +552,7 @@ export const CreateOfferPage: React.FC = () => {
                 {!isEdit && <span className="required-star">*</span>}
                 <span className="offer-label-spacer" />
                 <span className="offer-label-hint">
-                  Formát: 400×400px, do 100Kb
+                  Formát: max 400×400px, do 500Kb
                 </span>
               </label>
               <div
