@@ -5,20 +5,22 @@
   min-width: unset;
 }
 
+.packages-table th:nth-child(1),
+.packages-table td:nth-child(1) {
+  width: 30%;
+}
+
 .packages-table th:nth-child(2),
 .packages-table td:nth-child(2) {
-  width: 1%;
-  white-space: nowrap;
+  width: 20%;
 }
 
 .packages-table th:nth-child(3),
 .packages-table td:nth-child(3) {
-  width: 1%;
-  white-space: nowrap;
+  width: 20%;
 }
 
 .packages-table th:nth-child(4),
 .packages-table td:nth-child(4) {
-  width: 1%;
-  white-space: nowrap;
+  width: 20%;
 }
