@@ -23,3 +23,55 @@
   background-color: #fee2e2;
   color: #dc2626;
 }
+
+.status-badge.prepared {
+  background-color: #dbeafe;
+  color: #2563eb;
+}
+
+.offers-table th,
+.offers-table td {
+  width: auto;
+}
+
+/* Názov */
+.offers-table th:nth-child(1),
+.offers-table td:nth-child(1) {
+  width: 200px;
+}
+
+/* Značka */
+.offers-table th:nth-child(2),
+.offers-table td:nth-child(2) {
+  width: 100px;
+}
+
+/* Cieľová skupina */
+.offers-table th:nth-child(3),
+.offers-table td:nth-child(3) {
+  width: 180px;
+}
+
+/* Krajina */
+.offers-table th:nth-child(4),
+.offers-table td:nth-child(4) {
+  width: 80px;
+}
+
+/* Stav */
+.offers-table th:nth-child(5),
+.offers-table td:nth-child(5) {
+  width: 100px;
+}
+
+/* Od */
+.offers-table th:nth-child(6),
+.offers-table td:nth-child(6) {
+  width: 110px;
+}
+
+/* Do */
+.offers-table th:nth-child(7),
+.offers-table td:nth-child(7) {
+  width: 110px;
+}

@@ -210,7 +210,7 @@ export const CreateUserModal: React.FC<UserModalProps> = React.memo(
             <FiX className="close-icon" onClick={onClose} />
           </div>
 
-          <form onSubmit={handleSubmit} className="modal-form">
+          <form onSubmit={handleSubmit} className="modal-form" autoComplete="off">
             <div className="form-grid">
               <div className="form-column">
                 <InputField

@@ -26,6 +26,9 @@ export class Package {
     default: PackageType.CREATOR,
   })
   type: PackageType;
+
+  @Prop({ default: false })
+  isArchived: boolean;
 }
 
 export const PackageSchema = SchemaFactory.createForClass(Package);

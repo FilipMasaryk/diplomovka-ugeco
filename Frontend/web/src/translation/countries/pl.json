@@ -1,8 +1,12 @@
 {
   "login": {
     "title": "Logowanie do konta",
+    "titleLine1": "Logowanie",
+    "titleLine2": "do konta",
     "forgotTitle": "Zapomniałeś hasła?",
     "sentTitle": "Wysłaliśmy e-mail na Twoją skrzynkę",
+    "sentTitleLine1": "Wysłaliśmy e-mail",
+    "sentTitleLine2": "na twoją skrzynkę",
     "email": "E-mail",
     "password": "Hasło",
     "rememberMe": "Zapamiętaj mnie",
@@ -16,6 +20,7 @@
   "errors": {
     "required": "Pole wymagane",
     "invalidEmail": "Nieprawidłowy e-mail",
+    "emailNotFound": "Konto z tym adresem e-mail nie istnieje",
     "invalidUrl": "Nieprawidłowy URL",
     "passwordMin": "Hasło musi mieć co najmniej 8 znaków",
     "passwordUppercase": "Hasło musi zawierać co najmniej jedną wielką literę",
@@ -34,10 +39,10 @@
     "noNews": "Brak wiadomości"
   },
   "roles": {
-    "creator": "TWÓRCA",
-    "brand_manager": "MARKA",
-    "subadmin": "SUBADMIN",
-    "admin": "ADMIN"
+    "creator": "Twórca",
+    "brand_manager": "Marka",
+    "subadmin": "Subadmin",
+    "admin": "Admin"
   },
   "menubar": {
     "overview": "Przegląd",
@@ -323,6 +328,8 @@
     "selectType": "Wybierz typ",
     "deleteConfirm": "Czy na pewno chcesz usunąć pakiet {{name}}?",
     "deleteBtn": "Usuń",
+    "archiveBtn": "Archiwum pakietów",
+    "activeBtn": "Aktywne pakiety",
     "createModal": {
       "title": "Utwórz nowy pakiet"
     },
@@ -381,6 +388,8 @@
     "packageCreated": "Pakiet został pomyślnie utworzony",
     "packageUpdated": "Pakiet został pomyślnie zaktualizowany",
     "packageDeleted": "Pakiet usunięty",
+    "packageArchived": "Pakiet został zarchiwizowany",
+    "packageRestored": "Pakiet został przywrócony",
     "offerCreated": "Oferta została pomyślnie utworzona",
     "offerUpdated": "Oferta została pomyślnie zaktualizowana",
     "offerArchived": "Oferta zarchiwizowana",

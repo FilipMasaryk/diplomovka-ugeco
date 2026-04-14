@@ -46,7 +46,7 @@ export interface OfferTableData {
   targets: string[];
   categories: string[];
   languages: string[];
-  status: "active" | "concept" | "ended";
+  status: "active" | "concept" | "ended" | "prepared";
   activeFrom: string;
   activeTo: string;
   paidCooperation: boolean;
@@ -71,11 +71,12 @@ const getBrand = (offer: ApiOffer): PopulatedBrand | null =>
 
 const computeDisplayStatus = (
   offer: ApiOffer,
-): "active" | "concept" | "ended" => {
+): "active" | "concept" | "ended" | "prepared" => {
   if (offer.status === "concept") return "concept";
   const now = new Date();
   const from = offer.activeFrom ? new Date(offer.activeFrom) : null;
   const to = offer.activeTo ? new Date(offer.activeTo) : null;
+  if (from && now < from) return "prepared";
   if (from && to && now >= from && now <= to) return "active";
   return "ended";
 };
@@ -132,7 +133,10 @@ export const fetchOffersForCreator = async (filters: {
     const qs = params.toString();
     const url = `/offers/filter${qs ? `?${qs}` : ""}`;
     const response = await apiFetch(url);
-    if (!response.ok) throw new Error("Failed to fetch offers");
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to fetch offers");
+    }
     const data: ApiOffer[] = await response.json();
     return data.map((offer) => {
       const brand = getBrand(offer);
@@ -149,8 +153,7 @@ export const fetchOffersForCreator = async (filters: {
       };
     });
   } catch (error) {
-    console.error("Failed to fetch creator offers:", error);
-    return [];
+    throw error;
   }
 };
 

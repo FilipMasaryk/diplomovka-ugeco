@@ -51,19 +51,13 @@ export default function FavoritesScreen({ navigation }: any) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
-    undefined,
-  );
-  const [activeCategory, setActiveCategory] = useState<string | undefined>(
-    undefined,
-  );
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [activeCategories, setActiveCategories] = useState<string[]>([]);
 
   const loadData = useCallback(async () => {
     try {
       const [offersData, likedData] = await Promise.all([
-        fetchOffersForCreator(
-          activeCategory ? { category: activeCategory } : undefined,
-        ),
+        fetchOffersForCreator(),
         fetchLikedOfferIds(),
       ]);
       setAllOffers(offersData);
@@ -74,7 +68,7 @@ export default function FavoritesScreen({ navigation }: any) {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [activeCategory]);
+  }, []);
 
   const isFocused = useIsFocused();
 
@@ -101,19 +95,26 @@ export default function FavoritesScreen({ navigation }: any) {
   };
 
   const applyFilter = () => {
-    setActiveCategory(selectedCategory);
+    setActiveCategories([...selectedCategories]);
     setFilterVisible(false);
   };
 
   const clearFilter = () => {
-    setSelectedCategory(undefined);
-    setActiveCategory(undefined);
+    setSelectedCategories([]);
+    setActiveCategories([]);
     setFilterVisible(false);
+  };
+
+  const toggleCategory = (value: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+    );
   };
 
   const favoriteOffers = allOffers
     .filter((o) => likedIds.has(o._id))
-    .filter((o) => o.name.toLowerCase().includes(search.toLowerCase()));
+    .filter((o) => o.name.toLowerCase().includes(search.toLowerCase()))
+    .filter((o) => activeCategories.length === 0 || o.categories?.some((c) => activeCategories.includes(c)));
 
   const renderOffer = ({ item }: { item: CreatorOfferCard }) => {
     const imageUri = item.image ? `${API_URL}${item.image}` : null;
@@ -200,7 +201,7 @@ export default function FavoritesScreen({ navigation }: any) {
         <TouchableOpacity
           style={styles.filterButton}
           onPress={() => {
-            setSelectedCategory(activeCategory);
+            setSelectedCategories([...activeCategories]);
             setFilterVisible(true);
           }}
         >
@@ -241,14 +242,12 @@ export default function FavoritesScreen({ navigation }: any) {
               showsVerticalScrollIndicator={false}
             >
               {CATEGORIES.map((cat) => {
-                const isSelected = selectedCategory === cat.value;
+                const isSelected = selectedCategories.includes(cat.value);
                 return (
                   <TouchableOpacity
                     key={cat.value}
                     style={styles.checkboxRow}
-                    onPress={() =>
-                      setSelectedCategory(isSelected ? undefined : cat.value)
-                    }
+                    onPress={() => toggleCategory(cat.value)}
                   >
                     <View
                       style={[

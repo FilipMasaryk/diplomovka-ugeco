@@ -43,10 +43,12 @@ export const fetchMyProfile = async (): Promise<UserProfile | null> => {
 export const createProfile = async (
   formData: FormData
 ): Promise<UserProfile> => {
-  const headers = await getHeaders();
+  const token = await AsyncStorage.getItem("access_token");
   const response = await fetch(`${API_URL}/profiles`, {
     method: "POST",
-    headers,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     body: formData,
   });
   const data = await response.json();
@@ -57,10 +59,12 @@ export const createProfile = async (
 export const updateProfile = async (
   formData: FormData
 ): Promise<UserProfile> => {
-  const headers = await getHeaders();
+  const token = await AsyncStorage.getItem("access_token");
   const response = await fetch(`${API_URL}/profiles`, {
     method: "PATCH",
-    headers,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     body: formData,
   });
   const data = await response.json();

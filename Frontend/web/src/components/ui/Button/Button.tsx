@@ -4,7 +4,7 @@ import "./button.css";
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   type?: "button" | "submit" | "reset";
-  variant?: "default" | "outlined"; // nový variant // pro přidání vlastních tříd
+  variant?: "default" | "outlined";
 }
 
 export const Button: React.FC<ButtonProps> = ({

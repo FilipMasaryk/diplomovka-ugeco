@@ -334,8 +334,9 @@ export default function ProfileScreen() {
         type: "success",
       });
     } catch (err: any) {
-      console.log("[PROFILE] Submit error:", err);
-      setToast({ visible: true, message: "Niečo sa pokazilo", type: "error" });
+      console.log("[PROFILE] Submit error:", JSON.stringify(err));
+      const msg = err?.message || (Array.isArray(err) ? err.join(", ") : "Niečo sa pokazilo");
+      setToast({ visible: true, message: msg, type: "error" });
     } finally {
       setSubmitting(false);
     }

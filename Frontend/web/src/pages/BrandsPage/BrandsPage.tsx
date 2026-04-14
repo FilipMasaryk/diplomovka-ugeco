@@ -2,13 +2,8 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./brandspage.css";
 import { Button } from "../../components/ui/Button/Button";
-import {
-  FiPlus,
-  FiEdit3,
-  FiChevronRight,
-  FiArchive,
-  FiUpload,
-} from "react-icons/fi";
+import { FiPlus, FiChevronRight } from "react-icons/fi";
+import { PencilIcon, ArchiveIcon, ArchiveRestoreIcon } from "../../components/ui/Icons/Icons";
 import { InputField } from "../../components/ui/InputField/InputField";
 import { CustomSelect } from "../../components/ui/CustomSelectMenu/CustomSelect";
 import {
@@ -275,9 +270,9 @@ export const BrandsPage: React.FC = () => {
             <thead>
               <tr>
                 <th>{t("brandsPage.table.name")}</th>
-                <th>{t("brandsPage.table.totalOffersMade")}</th>
-                <th>{t("brandsPage.table.activeOffers")}</th>
-                <th>{t("brandsPage.table.remainingOffers")}</th>
+                <th>Vytvorené<br/>ponuky</th>
+                <th>Aktívne<br/>ponuky</th>
+                <th>Zostávajúce<br/>ponuky</th>
                 <th>{t("brandsPage.table.contact")}</th>
                 <th>{t("brandsPage.table.country")}</th>
                 <th>{t("brandsPage.table.package")}</th>
@@ -296,9 +291,7 @@ export const BrandsPage: React.FC = () => {
                     <td>{brand.totalOffers}</td>
                     <td>{brand.contact}</td>
                     <td>
-                      {t(`countries.${brand.country}`, {
-                        defaultValue: brand.country,
-                      })}
+                      {brand.country}
                     </td>
                     <td>{brand.package}</td>
                     <td>{brand.purchased}</td>
@@ -310,15 +303,15 @@ export const BrandsPage: React.FC = () => {
                           onClick={() => openConfirm(brand, "restoreBrand")}
                           title={t("brandsPage.restoreBtn")}
                         >
-                          <FiUpload />
+                          <ArchiveRestoreIcon />
                         </div>
                       ) : (
                         <>
-                          <FiEdit3
+                          <PencilIcon
                             className="action-icon edit"
                             onClick={() => handleEditClick(brand)}
                           />
-                          <FiArchive
+                          <ArchiveIcon
                             className="action-icon delete"
                             onClick={() => openConfirm(brand, "archiveBrand")}
                           />

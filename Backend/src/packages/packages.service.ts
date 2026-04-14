@@ -33,8 +33,11 @@ export class PackagesService {
     return created.save();
   }
 
-  async findAll() {
-    return this.packageModel.find();
+  async findAll(archived = false) {
+    if (archived) {
+      return this.packageModel.find({ isArchived: true });
+    }
+    return this.packageModel.find({ $or: [{ isArchived: false }, { isArchived: { $exists: false } }] });
   }
 
   async findOne(id: string) {
@@ -53,6 +56,45 @@ export class PackagesService {
 
     Object.assign(pkg, dto);
     return pkg.save();
+  }
+
+  async archive(id: string) {
+    const pkg = await this.packageModel.findById(id);
+    if (!pkg) {
+      throw new NotFoundException('Package not found');
+    }
+
+    if (pkg.isArchived) {
+      throw new BadRequestException('Package is already archived');
+    }
+
+    const usersWithPackage = await this.userModel.find({ package: pkg._id, isArchived: { $ne: true } });
+    const brandsWithPackage = await this.brandModel.find({ package: pkg._id, isArchived: { $ne: true } });
+
+    if (usersWithPackage.length > 0 || brandsWithPackage.length > 0) {
+      throw new BadRequestException(
+        'Package cannot be archived because it is assigned to users or brands.',
+      );
+    }
+
+    pkg.isArchived = true;
+    await pkg.save();
+    return { message: 'Package archived' };
+  }
+
+  async restore(id: string) {
+    const pkg = await this.packageModel.findById(id);
+    if (!pkg) {
+      throw new NotFoundException('Package not found');
+    }
+
+    if (!pkg.isArchived) {
+      throw new BadRequestException('Package is not archived');
+    }
+
+    pkg.isArchived = false;
+    await pkg.save();
+    return { message: 'Package restored' };
   }
 
   async remove(id: string) {

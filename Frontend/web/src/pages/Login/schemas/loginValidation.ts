@@ -3,17 +3,27 @@ import { z } from "zod";
 export const loginSchema = z.object({
   email: z
     .string()
-    .nonempty({ message: "errors.required" }) // i18n kľúč
-    .email({ message: "errors.invalidEmail" }), // i18n kľúč
-  password: z.string().nonempty({ message: "errors.required" }),
+    .superRefine((val, ctx) => {
+      if (!val.trim()) {
+        ctx.addIssue({ code: "custom", message: "errors.required" });
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+        ctx.addIssue({ code: "custom", message: "errors.invalidEmail" });
+      }
+    }),
+  password: z.string().min(1, { message: "errors.required" }),
   rememberMe: z.boolean().optional(),
 });
 
 export const forgotPasswordSchema = z.object({
   email: z
     .string()
-    .nonempty({ message: "errors.required" })
-    .email({ message: "errors.invalidEmail" }),
+    .superRefine((val, ctx) => {
+      if (!val.trim()) {
+        ctx.addIssue({ code: "custom", message: "errors.required" });
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+        ctx.addIssue({ code: "custom", message: "errors.invalidEmail" });
+      }
+    }),
 });
 
 export const resetPasswordSchema = z

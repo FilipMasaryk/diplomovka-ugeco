@@ -1,8 +1,25 @@
 .creator-offers-page {
   padding: 40px;
   font-family: "Inter", sans-serif;
-  background: #f6f8f9;
+  background: #F0F4F8;
   min-height: 100vh;
+}
+
+.package-error-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5eaf0;
+  padding: 32px;
+  max-width: 500px;
+  margin-top: 30px;
+  text-align: center;
+}
+
+.package-error-text {
+  font-size: 16px;
+  line-height: 28px;
+  color: #181818;
+  margin: 0;
 }
 
 .creator-offers-page h1 {
@@ -57,14 +74,8 @@
 /* GRID */
 .creator-offers-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-}
-
-@media (max-width: 1400px) {
-  .creator-offers-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
 }
 
 @media (max-width: 1000px) {
@@ -148,7 +159,8 @@
 }
 
 .creator-offer-like-btn .heart-icon {
-  color: #d1d5db;
+  color: #ffffff;
+  fill: #ffffff;
   stroke-width: 2;
 }
 
@@ -206,7 +218,8 @@
   width: 36px;
   height: 36px;
   border-radius: 4px;
-  object-fit: contain;
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
   background: #fff;
   border: 2px solid #fff;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);

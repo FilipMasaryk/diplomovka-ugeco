@@ -51,19 +51,13 @@ export default function OffersScreen({ navigation }: any) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
-    undefined,
-  );
-  const [activeCategory, setActiveCategory] = useState<string | undefined>(
-    undefined,
-  );
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [activeCategories, setActiveCategories] = useState<string[]>([]);
 
   const loadData = useCallback(async () => {
     try {
       const [offersData, likedData] = await Promise.all([
-        fetchOffersForCreator(
-          activeCategory ? { category: activeCategory } : undefined,
-        ),
+        fetchOffersForCreator(),
         fetchLikedOfferIds(),
       ]);
       setOffers(offersData);
@@ -74,7 +68,7 @@ export default function OffersScreen({ navigation }: any) {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [activeCategory]);
+  }, []);
 
   const isFocused = useIsFocused();
 
@@ -105,19 +99,27 @@ export default function OffersScreen({ navigation }: any) {
   };
 
   const applyFilter = () => {
-    setActiveCategory(selectedCategory);
+    setActiveCategories([...selectedCategories]);
     setFilterVisible(false);
   };
 
   const clearFilter = () => {
-    setSelectedCategory(undefined);
-    setActiveCategory(undefined);
+    setSelectedCategories([]);
+    setActiveCategories([]);
     setFilterVisible(false);
   };
 
-  const filteredOffers = offers.filter((o) =>
-    o.name.toLowerCase().includes(search.toLowerCase()),
-  );
+  const toggleCategory = (value: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+    );
+  };
+
+  const filteredOffers = offers.filter((o) => {
+    const matchesSearch = o.name.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = activeCategories.length === 0 || o.categories?.some((c) => activeCategories.includes(c));
+    return matchesSearch && matchesCategory;
+  });
 
   const renderOffer = ({ item }: { item: CreatorOfferCard }) => {
     const isLiked = likedIds.has(item._id);
@@ -209,7 +211,7 @@ export default function OffersScreen({ navigation }: any) {
         <TouchableOpacity
           style={styles.filterButton}
           onPress={() => {
-            setSelectedCategory(activeCategory);
+            setSelectedCategories([...activeCategories]);
             setFilterVisible(true);
           }}
         >
@@ -248,14 +250,12 @@ export default function OffersScreen({ navigation }: any) {
               showsVerticalScrollIndicator={false}
             >
               {CATEGORIES.map((cat) => {
-                const isSelected = selectedCategory === cat.value;
+                const isSelected = selectedCategories.includes(cat.value);
                 return (
                   <TouchableOpacity
                     key={cat.value}
                     style={styles.checkboxRow}
-                    onPress={() =>
-                      setSelectedCategory(isSelected ? undefined : cat.value)
-                    }
+                    onPress={() => toggleCategory(cat.value)}
                   >
                     <View
                       style={[

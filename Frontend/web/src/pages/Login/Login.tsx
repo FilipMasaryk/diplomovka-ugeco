@@ -6,7 +6,6 @@ import { Button } from "../../components/ui/Button/Button";
 import { forgotPasswordSchema, loginSchema } from "./schemas/loginValidation";
 import { login, forgotPassword } from "../../../../shared/api/auth/auth";
 import { useAuth } from "../../context/useAuth";
-import { useToast } from "../../context/useToast";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -18,10 +17,10 @@ export const Login = () => {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {},
   );
+  const [loginError, setLoginError] = useState("");
   const [forgotErrors, setForgotErrors] = useState<{ email?: string }>({});
 
   const { loginUser } = useAuth();
-  const { showToast } = useToast();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -40,12 +39,13 @@ export const Login = () => {
     }
     setErrors({});
 
+    setLoginError("");
     try {
       const data = await login(result.data);
       loginUser(data.access_token);
       navigate("/");
     } catch (error: any) {
-      showToast(error.message, "error");
+      setLoginError(error.message || t("login.loginError"));
     }
   };
 
@@ -63,8 +63,10 @@ export const Login = () => {
     setForgotErrors({});
     try {
       await forgotPassword(email);
-    } catch {}
-    setView("sent");
+      setView("sent");
+    } catch (error: any) {
+      setForgotErrors({ email: "errors.emailNotFound" });
+    }
   };
 
   return (
@@ -73,9 +75,9 @@ export const Login = () => {
 
       <div className="login-form-container">
         <h1 className={`login-title ${view}`}>
-          {view === "login" && t("login.title")}
+          {view === "login" && <>{t("login.titleLine1")}<br />{t("login.titleLine2")}</>}
           {view === "forgot" && t("login.forgotTitle")}
-          {view === "sent" && t("login.sentTitle")}
+          {view === "sent" && <>{t("login.sentTitleLine1")}<br />{t("login.sentTitleLine2")}</>}
         </h1>
 
         {view === "login" && (
@@ -83,7 +85,6 @@ export const Login = () => {
             <InputField
               label={t("login.email")}
               type="email"
-              placeholder={t("login.email")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -94,7 +95,6 @@ export const Login = () => {
             <InputField
               label={t("login.password")}
               type="password"
-              placeholder={t("login.password")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -114,10 +114,17 @@ export const Login = () => {
             </div>
 
             <Button type="submit">{t("login.loginBtn")}</Button>
+            {loginError && <p className="login-error-message">{loginError}</p>}
             <Button
               variant="outlined"
               type="button"
-              onClick={() => setView("forgot")}
+              onClick={() => {
+                setEmail("");
+                setPassword("");
+                setErrors({});
+                setLoginError("");
+                setView("forgot");
+              }}
             >
               {t("login.forgotBtn")}
             </Button>
@@ -143,7 +150,11 @@ export const Login = () => {
             <Button
               type="button"
               variant="outlined"
-              onClick={() => setView("login")}
+              onClick={() => {
+                setEmail("");
+                setForgotErrors({});
+                setView("login");
+              }}
             >
               {t("login.backToLogin")}
             </Button>
@@ -153,7 +164,7 @@ export const Login = () => {
         {view === "sent" && (
           <>
             <p className="sent-description">{t("login.sentDescription")}</p>
-            <Button type="button" onClick={() => setView("login")}>
+            <Button type="button" onClick={() => { setEmail(""); setView("login"); }}>
               {t("login.backToLogin")}
             </Button>
           </>

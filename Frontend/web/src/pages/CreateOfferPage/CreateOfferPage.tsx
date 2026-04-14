@@ -189,8 +189,6 @@ export const CreateOfferPage: React.FC = () => {
 
   const validateImage = (
     file: File,
-    maxWidth: number,
-    maxHeight: number,
     maxSizeKB: number,
   ): Promise<string | null> => {
     return new Promise((resolve) => {
@@ -201,8 +199,8 @@ export const CreateOfferPage: React.FC = () => {
       const img = new Image();
       img.onload = () => {
         URL.revokeObjectURL(img.src);
-        if (img.width > maxWidth || img.height > maxHeight) {
-          resolve(`Maximálny rozmer je ${maxWidth}×${maxHeight}px`);
+        if (img.width !== img.height) {
+          resolve("Obrázok musí mať formát 1:1");
         } else {
           resolve(null);
         }
@@ -218,7 +216,7 @@ export const CreateOfferPage: React.FC = () => {
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
     if (file) {
-      const error = await validateImage(file, 400, 400, 500);
+      const error = await validateImage(file, 500);
       if (error) {
         setErrors((p) => ({ ...p, image: error }));
         e.target.value = "";
@@ -242,7 +240,7 @@ export const CreateOfferPage: React.FC = () => {
   ) => {
     const file = e.target.files?.[0] ?? null;
     if (file) {
-      const error = await validateImage(file, 100, 100, 100);
+      const error = await validateImage(file, 100);
       if (error) {
         setErrors((p) => ({ ...p, brandLogo: error }));
         e.target.value = "";
@@ -281,10 +279,12 @@ export const CreateOfferPage: React.FC = () => {
       if (!form.activeFrom) errs.activeFrom = t("errors.required");
       if (!form.activeTo) errs.activeTo = t("errors.required");
       if (!isEdit && !image) errs.image = t("errors.required");
+      if (!isEdit && !brandLogo && !selectedBrand?.logo) errs.brandLogo = t("errors.required");
       if (form.categories.length === 0) errs.categories = t("errors.required");
       if (form.languages.length === 0) errs.languages = t("errors.required");
       if (form.targets.length === 0) errs.targets = t("errors.required");
       if (!form.description.trim()) errs.description = t("errors.required");
+      if (!form.contact.trim()) errs.contact = t("errors.required");
     }
     const urlFields = [
       "website",
@@ -438,7 +438,11 @@ export const CreateOfferPage: React.FC = () => {
                 onChange={(date: Date | null) => {
                   const val = date ? toLocalDate(date) : "";
                   setField("activeFrom", val);
-                  if (val && form.activeTo && val > form.activeTo) {
+                  if (val) {
+                    const toDate = new Date(val);
+                    toDate.setDate(toDate.getDate() + 30);
+                    setField("activeTo", toLocalDate(toDate));
+                  } else {
                     setField("activeTo", "");
                   }
                 }}
@@ -446,6 +450,7 @@ export const CreateOfferPage: React.FC = () => {
                 placeholderText={t("createOfferPage.activeFrom")}
                 className={`offer-input ${errors.activeFrom ? "has-error" : ""}`}
                 wrapperClassName="datepicker-wrapper"
+                minDate={new Date()}
               />
               {errors.activeFrom && (
                 <span className="offer-field-error">{errors.activeFrom}</span>
@@ -485,11 +490,12 @@ export const CreateOfferPage: React.FC = () => {
                 }
                 dateFormat="dd.MM.yyyy"
                 placeholderText={t("createOfferPage.activeTo")}
-                className={`offer-input ${errors.activeTo ? "has-error" : ""}`}
+                className={`offer-input ${errors.activeTo ? "has-error" : ""} ${isBrandManager ? "readonly" : ""}`}
                 wrapperClassName="datepicker-wrapper"
                 minDate={
                   form.activeFrom ? new Date(form.activeFrom) : undefined
                 }
+                disabled={isBrandManager}
               />
               {errors.activeTo && (
                 <span className="offer-field-error">{errors.activeTo}</span>
@@ -503,10 +509,11 @@ export const CreateOfferPage: React.FC = () => {
           <div className="image-upload-row">
             <div className="image-input-col">
               <label className="offer-label">
-                {t("createOfferPage.brandLogo")}
+                {t("createOfferPage.brandLogo")}{" "}
+                <span className="required-star">*</span>
                 <span className="offer-label-spacer" />
                 <span className="offer-label-hint">
-                  Formát: max 100×100px, do 100Kb
+                  Formát: 1:1, do 100Kb
                 </span>
               </label>
               <div
@@ -552,7 +559,7 @@ export const CreateOfferPage: React.FC = () => {
                 {!isEdit && <span className="required-star">*</span>}
                 <span className="offer-label-spacer" />
                 <span className="offer-label-hint">
-                  Formát: max 400×400px, do 500Kb
+                  Formát: 1:1, do 500Kb
                 </span>
               </label>
               <div
@@ -592,14 +599,18 @@ export const CreateOfferPage: React.FC = () => {
           <div>
             <div className="offer-field">
               <label className="offer-label">
-                {t("createOfferPage.contact")}
+                {t("createOfferPage.contact")}{" "}
+                <span className="required-star">*</span>
               </label>
               <input
-                className="offer-input"
+                className={`offer-input ${errors.contact ? "has-error" : ""}`}
                 value={form.contact}
                 onChange={(e) => setField("contact", e.target.value)}
                 placeholder={t("createOfferPage.contactPlaceholder")}
               />
+              {errors.contact && (
+                <span className="offer-field-error">{errors.contact}</span>
+              )}
             </div>
           </div>
           <div>

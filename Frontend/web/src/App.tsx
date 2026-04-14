@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Navbar } from "./components/ui/Navbar/Navbar";
 import { Login } from "./pages/Login/Login";
@@ -24,8 +25,27 @@ import { BrandSettingsPage } from "./pages/BrandSettingsPage/BrandSettingsPage";
 import { CreatorOffersPage } from "./pages/CreatorOffersPage/CreatorOffersPage";
 import { ProfilePage } from "./pages/ProfilePage/ProfilePage";
 import { StatsPage } from "./pages/StatsPage/StatsPage";
+import { SupportPage } from "./pages/SupportPage/SupportPage";
 import { useBrand } from "./context/useBrand";
 import { UserRole } from "./types/userRoles";
+
+function ScrollToTop() {
+  const location = useLocation();
+  useEffect(() => {
+    const main = document.querySelector(".main-content");
+    if (main) main.scrollTop = 0;
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+  return null;
+}
+
+const DefaultPage = () => {
+  const { user } = useAuth();
+  if (user?.role === "creator") {
+    return <Navigate to="/creator-offers" replace />;
+  }
+  return <Dashboard />;
+};
 
 const BrandOffersPage = () => {
   const { t } = useTranslation();
@@ -50,6 +70,7 @@ function AppContent() {
 
   return (
     <div className="app-container">
+      <ScrollToTop />
       <Navbar />
       <div className="app-body">
         {user && <Menubar role={user.role} />}
@@ -75,7 +96,7 @@ function AppContent() {
               path="/"
               element={
                 <ProtectedRoute>
-                  <Dashboard />
+                  <DefaultPage />
                 </ProtectedRoute>
               }
             />
@@ -206,6 +227,19 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <SettingsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/support"
+              element={
+                <ProtectedRoute
+                  roles={[
+                    UserRole.CREATOR,
+                    UserRole.BRAND_MANAGER,
+                  ]}
+                >
+                  <SupportPage />
                 </ProtectedRoute>
               }
             />

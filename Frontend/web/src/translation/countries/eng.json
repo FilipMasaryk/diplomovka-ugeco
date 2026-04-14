@@ -1,8 +1,12 @@
 {
   "login": {
     "title": "Account Login",
+    "titleLine1": "Sign in",
+    "titleLine2": "to your account",
     "forgotTitle": "Forgot Password",
     "sentTitle": "We've sent an email to your inbox",
+    "sentTitleLine1": "We sent an email",
+    "sentTitleLine2": "to your inbox",
     "email": "Email",
     "password": "Password",
     "rememberMe": "Remember me",
@@ -16,6 +20,7 @@
   "errors": {
     "required": "Required field",
     "invalidEmail": "Invalid email",
+    "emailNotFound": "Account with this email does not exist",
     "invalidUrl": "Invalid URL",
     "passwordMin": "Password must be at least 8 characters",
     "passwordUppercase": "Password must contain at least one uppercase letter",
@@ -34,10 +39,10 @@
     "noNews": "No news"
   },
   "roles": {
-    "creator": "CREATOR",
-    "brand_manager": "BRAND",
-    "subadmin": "SUBADMIN",
-    "admin": "ADMIN"
+    "creator": "Creator",
+    "brand_manager": "Brand",
+    "subadmin": "Subadmin",
+    "admin": "Admin"
   },
   "menubar": {
     "overview": "Overview",
@@ -323,6 +328,8 @@
     "selectType": "Select type",
     "deleteConfirm": "Are you sure you want to delete the package {{name}}?",
     "deleteBtn": "Delete",
+    "archiveBtn": "Archived packages",
+    "activeBtn": "Active packages",
     "createModal": {
       "title": "Create New Package"
     },
@@ -381,6 +388,8 @@
     "packageCreated": "Package created successfully",
     "packageUpdated": "Package updated successfully",
     "packageDeleted": "Package deleted",
+    "packageArchived": "Package has been archived",
+    "packageRestored": "Package has been restored",
     "offerCreated": "Offer created successfully",
     "offerUpdated": "Offer updated successfully",
     "offerArchived": "Offer archived",

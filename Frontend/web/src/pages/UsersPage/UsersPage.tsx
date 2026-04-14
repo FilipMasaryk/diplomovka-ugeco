@@ -2,13 +2,8 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./UsersPage.css";
 import { Button } from "../../components/ui/Button/Button";
-import {
-  FiPlus,
-  FiEdit3,
-  FiChevronRight,
-  FiArchive,
-  FiUpload,
-} from "react-icons/fi";
+import { FiPlus, FiChevronRight } from "react-icons/fi";
+import { PencilIcon, ArchiveIcon, ArchiveRestoreIcon } from "../../components/ui/Icons/Icons";
 import { InputField } from "../../components/ui/InputField/InputField";
 import { CustomSelect } from "../../components/ui/CustomSelectMenu/CustomSelect";
 import {
@@ -110,14 +105,10 @@ export const UsersPage: React.FC = () => {
     }
   };
   const handleEditClick = (user: UserTableData) => {
-    const nameParts = user.name.split(" ");
-    const name = nameParts[0] || "";
-    const surName = nameParts.slice(1).join(" ") || "";
-
     setUserToUpdate({
       id: user.id,
-      name,
-      surName,
+      name: user.firstName,
+      surName: user.surName,
       email: user.email,
       password: "",
       role: user.role.toLowerCase() as UserRole,
@@ -325,9 +316,11 @@ export const UsersPage: React.FC = () => {
                     <td>{user.brand || "-"}</td>
                     <td>{user.country || "-"}</td>
                     <td>
-                      {user.profile === "Yes"
-                        ? t("usersPage.table.yes")
-                        : t("usersPage.table.no")}
+                      {user.role.toLowerCase() === "creator"
+                        ? (user.profile === "Yes"
+                          ? t("usersPage.table.yes")
+                          : t("usersPage.table.no"))
+                        : "-"}
                     </td>
                     <td>{user.package || "-"}</td>
                     <td>{user.purchased}</td>
@@ -348,15 +341,15 @@ export const UsersPage: React.FC = () => {
                             onClick={() => openConfirm(user, "restore")}
                             title={t("usersPage.restore")}
                           >
-                            <FiUpload />
+                            <ArchiveRestoreIcon />
                           </div>
                         ) : (
                           <>
-                            <FiEdit3
+                            <PencilIcon
                               className="action-icon edit"
                               onClick={() => handleEditClick(user)}
                             />
-                            <FiArchive
+                            <ArchiveIcon
                               className="action-icon delete"
                               onClick={() => openConfirm(user, "archive")}
                             />

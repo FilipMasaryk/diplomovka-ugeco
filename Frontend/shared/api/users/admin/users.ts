@@ -17,6 +17,8 @@ interface ApiUser {
 export interface UserTableData {
   id: string;
   name: string;
+  firstName: string;
+  surName: string;
   email: string;
   role: string;
 
@@ -158,12 +160,14 @@ export const fetchUsers = async (
       return {
         id: user._id,
         name: `${user.name} ${user.surName || ""}`.trim(),
+        firstName: user.name,
+        surName: user.surName || "",
         email: user.email,
         role:
           user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase(),
 
         brand:
-          user.brands && user.brands.length > 0 ? user.brands[0].name : "-",
+          user.brands && user.brands.length > 0 ? user.brands.map((b) => b.name).join(", ") : "-",
 
         brandIds: user.brands?.map((b) => b._id) || [],
 

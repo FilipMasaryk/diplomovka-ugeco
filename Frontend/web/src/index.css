@@ -25,4 +25,5 @@ body {
 .main-content {
   flex: 1;
   overflow-y: auto;
+  background-color: #F0F4F8;
 }

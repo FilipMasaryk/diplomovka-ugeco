@@ -36,7 +36,9 @@ export default function InputField({
             {label} {required ? <Text style={styles.required}>*</Text> : null}
           </Text>
         ) : null}
-        <View style={[styles.passwordContainer, error ? styles.inputError : null]}>
+        <View
+          style={[styles.passwordContainer, error ? styles.inputError : null]}
+        >
           <TextInput
             style={[styles.passwordInput, style]}
             secureTextEntry={!showPassword}

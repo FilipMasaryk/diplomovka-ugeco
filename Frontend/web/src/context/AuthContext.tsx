@@ -31,7 +31,16 @@ export const AuthProvider = ({ children }: any) => {
   useEffect(() => {
     const storedToken = localStorage.getItem("access_token");
     if (storedToken) {
-      loginUser(storedToken);
+      try {
+        const decoded: any = jwtDecode(storedToken);
+        if (decoded.exp && decoded.exp * 1000 < Date.now()) {
+          localStorage.removeItem("access_token");
+        } else {
+          loginUser(storedToken);
+        }
+      } catch {
+        localStorage.removeItem("access_token");
+      }
     }
     setLoading(false);
   }, []);

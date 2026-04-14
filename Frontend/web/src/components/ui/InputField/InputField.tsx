@@ -34,6 +34,7 @@ export const InputField = memo(
           <input
             type={isPassword && showPassword ? "text" : type}
             className={`input-field ${hasError ? "input-error" : ""}`}
+            autoComplete="off"
             {...props}
           />
 

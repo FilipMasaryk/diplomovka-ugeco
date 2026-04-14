@@ -24,6 +24,7 @@ export const CreatorOffersPage: React.FC = () => {
 
   const [offers, setOffers] = useState<CreatorOfferCard[]>([]);
   const [loading, setLoading] = useState(true);
+  const [packageError, setPackageError] = useState<string | null>(null);
 
   // Filters
   const [categoryFilter, setCategoryFilter] = useState("");
@@ -45,8 +46,7 @@ export const CreatorOffersPage: React.FC = () => {
     const w = window.innerWidth;
     if (w <= 600) return 1;
     if (w <= 1000) return 2;
-    if (w <= 1400) return 3;
-    return 4;
+    return 3;
   };
   const [columns, setColumns] = useState(getColumns);
 
@@ -58,16 +58,26 @@ export const CreatorOffersPage: React.FC = () => {
 
   const loadOffers = useCallback(async () => {
     setLoading(true);
-    const data = await fetchOffersForCreator({
-      category: categoryFilter || undefined,
-      target: targetFilter || undefined,
-      paidCooperation: cooperationFilter || undefined,
-      language: languageFilter || undefined,
-    });
-    setOffers(data);
-    setCurrentPage(1);
+    setPackageError(null);
+    try {
+      const data = await fetchOffersForCreator({
+        category: categoryFilter || undefined,
+        target: targetFilter || undefined,
+        paidCooperation: cooperationFilter || undefined,
+        language: languageFilter || undefined,
+      });
+      setOffers(data);
+      setCurrentPage(1);
+    } catch (err: any) {
+      const msg = err?.message || "";
+      if (msg.includes("NO_PACKAGE")) {
+        setPackageError(t("creatorOffersPage.noPackage"));
+      } else if (msg.includes("PACKAGE_EXPIRED")) {
+        setPackageError(t("creatorOffersPage.packageExpired"));
+      }
+    }
     setLoading(false);
-  }, [categoryFilter, targetFilter, cooperationFilter, languageFilter]);
+  }, [categoryFilter, targetFilter, cooperationFilter, languageFilter, t]);
 
   useEffect(() => {
     loadOffers();
@@ -159,6 +169,17 @@ export const CreatorOffersPage: React.FC = () => {
     }
     return pages;
   };
+
+  if (packageError) {
+    return (
+      <div className="creator-offers-page">
+        <h1>{t("creatorOffersPage.title")}</h1>
+        <div className="package-error-card">
+          <p className="package-error-text">{packageError}</p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

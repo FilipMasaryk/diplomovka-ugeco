@@ -501,6 +501,14 @@ export class UsersService {
       throw new BadRequestException('User is not archived');
     }
 
+    if (user.package) {
+      const pkg = await this.packageModel.findById(user.package);
+      if (!pkg || pkg.isArchived) {
+        user.package = undefined;
+        user.purchasedAt = undefined;
+      }
+    }
+
     user.isArchived = false;
     user.archivedAt = undefined;
     await user.save();

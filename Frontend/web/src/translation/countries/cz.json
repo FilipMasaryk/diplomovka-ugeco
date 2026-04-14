@@ -1,8 +1,12 @@
 {
   "login": {
     "title": "Přihlášení k účtu",
+    "titleLine1": "Přihlášení",
+    "titleLine2": "do účtu",
     "forgotTitle": "Zapomenuté heslo",
     "sentTitle": "Odeslali jsme e-mail do vaší schránky",
+    "sentTitleLine1": "Odeslali jsme e-mail",
+    "sentTitleLine2": "do tvé schránky",
     "email": "E-mail",
     "password": "Heslo",
     "rememberMe": "Zapamatovat si",
@@ -16,6 +20,7 @@
   "errors": {
     "required": "Povinné pole",
     "invalidEmail": "Neplatný e-mail",
+    "emailNotFound": "Účet s tímto e-mailem neexistuje",
     "invalidUrl": "Neplatná URL adresa",
     "passwordMin": "Heslo musí mít alespoň 8 znaků",
     "passwordUppercase": "Heslo musí obsahovat alespoň jedno velké písmeno",
@@ -34,10 +39,10 @@
     "noNews": "Žádné novinky"
   },
   "roles": {
-    "creator": "TVŮRCE",
-    "brand_manager": "ZNAČKA",
-    "subadmin": "SUBADMIN",
-    "admin": "ADMIN"
+    "creator": "Tvůrce",
+    "brand_manager": "Značka",
+    "subadmin": "Subadmin",
+    "admin": "Admin"
   },
   "menubar": {
     "overview": "Přehled",
@@ -323,6 +328,8 @@
     "selectType": "Vyberte typ",
     "deleteConfirm": "Opravdu chcete smazat balíček {{name}}?",
     "deleteBtn": "Smazat",
+    "archiveBtn": "Archiv balíčků",
+    "activeBtn": "Aktivní balíčky",
     "createModal": {
       "title": "Vytvořit nový balíček"
     },
@@ -381,6 +388,8 @@
     "packageCreated": "Balíček byl úspěšně vytvořen",
     "packageUpdated": "Balíček byl úspěšně upraven",
     "packageDeleted": "Balíček byl smazán",
+    "packageArchived": "Balíček byl archivován",
+    "packageRestored": "Balíček byl obnoven",
     "offerCreated": "Nabídka byla úspěšně vytvořena",
     "offerUpdated": "Nabídka byla úspěšně upravena",
     "offerArchived": "Nabídka byla archivována",

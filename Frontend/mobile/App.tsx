@@ -19,7 +19,7 @@ export default function App() {
     Inter_700Bold,
   });
 
-  // Set Inter as default font for all Text and TextInput components
+  // Inter default font
   if (fontsLoaded) {
     const defaultTextStyle = { fontFamily: "Inter_400Regular" };
     const origTextRender = (Text as any).render;

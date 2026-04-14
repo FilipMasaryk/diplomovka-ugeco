@@ -12,20 +12,23 @@
 .toast {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 20px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  gap: 16px;
+  padding: 16px;
+  background: #FAFAFA;
+  border-radius: 8px;
+  border: 1px solid #E5EAF0;
+  box-shadow: 0px 1px 3px 0px #0000001A;
   font-family: "Inter", sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #181818;
   pointer-events: auto;
   cursor: pointer;
   animation: toast-slide-in 0.3s ease-out;
-  min-width: 250px;
-  max-width: 400px;
+  min-width: 197px;
+  height: 68px;
+  box-sizing: border-box;
 }
 
 .toast.removing {
@@ -34,15 +37,8 @@
 
 .toast-icon {
   flex-shrink: 0;
-  font-size: 22px;
-}
-
-.toast.success .toast-icon {
-  color: var(--color-success);
-}
-
-.toast.error .toast-icon {
-  color: var(--color-error);
+  display: flex;
+  align-items: center;
 }
 
 @keyframes toast-slide-in {

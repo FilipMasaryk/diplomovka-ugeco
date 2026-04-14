@@ -3,14 +3,8 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import "./offerspage.css";
 import { Button } from "../../components/ui/Button/Button";
-import {
-  FiPlus,
-  FiEdit3,
-  FiArchive,
-  FiTrash2,
-  FiChevronRight,
-  FiRefreshCw,
-} from "react-icons/fi";
+import { FiPlus, FiChevronRight } from "react-icons/fi";
+import { PencilIcon, ArchiveIcon, ArchiveRestoreIcon, TrashIcon, CopyIcon } from "../../components/ui/Icons/Icons";
 import { InputField } from "../../components/ui/InputField/InputField";
 import { CustomSelect } from "../../components/ui/CustomSelectMenu/CustomSelect";
 import {
@@ -18,6 +12,8 @@ import {
   archiveOffer,
   restoreOffer,
   deleteOffer,
+  fetchOfferById,
+  createOffer,
   type OfferTableData,
 } from "../../../../shared/api/offers/offers";
 import { BrandCategory } from "../../types/brandCategories";
@@ -113,6 +109,7 @@ export const OffersPage: React.FC<OffersPageProps> = ({ brandId }) => {
     () => [
       { value: "", label: t("offersPage.allStatuses") },
       { value: "active", label: t("offersPage.statusActive") },
+      { value: "prepared", label: t("offersPage.statusPrepared") },
       { value: "concept", label: t("offersPage.statusConcept") },
       { value: "ended", label: t("offersPage.statusEnded") },
     ],
@@ -177,13 +174,50 @@ export const OffersPage: React.FC<OffersPageProps> = ({ brandId }) => {
     setDeleteModal({ isOpen: false, offerId: "", offerName: "" });
   };
 
+  const handleDuplicate = async (offerId: string) => {
+    try {
+      const offer = await fetchOfferById(offerId);
+      if (!offer) return;
+
+      const fd = new FormData();
+      fd.append("name", `Copy_${offer.name}`);
+      fd.append("brand", typeof offer.brand === "string" ? offer.brand : (offer.brand as any)._id);
+      fd.append("paidCooperation", String(offer.paidCooperation));
+      fd.append("status", "concept");
+      fd.append("description", offer.description || "");
+      fd.append("contact", offer.contact || "");
+      fd.append("website", offer.website || "");
+      fd.append("facebook", offer.facebook || "");
+      fd.append("instagram", offer.instagram || "");
+      fd.append("tiktok", offer.tiktok || "");
+      fd.append("pinterest", offer.pinterest || "");
+      offer.categories?.forEach((c) => fd.append("categories", c));
+      offer.languages?.forEach((l) => fd.append("languages", l));
+      offer.targets?.forEach((t) => fd.append("targets", t));
+
+      // Skopírovať obrázok ponuky
+      if (offer.image) {
+        const imgResponse = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}${offer.image}`);
+        const blob = await imgResponse.blob();
+        const ext = offer.image.split(".").pop() || "jpg";
+        fd.append("image", blob, `copy.${ext}`);
+      }
+
+      await createOffer(fd);
+      loadData(false);
+      showToast(t("toasts.offerDuplicated"), "success");
+    } catch (err) {
+      showToast(t("errors.somethingWentWrong"), "error");
+    }
+  };
+
   return (
     <div className="users-page">
       <ConfirmModal
         isOpen={archiveModal.isOpen}
-        title={t("offersPage.archiveConfirm", { name: archiveModal.offerName })}
-        confirmLabel={t("modals.archiveBrand.confirmBtn")}
-        cancelLabel={t("modals.archiveBrand.cancelBtn")}
+        title={t("modals.archiveOffer.message")}
+        confirmLabel={t("modals.archiveOffer.confirmBtn")}
+        cancelLabel={t("modals.archiveOffer.cancelBtn")}
         onConfirm={handleArchiveConfirm}
         onCancel={() =>
           setArchiveModal({ isOpen: false, offerId: "", offerName: "" })
@@ -191,9 +225,9 @@ export const OffersPage: React.FC<OffersPageProps> = ({ brandId }) => {
       />
       <ConfirmModal
         isOpen={restoreModal.isOpen}
-        title={t("modals.restore.message", { name: restoreModal.offerName })}
-        confirmLabel={t("modals.restore.confirmBtn")}
-        cancelLabel={t("modals.restore.cancelBtn")}
+        title={t("modals.restoreOffer.message")}
+        confirmLabel={t("modals.restoreOffer.confirmBtn")}
+        cancelLabel={t("modals.restoreOffer.cancelBtn")}
         onConfirm={handleRestoreConfirm}
         onCancel={() =>
           setRestoreModal({ isOpen: false, offerId: "", offerName: "" })
@@ -201,9 +235,9 @@ export const OffersPage: React.FC<OffersPageProps> = ({ brandId }) => {
       />
       <ConfirmModal
         isOpen={deleteModal.isOpen}
-        title={t("offersPage.deleteConfirm", { name: deleteModal.offerName })}
-        confirmLabel={t("offersPage.deleteBtn")}
-        cancelLabel={t("modals.archiveBrand.cancelBtn")}
+        title={t("modals.deleteOffer.message")}
+        confirmLabel={t("modals.deleteOffer.confirmBtn")}
+        cancelLabel={t("modals.deleteOffer.cancelBtn")}
         onConfirm={handleDeleteConfirm}
         onCancel={() =>
           setDeleteModal({ isOpen: false, offerId: "", offerName: "" })
@@ -322,7 +356,7 @@ export const OffersPage: React.FC<OffersPageProps> = ({ brandId }) => {
         {loading ? (
           <div className="loading-state">{t("offersPage.loading")}</div>
         ) : (
-          <table>
+          <table className="offers-table">
             <thead>
               <tr>
                 <th>{t("offersPage.table.name")}</th>
@@ -354,26 +388,25 @@ export const OffersPage: React.FC<OffersPageProps> = ({ brandId }) => {
                         .join(", ")}
                     </td>
                     <td>
-                      {t(`countries.${offer.brandCountry}`, {
-                        defaultValue: offer.brandCountry,
-                      })}
+                      {offer.brandCountry}
                     </td>
                     <td>
                       <span className={`status-badge ${offer.status}`}>
                         {offer.status === "active"
                           ? t("offersPage.statusActive")
-                          : offer.status === "ended"
-                            ? t("offersPage.statusEnded")
-                            : t("offersPage.statusConcept")}
+                          : offer.status === "prepared"
+                            ? t("offersPage.statusPrepared")
+                            : offer.status === "ended"
+                              ? t("offersPage.statusEnded")
+                              : t("offersPage.statusConcept")}
                       </span>
                     </td>
                     <td>{offer.activeFrom}</td>
                     <td>{offer.activeTo}</td>
                     <td className="actions">
                       {isArchivedView ? (
-                        <FiRefreshCw
+                        <ArchiveRestoreIcon
                           className="action-icon edit"
-                          title={t("usersPage.restore")}
                           onClick={() =>
                             setRestoreModal({
                               isOpen: true,
@@ -384,12 +417,16 @@ export const OffersPage: React.FC<OffersPageProps> = ({ brandId }) => {
                         />
                       ) : (
                         <>
-                          <FiEdit3
+                          <PencilIcon
                             className="action-icon edit"
                             onClick={() => navigate(`/offers/${offer.id}/edit`)}
                           />
+                          <CopyIcon
+                            className="action-icon edit"
+                            onClick={() => handleDuplicate(offer.id)}
+                          />
                           {offer.status === "concept" ? (
-                            <FiTrash2
+                            <TrashIcon
                               className="action-icon delete"
                               onClick={() =>
                                 setDeleteModal({
@@ -400,7 +437,7 @@ export const OffersPage: React.FC<OffersPageProps> = ({ brandId }) => {
                               }
                             />
                           ) : (
-                            <FiArchive
+                            <ArchiveIcon
                               className="action-icon delete"
                               onClick={() =>
                                 setArchiveModal({

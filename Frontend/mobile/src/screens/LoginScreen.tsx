@@ -34,8 +34,8 @@ export default function LoginScreen({ navigation }: any) {
     try {
       const data = await login({ email, password, rememberMe });
       const payload = JSON.parse(atob(data.access_token.split(".")[1]));
-      if (payload.role === "brand_manager") {
-        setError("Táto aplikácia nie je určená pre správcov značiek.");
+      if (payload.role !== "creator") {
+        setError("Táto aplikácia je určená len pre tvorcov obsahu.");
         setLoading(false);
         return;
       }

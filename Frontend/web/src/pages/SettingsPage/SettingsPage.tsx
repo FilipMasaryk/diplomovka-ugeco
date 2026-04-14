@@ -166,7 +166,7 @@ export const SettingsPage = () => {
               onClick={() => fileInputRef.current?.click()}
               disabled={uploadingAvatar}
             >
-              {uploadingAvatar ? "..." : t("settingsPage.changeAvatar")}
+              {uploadingAvatar ? "..." : user?.avatar ? t("settingsPage.changeAvatar") : t("settingsPage.addAvatar")}
             </button>
             {user?.avatar && (
               <button
@@ -234,13 +234,13 @@ export const SettingsPage = () => {
               value={ico}
               onChange={(e) => setIco(e.target.value)}
               placeholder={t("settingsPage.ico")}
-            />
+                />
             <InputField
               label={t("settingsPage.dic")}
               value={dic}
               onChange={(e) => setDic(e.target.value)}
               placeholder={t("settingsPage.dic")}
-            />
+                />
           </div>
         </>
       )}
@@ -260,6 +260,7 @@ export const SettingsPage = () => {
           placeholder="*****"
           hasError={!!errors.password}
           errorMessage={errors.password}
+          autoComplete="new-password"
         />
         <InputField
           label={t("settingsPage.passwordConfirm")}
@@ -273,6 +274,7 @@ export const SettingsPage = () => {
           placeholder="*****"
           hasError={!!errors.passwordConfirmation}
           errorMessage={errors.passwordConfirmation}
+          autoComplete="new-password"
         />
       </div>
 

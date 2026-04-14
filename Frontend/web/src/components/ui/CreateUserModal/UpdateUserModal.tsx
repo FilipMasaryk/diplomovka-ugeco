@@ -222,7 +222,7 @@ export const UpdateUserModal: React.FC<UpdateUserModalProps> = React.memo(
             <FiX className="close-icon" onClick={onClose} />
           </div>
 
-          <form onSubmit={handleSubmit} className="modal-form">
+          <form onSubmit={handleSubmit} className="modal-form" autoComplete="off">
             <div className="form-grid">
               {/* ĽAVÝ STĹPEC */}
               <div className="form-column">

@@ -1,7 +1,7 @@
 .create-offer-page {
   padding: 40px;
   font-family: "Inter", sans-serif;
-  background: #f6f8f9;
+  background: #F0F4F8;
   min-height: 100vh;
 }
 
@@ -18,7 +18,8 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 28px;
+  margin-bottom: 12px;
+  padding-left: 32px;
 }
 
 .coop-label {
@@ -32,7 +33,7 @@
 }
 
 .coop-label.active {
-  color: var(--color-primary);
+  color: #71717a;
   font-weight: 700;
 }
 
@@ -72,7 +73,7 @@
 }
 
 .toggle-switch input:checked + .toggle-slider {
-  background-color: #a1a1aa;
+  background-color: var(--color-primary);
 }
 
 .toggle-switch input:checked + .toggle-slider::before {
@@ -81,9 +82,9 @@
 
 /* ── Form card ── */
 .offer-form-card {
-  background: white;
+  background: transparent;
   border-radius: 12px;
-  border: 1px solid #e5eaf0;
+  border: none;
   padding: 32px;
 }
 
@@ -93,6 +94,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 24px 40px;
   margin-bottom: 28px;
+  align-items: end;
 }
 
 /* ── Field helpers ── */
@@ -136,7 +138,7 @@
   height: 40px;
   border-radius: 6px;
   border: 1px solid var(--color-border-elements);
-  background: var(--color-background-elements);
+  background: #FAFAFA;
   font-family: "Inter", sans-serif;
   font-size: 14px;
   color: #181818;
@@ -180,7 +182,7 @@
 }
 
 .react-datepicker__header {
-  background: #f6f8f9 !important;
+  background: #F0F4F8 !important;
   border-bottom: 1px solid #e5eaf0 !important;
   padding-top: 12px !important;
   border-radius: 0 !important;
@@ -282,7 +284,7 @@
 .offer-textarea {
   border-radius: 6px;
   border: 1px solid var(--color-border-elements);
-  background: var(--color-background-elements);
+  background: #FAFAFA;
   font-family: "Inter", sans-serif;
   font-size: 14px;
   color: #181818;
@@ -366,6 +368,7 @@
   height: 80px;
   border-radius: 8px;
   object-fit: cover;
+  aspect-ratio: 1 / 1;
   border: 1px solid #e5eaf0;
   flex-shrink: 0;
 }
@@ -383,6 +386,9 @@
 .logo-preview-thumb {
   width: 90px;
   height: 90px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
 .logo-preview-placeholder {
@@ -411,6 +417,8 @@
 .image-preview-large {
   width: 220px;
   height: 220px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
 }
 
 /* ── Checkboxes ── */
@@ -497,7 +505,7 @@
   height: 40px;
   border-radius: 6px;
   border: 1px solid var(--color-border-elements);
-  background: var(--color-background-elements);
+  background: #FAFAFA;
   font-family: "Inter", sans-serif;
   font-size: 14px;
   color: #181818;

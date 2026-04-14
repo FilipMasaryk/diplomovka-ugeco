@@ -1,7 +1,7 @@
 .users-page {
   padding: 40px;
   font-family: "Inter", sans-serif;
-  background: #f6f8f9;
+  background: #F0F4F8;
   min-height: 100vh;
 }
 
@@ -23,6 +23,7 @@
   font-size: 48px;
   line-height: 100%;
   letter-spacing: 0%;
+  color: #181818;
 }
 
 .header-actions {
@@ -75,13 +76,14 @@
   margin-top: 25px;
   background: white;
   border-radius: 12px;
-  overflow: hidden;
+  overflow-x: auto;
   border: 1px solid #e5eaf0;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: auto;
 }
 
 thead {
@@ -91,54 +93,69 @@ thead {
 th {
   font-family: "Inter", sans-serif;
   font-weight: 700;
-  font-style: Bold;
   font-size: 12px;
   line-height: 18px;
-  letter-spacing: 0%;
   padding: 14px 8px;
   text-align: left;
-  font-size: 14px;
-  color: #71717a;
+  color: #71717A;
 }
 td {
   padding: 14px 8px;
   text-align: left;
   font-family: "Inter", sans-serif;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 18px;
-  letter-spacing: 0%;
   color: #181818;
 }
 
+/* Meno */
+th:nth-child(1),
+td:nth-child(1) {
+  min-width: 160px;
+  white-space: nowrap;
+}
+
+/* Email */
 th:nth-child(2),
 td:nth-child(2) {
-  width: 260px;
+  min-width: 200px;
 }
 
+/* Prístup */
+th:nth-child(3),
+td:nth-child(3) {
+  width: 90px;
+}
+
+/* Krajina */
 th:nth-child(5),
 td:nth-child(5) {
-  width: 180px;
+  width: 100px;
 }
 
+/* Profil */
 th:nth-child(6),
 td:nth-child(6) {
-  width: 160px;
+  width: 70px;
 }
 
+/* Balíček */
 th:nth-child(7),
 td:nth-child(7) {
-  width: 160px;
+  width: 120px;
 }
 
+/* Zakúpené */
 th:nth-child(8),
 td:nth-child(8) {
-  width: 140px;
+  width: 110px;
 }
 
+/* Expirácia */
 th:nth-child(9),
 td:nth-child(9) {
-  width: 140px;
+  width: 110px;
 }
 
 tbody tr {
@@ -146,8 +163,9 @@ tbody tr {
 }
 
 .link {
-  color: #19b3a6;
+  color: #009E96;
   cursor: pointer;
+  text-decoration: underline;
 }
 
 .action-icon {
@@ -201,9 +219,9 @@ tbody tr {
 .rows-text {
   font-family: "Inter", sans-serif;
   font-weight: 500;
-  font-style: Medium;
   font-size: 14px;
   line-height: 14px;
+  color: #71717A;
   letter-spacing: 0%;
   text-align: center;
   vertical-align: middle;
@@ -368,13 +386,10 @@ th.text-right {
 
 .actions {
   display: flex;
-  gap: 16px;
-  align-items: center;
-  padding: 14px 12px;
-  min-width: 80px;
   gap: 12px;
+  align-items: center;
   justify-content: center;
-  padding-right: 20px;
+  padding: 14px 8px;
 }
 
 td {

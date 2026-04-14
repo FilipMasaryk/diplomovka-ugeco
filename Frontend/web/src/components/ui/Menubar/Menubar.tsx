@@ -42,7 +42,7 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
     isOpen?: boolean,
     onClickSubmenu?: () => void,
   ) => {
-    const isActive = location.pathname === path;
+    const isActive = location.pathname === path || location.pathname === `/${path}`;
 
     return (
       <div className="menu-section">
@@ -174,14 +174,31 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
               t("menubar.users"),
               <FiUsers className="menu-icon" />,
             )}
-            {renderMenuItem(
-              "brands",
-              t("menubar.brands"),
-              <FiTag className="menu-icon" />,
-              true,
-              brandsOpen,
-              () => setBrandsOpen(!brandsOpen),
-            )}
+            {(() => {
+              const brandsActive = location.pathname === "/brands" || location.pathname === "/offers";
+              return (
+                <div className="menu-section">
+                  <div
+                    className={`menu-item ${brandsActive ? "active" : ""} ${isCollapsed ? "collapsed-item" : ""}`}
+                    onClick={() => {
+                      if (isCollapsed) {
+                        setIsCollapsed(false);
+                        setBrandsOpen(true);
+                      } else {
+                        setBrandsOpen(!brandsOpen);
+                      }
+                    }}
+                    title={isCollapsed ? t("menubar.brands") : ""}
+                  >
+                    <FiTag className="menu-icon" />
+                    {!isCollapsed && <span>{t("menubar.brands")}</span>}
+                    {!isCollapsed && (
+                      <FiChevronDown className={`chevron ${brandsOpen ? "rotate" : ""}`} />
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
             {brandsOpen && !isCollapsed && (
               <div className="submenu">
                 <div
@@ -272,14 +289,31 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
 
         {role === "admin" || role === "subadmin" ? (
           <>
-            {renderMenuItem(
-              "news",
-              t("menubar.news"),
-              <FiBell className="menu-icon" />,
-              true,
-              newsOpen,
-              () => setNewsOpen(!newsOpen),
-            )}
+            {(() => {
+              const newsActive = location.pathname.startsWith("/news");
+              return (
+                <div className="menu-section">
+                  <div
+                    className={`menu-item ${newsActive ? "active" : ""} ${isCollapsed ? "collapsed-item" : ""}`}
+                    onClick={() => {
+                      if (isCollapsed) {
+                        setIsCollapsed(false);
+                        setNewsOpen(true);
+                      } else {
+                        setNewsOpen(!newsOpen);
+                      }
+                    }}
+                    title={isCollapsed ? t("menubar.news") : ""}
+                  >
+                    <FiBell className="menu-icon" />
+                    {!isCollapsed && <span>{t("menubar.news")}</span>}
+                    {!isCollapsed && (
+                      <FiChevronDown className={`chevron ${newsOpen ? "rotate" : ""}`} />
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
             {newsOpen && !isCollapsed && (
               <div className="submenu">
                 <div
@@ -305,7 +339,7 @@ export const Menubar: FC<MenubarProps> = ({ role }) => {
           </>
         ) : (
           renderMenuItem(
-            "support",
+            "/support",
             t("menubar.support"),
             <FiHelpCircle className="menu-icon" />,
           )

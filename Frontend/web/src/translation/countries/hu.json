@@ -1,8 +1,12 @@
 {
   "login": {
     "title": "Bejelentkezés",
+    "titleLine1": "Bejelentkezés",
+    "titleLine2": "a fiókba",
     "forgotTitle": "Elfelejtett jelszó",
     "sentTitle": "E-mailt küldtünk a fiókjába",
+    "sentTitleLine1": "E-mailt küldtünk",
+    "sentTitleLine2": "a postafiókjába",
     "email": "E-mail",
     "password": "Jelszó",
     "rememberMe": "Emlékezz rám",
@@ -16,6 +20,7 @@
   "errors": {
     "required": "Kötelező mező",
     "invalidEmail": "Érvénytelen e-mail",
+    "emailNotFound": "Ezzel az e-mail címmel nem létezik fiók",
     "invalidUrl": "Érvénytelen URL",
     "passwordMin": "A jelszónak legalább 8 karakter hosszúnak kell lennie",
     "passwordUppercase": "A jelszónak legalább egy nagybetűt kell tartalmaznia",
@@ -34,10 +39,10 @@
     "noNews": "Nincsenek hírek"
   },
   "roles": {
-    "creator": "ALKOTÓ",
-    "brand_manager": "MÁRKA",
-    "subadmin": "SUBADMIN",
-    "admin": "ADMIN"
+    "creator": "Alkotó",
+    "brand_manager": "Márka",
+    "subadmin": "Subadmin",
+    "admin": "Admin"
   },
   "menubar": {
     "overview": "Áttekintés",
@@ -323,6 +328,8 @@
     "selectType": "Válasszon típust",
     "deleteConfirm": "Biztosan törli a(z) {{name}} csomagot?",
     "deleteBtn": "Törlés",
+    "archiveBtn": "Archivált csomagok",
+    "activeBtn": "Aktív csomagok",
     "createModal": {
       "title": "Új csomag létrehozása"
     },
@@ -381,6 +388,8 @@
     "packageCreated": "Csomag sikeresen létrehozva",
     "packageUpdated": "Csomag sikeresen frissítve",
     "packageDeleted": "Csomag törölve",
+    "packageArchived": "A csomag archiválva lett",
+    "packageRestored": "A csomag visszaállítva lett",
     "offerCreated": "Ajánlat sikeresen létrehozva",
     "offerUpdated": "Ajánlat sikeresen frissítve",
     "offerArchived": "Ajánlat archiválva",

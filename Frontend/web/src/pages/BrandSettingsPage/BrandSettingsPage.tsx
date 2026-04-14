@@ -120,8 +120,8 @@ export const BrandSettingsPage: React.FC = () => {
     const img = new Image();
     img.onload = () => {
       URL.revokeObjectURL(img.src);
-      if (img.width > 100 || img.height > 100) {
-        setErrors((p) => ({ ...p, logo: "Maximálny rozmer je 100×100px" }));
+      if (img.width !== img.height) {
+        setErrors((p) => ({ ...p, logo: "Obrázok musí mať formát 1:1" }));
         e.target.value = "";
         return;
       }

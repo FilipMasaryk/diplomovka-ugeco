@@ -403,6 +403,15 @@ export class BrandsService {
       );
     }
 
+    if (brand.package) {
+      const pkg = await this.packageModel.findById(brand.package);
+      if (!pkg || pkg.isArchived) {
+        brand.package = null as any;
+        brand.offersCount = 0;
+        brand.purchasedAt = null as any;
+      }
+    }
+
     brand.isArchived = false;
     return brand.save();
   }

@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FiInstagram } from "react-icons/fi";
-import { FaTiktok, FaYoutube, FaFacebookF, FaPinterestP } from "react-icons/fa";
+import { InstagramIcon, TiktokIcon, YoutubeIcon, FacebookIcon, PinterestIcon } from "../../components/ui/Icons/SocialIcons";
 import {
   fetchMyProfile,
   createProfile,
@@ -17,8 +16,10 @@ import { InputField } from "../../components/ui/InputField/InputField";
 import "./profilepage.css";
 
 const CATEGORIES = Object.values(BrandCategory);
-const TARGETS = Object.values(OfferTarget);
-const LANGUAGES = Object.values(Countries);
+// Zoradené podľa abecedy: Český, Maďarský, Nemecký, Poľský, Rakúsky, Slovenský, Španielsky, Taliansky
+const LANGUAGES = ["CZ", "HU", "DE", "PL", "AT", "SK", "ES", "IT"];
+// Zoradené podľa abecedy: Dieťa, Kamaráti, Muž, Pár, Rodina, Žena, Zviera
+const TARGETS = ["child", "friends", "man", "couple", "family", "woman", "animal"];
 
 const CATEGORY_COLORS: Record<string, string> = {
   apps_and_technology: "#EF4444",
@@ -82,6 +83,8 @@ const SocialIcons: React.FC<{
   pinterest?: string;
   linked?: boolean;
 }> = ({ instagram, tiktok, youtube, facebook, pinterest, linked = false }) => {
+  const hasAny = instagram || tiktok || youtube || facebook || pinterest;
+  if (!hasAny) return null;
   const Wrap = linked ? "a" : "span";
   return (
     <div className="profile-social-icons">
@@ -89,35 +92,35 @@ const SocialIcons: React.FC<{
         <Wrap
           {...(linked ? { href: ensureUrl(instagram), target: "_blank", rel: "noopener noreferrer" } : {})}
         >
-          <FiInstagram className="social-icon instagram" />
+          <InstagramIcon size={28} className="social-icon" />
         </Wrap>
       )}
       {tiktok && (
         <Wrap
           {...(linked ? { href: ensureUrl(tiktok), target: "_blank", rel: "noopener noreferrer" } : {})}
         >
-          <FaTiktok className="social-icon tiktok" />
+          <TiktokIcon size={28} className="social-icon" />
         </Wrap>
       )}
       {youtube && (
         <Wrap
           {...(linked ? { href: ensureUrl(youtube), target: "_blank", rel: "noopener noreferrer" } : {})}
         >
-          <FaYoutube className="social-icon youtube" />
+          <YoutubeIcon size={28} className="social-icon" />
         </Wrap>
       )}
       {facebook && (
         <Wrap
           {...(linked ? { href: ensureUrl(facebook), target: "_blank", rel: "noopener noreferrer" } : {})}
         >
-          <FaFacebookF className="social-icon facebook" />
+          <FacebookIcon size={28} className="social-icon" />
         </Wrap>
       )}
       {pinterest && (
         <Wrap
           {...(linked ? { href: ensureUrl(pinterest), target: "_blank", rel: "noopener noreferrer" } : {})}
         >
-          <FaPinterestP className="social-icon pinterest" />
+          <PinterestIcon size={28} className="social-icon" />
         </Wrap>
       )}
     </div>
@@ -214,8 +217,8 @@ export const ProfilePage: React.FC = () => {
     const img = new Image();
     img.onload = () => {
       URL.revokeObjectURL(img.src);
-      if (img.width > 200 || img.height > 100) {
-        setErrors((p) => ({ ...p, image: "Maximálny rozmer je 200×100px" }));
+      if (img.width !== img.height) {
+        setErrors((p) => ({ ...p, image: "Obrázok musí mať formát 1:1" }));
         e.target.value = "";
         return;
       }
@@ -374,7 +377,7 @@ export const ProfilePage: React.FC = () => {
   // ─── VIEW STATE ───
   if (profile && profile.published && !editing) {
     const langDisplay = profile.languages
-      .map((l) => t(`countries.${l}`, { defaultValue: l }).toLowerCase())
+      .map((l) => t(`languages.${l}`, { defaultValue: l }).toLowerCase())
       .join(", ");
 
     return (
@@ -394,13 +397,14 @@ export const ProfilePage: React.FC = () => {
             <div className="profile-view-header-info">
               <h2 className="profile-view-name">{profile.name}</h2>
               <div className="profile-view-categories">
-                {profile.categories.map((cat) => (
+                {[...profile.categories].sort((a, b) => t(`categories.${a}`).localeCompare(t(`categories.${b}`), "sk")).map((cat) => (
                   <span
                     key={cat}
                     className="profile-category-badge"
                     style={{
                       borderColor: CATEGORY_COLORS[cat] || "#6B7280",
                       color: CATEGORY_COLORS[cat] || "#6B7280",
+                      backgroundColor: `${CATEGORY_COLORS[cat] || "#6B7280"}20`,
                     }}
                   >
                     {t(`categories.${cat}`, { defaultValue: cat })}
@@ -456,13 +460,14 @@ export const ProfilePage: React.FC = () => {
             <div className="profile-preview-header-info">
               <h3 className="profile-preview-name">{form.name || t("profilePage.name")}</h3>
               <div className="profile-preview-categories">
-            {form.categories.map((cat) => (
+            {[...form.categories].sort((a, b) => t(`categories.${a}`).localeCompare(t(`categories.${b}`), "sk")).map((cat) => (
               <span
                 key={cat}
                 className="profile-category-badge"
                 style={{
                   borderColor: CATEGORY_COLORS[cat] || "#6B7280",
                   color: CATEGORY_COLORS[cat] || "#6B7280",
+                  backgroundColor: `${CATEGORY_COLORS[cat] || "#6B7280"}20`,
                 }}
               >
                 {t(`categories.${cat}`, { defaultValue: cat })}
@@ -472,7 +477,7 @@ export const ProfilePage: React.FC = () => {
               {form.languages.length > 0 && (
                 <p className="profile-preview-lang">
                   {t("profilePage.languages")}:{" "}
-                  {form.languages.map((l) => t(`countries.${l}`, { defaultValue: l }).toLowerCase()).join(", ")}
+                  {form.languages.map((l) => t(`languages.${l}`, { defaultValue: l }).toLowerCase()).join(", ")}
                 </p>
               )}
             </div>
@@ -524,7 +529,7 @@ export const ProfilePage: React.FC = () => {
                         onChange={() => toggleCheckbox("languages", lang)}
                       />
                       <span className="custom-checkbox" />
-                      {t(`countries.${lang}`, { defaultValue: lang })}
+                      {t(`languages.${lang}`, { defaultValue: lang })}
                     </label>
                   ))}
                 </div>
@@ -643,15 +648,13 @@ export const ProfilePage: React.FC = () => {
 
           {/* Footer buttons */}
           <div className="profile-form-footer">
-            {profile?.published && (
-              <button
-                className="profile-back-btn"
-                onClick={handleBack}
-                disabled={submitting}
-              >
-                {t("profilePage.backBtn")}
-              </button>
-            )}
+            <button
+              className="profile-back-btn"
+              onClick={handleBack}
+              disabled={submitting}
+            >
+              {t("profilePage.backBtn")}
+            </button>
             <button
               className="profile-concept-btn"
               onClick={() => handleSubmit(false)}

@@ -1,0 +1,39 @@
+.support-page {
+  padding: 40px;
+  font-family: "Inter", sans-serif;
+  background: #F0F4F8;
+  min-height: 100vh;
+}
+
+.support-page h1 {
+  font-weight: 800;
+  font-size: 48px;
+  line-height: 100%;
+  color: #181818;
+  margin-bottom: 30px;
+}
+
+.support-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5eaf0;
+  padding: 32px;
+  max-width: 500px;
+}
+
+.support-text {
+  font-size: 16px;
+  line-height: 28px;
+  color: #181818;
+  margin: 0 0 16px;
+}
+
+.support-link {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.support-link:hover {
+  text-decoration: underline;
+}

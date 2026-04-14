@@ -1,8 +1,12 @@
 {
   "login": {
     "title": "Prihlásenie do účtu",
+    "titleLine1": "Prihlásenie",
+    "titleLine2": "do účtu",
     "forgotTitle": "Zabudnuté heslo",
     "sentTitle": "Odoslali sme e-mail do tvojej schránky",
+    "sentTitleLine1": "Odoslali sme e-mail",
+    "sentTitleLine2": "do tvojej schránky",
     "email": "E-mail",
     "password": "Heslo",
     "rememberMe": "Zapamätať si",
@@ -16,6 +20,7 @@
   "errors": {
     "required": "Povinné pole",
     "invalidEmail": "Neplatný e-mail",
+    "emailNotFound": "Účet s týmto e-mailom neexistuje",
     "invalidUrl": "Neplatná URL adresa",
     "passwordMin": "Heslo musí mať aspoň 8 znakov",
     "passwordUppercase": "Heslo musí obsahovať aspoň jedno veľké písmeno",
@@ -34,10 +39,10 @@
     "noNews": "Žiadne novinky"
   },
   "roles": {
-    "creator": "TVORCA",
-    "brand_manager": "ZNAČKA",
-    "subadmin": "SUBADMIN",
-    "admin": "ADMIN"
+    "creator": "Tvorca",
+    "brand_manager": "Značka",
+    "subadmin": "Subadmin",
+    "admin": "Admin"
   },
   "menubar": {
     "overview": "Prehľad",
@@ -124,7 +129,7 @@
     "AT": "Rakúsko"
   },
   "brandsPage": {
-    "title": "Zoznam značiek",
+    "title": "Značky",
     "searchPlaceholder": "Vyhľadať",
     "createBtn": "Vytvoriť značku",
     "createBtnSubmit": "Vytvoriť značku",
@@ -188,29 +193,44 @@
     "cancel": "Zrušiť",
     "archive": {
       "title": "Archivovať používateľa",
-      "message": "Ste si istí, že chcete archivovať používateľa {{name}}?",
-      "confirmBtn": "Áno, archivovať",
-      "cancelBtn": "Nie, zrušiť"
+      "message": "Naozaj chcete archivovať používateľa?",
+      "confirmBtn": "Áno",
+      "cancelBtn": "Nie"
     },
     "restore": {
       "title": "Obnoviť používateľa",
-      "message": "Prajete si vrátiť používateľa {{name}} medzi aktívnych?",
-      "confirmBtn": "Áno, obnoviť",
-      "cancelBtn": "Nie, zrušiť"
+      "message": "Naozaj chcete obnoviť používateľa?",
+      "confirmBtn": "Áno",
+      "cancelBtn": "Nie"
     },
     "archiveBrand": {
-      "message": "Ste si istí, že chcete archivovať značku {{name}}?",
-      "confirmBtn": "Áno, archivovať",
-      "cancelBtn": "Nie, zrušiť"
+      "message": "Naozaj chcete archivovať značku?",
+      "confirmBtn": "Áno",
+      "cancelBtn": "Nie"
     },
     "restoreBrand": {
-      "message": "Prajete si vrátiť značku {{name}} medzi aktívne?",
-      "confirmBtn": "Áno, obnoviť",
-      "cancelBtn": "Nie, zrušiť"
+      "message": "Naozaj chcete obnoviť značku?",
+      "confirmBtn": "Áno",
+      "cancelBtn": "Nie"
+    },
+    "archiveOffer": {
+      "message": "Naozaj chcete archivovať ponuku?",
+      "confirmBtn": "Áno",
+      "cancelBtn": "Nie"
+    },
+    "restoreOffer": {
+      "message": "Naozaj chcete obnoviť ponuku?",
+      "confirmBtn": "Áno",
+      "cancelBtn": "Nie"
+    },
+    "deleteOffer": {
+      "message": "Naozaj chcete vymazať ponuku?",
+      "confirmBtn": "Áno",
+      "cancelBtn": "Nie"
     }
   },
   "offersPage": {
-    "title": "Zoznam ponúk",
+    "title": "Ponuky",
     "archiveBtn": "Archív ponúk",
     "allCategories": "Všetky kategórie",
     "allLanguages": "Všetky jazyky",
@@ -219,6 +239,7 @@
     "statusActive": "Aktívna",
     "statusConcept": "Koncept",
     "statusEnded": "Ukončená",
+    "statusPrepared": "Pripravená",
     "searchPlaceholder": "Vyhľadať",
     "createBtn": "Vytvoriť ponuku",
     "loading": "Načítavam ponuky...",
@@ -255,7 +276,15 @@
     "de": "Nemecký",
     "hu": "Maďarský",
     "it": "Taliansky",
-    "es": "Španielsky"
+    "es": "Španielsky",
+    "SK": "Slovenský",
+    "CZ": "Český",
+    "PL": "Poľský",
+    "DE": "Nemecký",
+    "HU": "Maďarský",
+    "AT": "Rakúsky",
+    "ES": "Španielsky",
+    "IT": "Taliansky"
   },
   "createOfferPage": {
     "title": "Vytvoriť ponuku",
@@ -302,8 +331,8 @@
     "activeFrom": "Aktívna od",
     "activeTo": "Aktívna do",
     "categories": "Kategórie",
-    "languages": "Jazyky",
-    "targets": "Pre koho",
+    "languages": "Jazyk",
+    "targets": "Ponuka pre",
     "description": "Popis ponuky",
     "social": "Sociálne siete",
     "contact": "Kontakt",
@@ -323,6 +352,8 @@
     "selectType": "Vyber typ",
     "deleteConfirm": "Naozaj chcete vymazať balíček {{name}}?",
     "deleteBtn": "Vymazať",
+    "archiveBtn": "Archív balíčkov",
+    "activeBtn": "Aktívne balíčky",
     "createModal": {
       "title": "Vytvoriť nový balíček"
     },
@@ -336,6 +367,11 @@
       "offersCount": "Počet ponúk",
       "months": "mes."
     }
+  },
+  "supportPage": {
+    "title": "Support",
+    "description": "Niečo nefunguje alebo máš otázku?",
+    "contactText": "Napíš nám na"
   },
   "resetPassword": {
     "title": "Obnovenie hesla",
@@ -365,6 +401,7 @@
     "dic": "DIČ",
     "profilePicture": "Profilová fotka",
     "changeAvatar": "Zmeniť fotku",
+    "addAvatar": "Pridať fotku",
     "avatarUpdated": "Profilová fotka bola aktualizovaná",
     "deleteAvatar": "Odstrániť fotku",
     "avatarDeleted": "Profilová fotka bola odstránená"
@@ -381,11 +418,14 @@
     "packageCreated": "Balíček bol úspešne vytvorený",
     "packageUpdated": "Balíček bol úspešne upravený",
     "packageDeleted": "Balíček bol vymazaný",
+    "packageArchived": "Balíček bol archivovaný",
+    "packageRestored": "Balíček bol obnovený",
     "offerCreated": "Ponuka bola úspešne vytvorená",
     "offerUpdated": "Ponuka bola úspešne upravená",
     "offerArchived": "Ponuka bola archivovaná",
     "offerRestored": "Ponuka bola obnovená",
     "offerDeleted": "Ponuka bola vymazaná",
+    "offerDuplicated": "Ponuka bola duplikovaná",
     "newsCreated": "Novinka bola úspešne vytvorená",
     "newsUpdated": "Novinka bola úspešne upravená",
     "newsDeleted": "Novinka bola vymazaná",
@@ -399,14 +439,16 @@
     "filterCategory": "Kategória",
     "filterLanguage": "Jazyk",
     "filterTarget": "Pre koho",
-    "filterLike": "Páčik",
+    "filterLike": "Všetky",
     "filterCooperation": "Spolupráca",
-    "liked": "Páči sa mi",
-    "notLiked": "Nepáči sa mi",
+    "liked": "Obľúbené",
+    "notLiked": "Ostatné",
     "paid": "Platená",
     "barter": "Barter",
     "searchPlaceholder": "Vyhľadať",
-    "noData": "Nenašli sa žiadne ponuky"
+    "noData": "Nenašli sa žiadne ponuky",
+    "noPackage": "Nemáte priradený žiadny balíček. Kontaktujte administrátora pre priradenie balíčka.",
+    "packageExpired": "Váš balíček vypršal. Kontaktujte administrátora pre obnovenie balíčka."
   },
   "noBrandSelected": "Nemáte priradenú žiadnu značku. Kontaktujte administrátora.",
   "brandSettingsPage": {
@@ -414,7 +456,7 @@
     "brandName": "Názov značky",
     "category": "Kategória",
     "logo": "Logo",
-    "logoHint": "Formát: max 100×100px, do 100Kb",
+    "logoHint": "Formát: 1:1, do 100Kb",
     "mainContact": "Hlavný kontakt",
     "website": "Webová stránka",
     "facebook": "Facebook",
@@ -460,7 +502,7 @@
     "categories": "Kategórie",
     "creatingAs": "Tvorím ako/s",
     "image": "Fotka",
-    "imageHint": "Formát: 200×100px, do 100Kb",
+    "imageHint": "Formát: 1:1, do 100Kb",
     "about": "Niečo o mne",
     "aboutPlaceholder": "Napíš niečo o sebe",
     "charCount": "Počet znakov",

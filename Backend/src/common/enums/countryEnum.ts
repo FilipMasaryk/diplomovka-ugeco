@@ -5,4 +5,6 @@ export enum Country {
   DE = 'DE',
   HU = 'HU',
   AT = 'AT',
+  ES = 'ES',
+  IT = 'IT',
 }

@@ -2,14 +2,17 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./packagespage.css";
 import { Button } from "../../components/ui/Button/Button";
-import { FiPlus, FiEdit3, FiChevronRight, FiTrash2 } from "react-icons/fi";
+import { FiPlus, FiChevronRight } from "react-icons/fi";
+import { PencilIcon, ArchiveIcon, ArchiveRestoreIcon } from "../../components/ui/Icons/Icons";
 import { InputField } from "../../components/ui/InputField/InputField";
 import { CustomSelect } from "../../components/ui/CustomSelectMenu/CustomSelect";
 import {
   fetchPackages,
+  fetchArchivedPackages,
   createPackage,
   updatePackage,
-  deletePackage,
+  archivePackage,
+  restorePackage,
   type PackageTableData,
 } from "../../../../shared/api/packages/packages";
 import { ConfirmModal } from "../../components/ui/ConfirmModal/ConfirmModal";
@@ -31,6 +34,7 @@ export const PackagesPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("");
+  const [showArchived, setShowArchived] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [packageToUpdate, setPackageToUpdate] = useState<
@@ -65,14 +69,14 @@ export const PackagesPage: React.FC = () => {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await fetchPackages();
+      const data = showArchived ? await fetchArchivedPackages() : await fetchPackages();
       setPackages(data);
     } catch (error) {
       console.error("Error loading packages:", error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [showArchived]);
 
   useEffect(() => {
     loadData();
@@ -113,7 +117,7 @@ export const PackagesPage: React.FC = () => {
     [loadData, showToast, t],
   );
 
-  const openDeleteConfirm = (pkg: PackageTableData) => {
+  const openArchiveConfirm = (pkg: PackageTableData) => {
     setModalData({
       isOpen: true,
       packageId: pkg.id,
@@ -125,13 +129,23 @@ export const PackagesPage: React.FC = () => {
     setModalData((prev) => ({ ...prev, isOpen: false }));
   };
 
-  const handleDeleteConfirm = async () => {
+  const handleArchiveConfirm = async () => {
     const { packageId } = modalData;
     closeConfirm();
-    const success = await deletePackage(packageId);
+    try {
+      await archivePackage(packageId);
+      loadData();
+      showToast(t("toasts.packageArchived"), "success");
+    } catch (error: any) {
+      showToast(error.message || "Nepodarilo sa archivovať balíček", "error");
+    }
+  };
+
+  const handleRestore = async (pkg: PackageTableData) => {
+    const success = await restorePackage(pkg.id);
     if (success) {
       loadData();
-      showToast(t("toasts.packageDeleted"), "success");
+      showToast(t("toasts.packageRestored"), "success");
     }
   };
 
@@ -176,18 +190,28 @@ export const PackagesPage: React.FC = () => {
 
       <ConfirmModal
         isOpen={modalData.isOpen}
-        title={t("packagesPage.deleteConfirm", {
-          name: modalData.packageName,
-        })}
-        confirmLabel={t("packagesPage.deleteBtn")}
-        cancelLabel={t("modals.archiveBrand.cancelBtn")}
-        onConfirm={handleDeleteConfirm}
+        title={`Naozaj chcete archivovať balíček "${modalData.packageName}"?`}
+        confirmLabel="Archivovať"
+        cancelLabel="Zrušiť"
+        onConfirm={handleArchiveConfirm}
         onCancel={closeConfirm}
       />
 
       <div className="header">
         <div className="header-left-group">
           <h1>{t("packagesPage.title")}</h1>
+          <Button
+            variant="outlined"
+            className="archive-btn"
+            onClick={() => {
+              setShowArchived(!showArchived);
+              setCurrentPage(1);
+            }}
+          >
+            {showArchived
+              ? t("packagesPage.activeBtn")
+              : t("packagesPage.archiveBtn")}
+          </Button>
         </div>
       </div>
 
@@ -230,7 +254,7 @@ export const PackagesPage: React.FC = () => {
         {loading ? (
           <div className="loading-state">{t("packagesPage.loading")}</div>
         ) : (
-          <table>
+          <table className="packages-table">
             <thead>
               <tr>
                 <th>{t("packagesPage.table.name")}</th>
@@ -255,14 +279,23 @@ export const PackagesPage: React.FC = () => {
                     </td>
                     <td>{pkg.type === "brand" ? pkg.offersCount : "-"}</td>
                     <td className="actions">
-                      <FiEdit3
-                        className="action-icon edit"
-                        onClick={() => handleEditClick(pkg)}
-                      />
-                      <FiTrash2
-                        className="action-icon delete"
-                        onClick={() => openDeleteConfirm(pkg)}
-                      />
+                      {showArchived ? (
+                        <ArchiveRestoreIcon
+                          className="action-icon edit"
+                          onClick={() => handleRestore(pkg)}
+                        />
+                      ) : (
+                        <>
+                          <PencilIcon
+                            className="action-icon edit"
+                            onClick={() => handleEditClick(pkg)}
+                          />
+                          <ArchiveIcon
+                            className="action-icon delete"
+                            onClick={() => openArchiveConfirm(pkg)}
+                          />
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))

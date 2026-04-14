@@ -421,6 +421,21 @@ export class OffersService {
       languages?: string[];
     },
   ): Promise<Offer[]> {
+    // Kontrola balíčka creatora
+    const userId = (user as any)._id ?? (user as any).id;
+    const freshUser = await this.userModel.findById(userId).populate('package');
+    if (!freshUser?.package) {
+      throw new BadRequestException('NO_PACKAGE');
+    }
+    const pkg = freshUser.package as any;
+    if (freshUser.purchasedAt && pkg.validityMonths) {
+      const expiresAt = new Date(freshUser.purchasedAt);
+      expiresAt.setMonth(expiresAt.getMonth() + pkg.validityMonths);
+      if (expiresAt < new Date()) {
+        throw new BadRequestException('PACKAGE_EXPIRED');
+      }
+    }
+
     const countries = await this.getFreshCountries(user);
     const allowedBrands = await this.brandModel
       .find({ country: { $in: countries }, isArchived: false })

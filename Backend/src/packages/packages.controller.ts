@@ -36,7 +36,13 @@ export class PackagesController {
   @Get()
   @Roles(UserRole.ADMIN, UserRole.SUBADMIN)
   findAll() {
-    return this.packagesService.findAll();
+    return this.packagesService.findAll(false);
+  }
+
+  @Get('archived')
+  @Roles(UserRole.ADMIN)
+  findAllArchived() {
+    return this.packagesService.findAll(true);
   }
 
   @Get(':id')
@@ -53,6 +59,18 @@ export class PackagesController {
     body: UpdatePackageDto,
   ) {
     return this.packagesService.update(id, body);
+  }
+
+  @Patch(':id/archive')
+  @Roles(UserRole.ADMIN)
+  archive(@Param('id') id: string) {
+    return this.packagesService.archive(id);
+  }
+
+  @Patch(':id/restore')
+  @Roles(UserRole.ADMIN)
+  restore(@Param('id') id: string) {
+    return this.packagesService.restore(id);
   }
 
   @Delete(':id')
