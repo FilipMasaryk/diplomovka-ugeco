@@ -8,8 +8,6 @@ import {
   type UserProfile,
 } from "../../../../shared/api/profiles/profiles";
 import { BrandCategory } from "../../types/brandCategories";
-import { OfferTarget } from "../../types/offerTarget";
-import { Countries } from "../../types/countryEnum";
 import { useToast } from "../../context/useToast";
 import { API_URL } from "../../../../shared/config";
 import { InputField } from "../../components/ui/InputField/InputField";
